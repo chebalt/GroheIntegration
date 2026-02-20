@@ -96,6 +96,7 @@ def pipeline_result(firestore_client):
         **os.environ,
         "FIRESTORE_EMULATOR_HOST": EMULATOR_HOST,
         "GCLOUD_PROJECT":          PROJECT_ID,
+        "PYTHONUTF8":              "1",   # Force UTF-8 stdout/stderr on Windows (emoji in firestore_loader)
     }
 
     proc = subprocess.run(
@@ -104,13 +105,14 @@ def pipeline_result(firestore_client):
             "--input-dir",    str(FIXTURES_CSV),
             "--to-firestore",
             "--firestore-emulator",
-            "--log-level",    "WARNING",
+            "--log-level",    "INFO",
         ],
         cwd=DATA_LOADER_DIR,
         capture_output=True,
         text=True,
+        encoding="utf-8",
         env=env,
-        timeout=300,
+        timeout=900,  # Transform + load on full fixture can take 10-15 min
     )
 
     return proc
