@@ -54,7 +54,7 @@ def _is_emulator_up(host: str = EMULATOR_HOST, timeout: float = 2.0) -> bool:
 def _clear_emulator(client: firestore.Client) -> None:
     """Delete every document in every known collection (for test isolation)."""
     collections = [
-        "PLProductContent", "PLCategory", "PLFeatureContent",
+        "PLProductContent", "PLCategory",
         "PLVariant", "ProductIndexData", "CategoryRouting",
         "cacheEntries", "cacheRegions",
     ]

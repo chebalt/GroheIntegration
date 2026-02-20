@@ -190,15 +190,14 @@ Implemented tests:
 | File | Tests |
 |---|---|
 | `test_pipeline_runs.py` | Exit code 0, completion message, no critical errors, all collections mentioned |
-| `test_collections.py` | All 6 collections populated, document IDs match `{SKU}_de_DE` / `{BaseSKU}_{Seq}_de_DE` format |
+| `test_collections.py` | All 5 collections populated, document IDs match `{SKU}_de_DE` / `{BaseSKU}_{Seq}_de_DE` format |
 | `test_document_structure.py` | PLProductContent fields (SKU, EAN, Slug, images, Finish, Variants, <900KB), ProductIndexData fields (finish_definitions, all_category_ids, image_url, tag_definitions), PLCategory (Language/Market), PLVariant (SKU identifier) |
 
 Known fixture SKUs: `66838000`, `40806000`
 Known ProductIndexData IDs: `66838_0_de_DE`, `40806_0_de_DE`
 
-**xfailed:** `test_pl_feature_content_is_populated` — `PLFeatureContent` is never
-populated because no CSV in `FILE_MODEL_MAP` maps to the `'featurecontent'` extractor
-key that `transformer.py` looks for. All other 44 tests pass.
+All 44 tests pass (0 xfailed — `PLFeatureContent` collection and all related code
+have been removed from the data-loader).
 
 **Timing:** Phase 2 transform (292k records → 17k products) takes ~6–7 min. Total
 pipeline test run is ~10–11 min on a developer machine.

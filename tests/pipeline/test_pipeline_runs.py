@@ -37,7 +37,7 @@ class TestPipelineExecution:
 
     def test_pipeline_loaded_all_collections(self, pipeline_result):
         stdout = pipeline_result.stdout
-        for collection in ["PLProductContent", "PLCategory", "PLFeatureContent",
+        for collection in ["PLProductContent", "PLCategory",
                            "PLVariant", "ProductIndexData", "CategoryRouting"]:
             assert collection in stdout, (
                 f"Expected '{collection}' to appear in pipeline output"

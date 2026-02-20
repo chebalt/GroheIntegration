@@ -1,5 +1,5 @@
 """
-Firestore collection tests — verifies all 6 collections are populated
+Firestore collection tests — verifies all 5 collections are populated
 with the expected number and shape of documents after the pipeline runs.
 """
 
@@ -40,11 +40,6 @@ class TestCollectionsPopulated:
     def test_pl_category_is_populated(self, pipeline_result, firestore_client):
         ids = collection_doc_ids(firestore_client, "PLCategory")
         assert len(ids) > 0, "PLCategory should not be empty after pipeline run"
-
-    @pytest.mark.xfail(reason="PLFeatureContent not populated: no FeatureContent CSV in the batch files (extractor key 'featurecontent' has no source file)")
-    def test_pl_feature_content_is_populated(self, pipeline_result, firestore_client):
-        ids = collection_doc_ids(firestore_client, "PLFeatureContent")
-        assert len(ids) > 0, "PLFeatureContent should not be empty after pipeline run"
 
     def test_pl_variant_is_populated(self, pipeline_result, firestore_client):
         ids = collection_doc_ids(firestore_client, "PLVariant")

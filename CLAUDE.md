@@ -155,13 +155,6 @@ Expected fix loop:
 
 ## Known State (Phase 1)
 
-### xfailed test
-
-`test_collections.py::TestCollectionsPopulated::test_pl_feature_content_is_populated`
-is marked `xfail`. `PLFeatureContent` is always empty because no CSV in the batch
-maps to the `'featurecontent'` extractor key that `transformer.py` looks for at
-line 638. All other 44 tests pass.
-
 ### Timing
 
 Phase 2 transform is CPU-bound and silent — 292k records → 17k products takes
