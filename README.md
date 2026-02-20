@@ -4,7 +4,7 @@
 
 | Phase | Scope | Status |
 |---|---|---|
-| **Phase 1** | ETL pipeline → Firestore state | ✅ **44 passed, 1 xfailed** — `make test-pipeline` green |
+| **Phase 1** | ETL pipeline → Firestore state | ✅ **44 passed, 0 xfailed** — `make test-pipeline` green |
 | **Phase 2** | Sync logic + Indexing API + WireMock | 🔲 Planned |
 | **Phase 3** | .NET service HTTP tests | 🔲 Planned |
 | **Phase 4** | Business scenario tests (acceptance gate) | 🔲 Planned |

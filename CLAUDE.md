@@ -5,7 +5,7 @@
 Cross-project integration tests for the Grohe NEO platform. Spins up a local
 Firestore emulator and runs the real data-loader against real fixture CSVs.
 
-**Phase 1 (green):** ETL pipeline → Firestore state assertions — **44 passed, 1 xfailed**
+**Phase 1 (green):** ETL pipeline → Firestore state assertions — **44 passed, 0 xfailed**
 **Phase 2 (planned):** Sync logic + Indexing API + WireMock
 **Phase 3 (planned):** .NET service HTTP tests
 **Phase 4 (planned):** Business scenario tests
