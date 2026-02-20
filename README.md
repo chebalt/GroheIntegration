@@ -4,7 +4,7 @@
 
 | Phase | Scope | Status |
 |---|---|---|
-| **Phase 1** | ETL pipeline → Firestore state | ✅ **Done** — `make test-pipeline` works |
+| **Phase 1** | ETL pipeline → Firestore state | ✅ **44 passed, 1 xfailed** — `make test-pipeline` green |
 | **Phase 2** | Sync logic + Indexing API + WireMock | 🔲 Planned |
 | **Phase 3** | .NET service HTTP tests | 🔲 Planned |
 | **Phase 4** | Business scenario tests (acceptance gate) | 🔲 Planned |
@@ -196,6 +196,13 @@ Implemented tests:
 Known fixture SKUs: `66838000`, `40806000`
 Known ProductIndexData IDs: `66838_0_de_DE`, `40806_0_de_DE`
 
+**xfailed:** `test_pl_feature_content_is_populated` — `PLFeatureContent` is never
+populated because no CSV in `FILE_MODEL_MAP` maps to the `'featurecontent'` extractor
+key that `transformer.py` looks for. All other 44 tests pass.
+
+**Timing:** Phase 2 transform (292k records → 17k products) takes ~6–7 min. Total
+pipeline test run is ~10–11 min on a developer machine.
+
 ### Layer 2 — Sync tests 🔲 `tests/sync/`
 
 **Scope:** `sync_product_index.py` only.
@@ -353,6 +360,21 @@ def test_scenario__new_locale_flows_through_full_pipeline(self, ...):
 
 ---
 
+## Windows Notes
+
+`firestore_loader.py` prints emoji (🔥 ✅ ❌) to stdout. On Windows, the default
+cp1252 encoding can't encode these, which causes the subprocess to crash. The
+`conftest.py` fixture handles this with two settings:
+
+```python
+env  = { ..., "PYTHONUTF8": "1" }          # child writes UTF-8
+proc = subprocess.run(..., encoding="utf-8") # parent reads UTF-8
+```
+
+Both are required — missing either one breaks the test run on Windows.
+
+---
+
 ## Updating CSV Fixtures
 
 When a new data batch is available in `NEO/data_input/`:
@@ -367,7 +389,7 @@ make test-pipeline
 
 ## Design Principles
 
-1. **Fast by default** — Phase 1 runs in ~60s; no .NET services needed
+1. **Fast by default** — Phase 1 has no .NET services or external calls; the ~10 min runtime is the transform CPU cost on 292k records, not infrastructure overhead
 2. **Incremental** — each phase adds a layer; earlier layers stay green
 3. **Traceable** — test names → source files → repos; no ambiguity
 4. **Self-contained** — no cloud credentials; everything mocked locally

@@ -5,7 +5,7 @@
 Cross-project integration tests for the Grohe NEO platform. Spins up a local
 Firestore emulator and runs the real data-loader against real fixture CSVs.
 
-**Phase 1 (implemented):** ETL pipeline → Firestore state assertions
+**Phase 1 (green):** ETL pipeline → Firestore state assertions — **44 passed, 1 xfailed**
 **Phase 2 (planned):** Sync logic + Indexing API + WireMock
 **Phase 3 (planned):** .NET service HTTP tests
 **Phase 4 (planned):** Business scenario tests
@@ -150,6 +150,34 @@ Expected fix loop:
 - `test_document_structure.py::TestPLProductContentStructure::test_has_sustainability_label` → FAIL
 - Claude adds field to `output_models/pl_product_content.py` + `transformer.py`
 - Re-run → PASS
+
+---
+
+## Known State (Phase 1)
+
+### xfailed test
+
+`test_collections.py::TestCollectionsPopulated::test_pl_feature_content_is_populated`
+is marked `xfail`. `PLFeatureContent` is always empty because no CSV in the batch
+maps to the `'featurecontent'` extractor key that `transformer.py` looks for at
+line 638. All other 44 tests pass.
+
+### Timing
+
+Phase 2 transform is CPU-bound and silent — 292k records → 17k products takes
+**~6–7 min** on a developer machine. Total pipeline fixture run (including Firestore
+load) is **~10–11 min**. The subprocess timeout in `conftest.py` is set to 900s.
+
+### Windows encoding
+
+`firestore_loader.py` prints emoji to stdout. On Windows (cp1252), this crashes the
+subprocess reader. `conftest.py` fixes this with:
+
+- `env["PYTHONUTF8"] = "1"` — makes the child process write UTF-8
+- `subprocess.run(..., encoding="utf-8")` — makes the parent read UTF-8
+
+**Both are required.** If you see `UnicodeEncodeError` or `stdout=None` in test
+failures, check that these are present in `conftest.py`.
 
 ---
 
