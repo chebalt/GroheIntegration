@@ -1,0 +1,408 @@
+ranking,category,characteristic,description_SAP,SAP_value,consumer_wording_description,consumer_wording_value,language,market
+1,Kernspezifikationen,L3090,Surface Finish (GROHE),01,Oberflächenbeschaffenheit,Poliert,de,DE
+1,Kernspezifikationen,L3090,Surface Finish (GROHE),02,Oberflächenbeschaffenheit,Gebürstet,de,DE
+1,Kernspezifikationen,L3090,Surface Finish (GROHE),03,Oberflächenbeschaffenheit,Satiniert,de,DE
+1,Kernspezifikationen,L3090,Surface Finish (GROHE),04,Oberflächenbeschaffenheit,Matt,de,DE
+1,Kernspezifikationen,L3090,Surface Finish (GROHE),05,Oberflächenbeschaffenheit,Andere,de,DE
+2,Kernspezifikationen,L3050,Warranty (GROHE EMENA),2,Garantie,2 Jahre,de,DE
+2,Kernspezifikationen,L3050,Warranty (GROHE EMENA),5,Garantie,5 Jahre,de,DE
+2,Kernspezifikationen,L3050,Warranty (GROHE EMENA),10,Garantie,10 Jahre,de,DE
+3,Kernspezifikationen,L1293,Flow Rate at 3bar (l),,Durchflussmenge bei 3bar (l) ,,de,DE
+4,Kernspezifikationen,L1381,Flow Rate at 3bar (l) -HandShw,,Durchflussmenge bei 3bar (l) - Handbrause,,de,DE
+5,Kernspezifikationen,L1380,Flow Rate at 3bar (l) -HeadShw,,Durchflussmenge bei 3bar (l) - Kopfbrause,,de,DE
+6,Kernspezifikationen,L1382,Flow Rate at 3bar (l) -SideShw,,Durchflussmenge bei 3bar (l) - Seitenbrause,,de,DE
+7,Kernspezifikationen,L3063,flow rate l/min (spares) GROHE,,Durchflussmenge l/min ,,de,DE
+8,Kernspezifikationen,L1268,Drain flowrate (litre/sec),,Ablaufgeschwindigkeit (Liter/Sek.),,de,DE
+9,Kernspezifikationen,L1222,Fact. Setting Full Flush (l),,Werkseinstellung Vollspülung (l),,de,DE
+10,Kernspezifikationen,L1199,Fact.Setting Half Flush (l),,Werkseinstellung Halbspülung (l),,de,DE
+11,Kernspezifikationen,L1323,Flush rate (l/sec),,Spülvolumen (l/s),,de,DE
+12,Kernspezifikationen,L3084,Min. recommended pressure,,Min. empfohlener Druck,,de,DE
+13,Kernspezifikationen,L3085,Max. recommended pressure,,Max. empfohlener Druck,,de,DE
+14,Kernspezifikationen,L1002,Kind of Waste Set,01,Art der Ablaufgarnitur,Daueroffene Ablaufgarnitur,de,DE
+14,Kernspezifikationen,L1002,Kind of Waste Set,04,Art der Ablaufgarnitur,Siebeinsatz,de,DE
+14,Kernspezifikationen,L1002,Kind of Waste Set,11,Art der Ablaufgarnitur,Schnellanschluss-System,de,DE
+14,Kernspezifikationen,L1002,Kind of Waste Set,02,Art der Ablaufgarnitur,Kettenhalter,de,DE
+14,Kernspezifikationen,L1002,Kind of Waste Set,03,Art der Ablaufgarnitur,Flip Ablaufgarnitur (Drehstopfen),de,DE
+14,Kernspezifikationen,L1002,Kind of Waste Set,05,Art der Ablaufgarnitur,Zugstangen-Ablaufgarnitur ,de,DE
+14,Kernspezifikationen,L1002,Kind of Waste Set,06,Art der Ablaufgarnitur,Push-Open-Ablaufgarnitur,de,DE
+14,Kernspezifikationen,L1002,Kind of Waste Set,07,Art der Ablaufgarnitur,Versenkbare Kette,de,DE
+14,Kernspezifikationen,L1002,Kind of Waste Set,08,Art der Ablaufgarnitur,"Glatter Körper, ohne Ablaufgarnitur",de,DE
+14,Kernspezifikationen,L1002,Kind of Waste Set,09,Art der Ablaufgarnitur,Excenter-Ablaufgarnitur mit Druckknopf,de,DE
+14,Kernspezifikationen,L1002,Kind of Waste Set,10,Art der Ablaufgarnitur,Excenter-Ablaufgarnitur mit Drehgriff,de,DE
+15,Kernspezifikationen,L1000,Installation Type,01,Montageart,Aufgesetzt,de,DE
+15,Kernspezifikationen,L1000,Installation Type,02,Montageart,Nische,de,DE
+15,Kernspezifikationen,L1000,Installation Type,09,Montageart,Einbau- (Drop-In-) Variante mit Schürze,de,DE
+15,Kernspezifikationen,L1000,Installation Type,11,Montageart,Flächenbündig,de,DE
+15,Kernspezifikationen,L1000,Installation Type,13,Montageart,Verklebt,de,DE
+15,Kernspezifikationen,L1000,Installation Type,29,Montageart,In-Line,de,DE
+15,Kernspezifikationen,L1000,Installation Type,30,Montageart,Montage in Badmöbel,de,DE
+15,Kernspezifikationen,L1000,Installation Type,14,Montageart,Halb-Einbau,de,DE
+15,Kernspezifikationen,L1000,Installation Type,15,Montageart,Aufsatzmontage,de,DE
+15,Kernspezifikationen,L1000,Installation Type,16,Montageart,Aufsatz/flacher Rand,de,DE
+15,Kernspezifikationen,L1000,Installation Type,17,Montageart,Aufsatz + bündig,de,DE
+15,Kernspezifikationen,L1000,Installation Type,18,Montageart,Aufsatz + Unterbau,de,DE
+15,Kernspezifikationen,L1000,Installation Type,19,Montageart,Auf-/Unter-/Bündigmontage,de,DE
+15,Kernspezifikationen,L1000,Installation Type,20,Montageart,Unterbau,de,DE
+15,Kernspezifikationen,L1000,Installation Type,21,Montageart,Unterbau-Montage,de,DE
+15,Kernspezifikationen,L1000,Installation Type,22,Montageart,Begehbar,de,DE
+15,Kernspezifikationen,L1000,Installation Type,27,Montageart,Wand,de,DE
+15,Kernspezifikationen,L1000,Installation Type,24,Montageart,Wandmontage Unterputz,de,DE
+15,Kernspezifikationen,L1000,Installation Type,03,Montageart,Schürze vorne,de,DE
+15,Kernspezifikationen,L1000,Installation Type,04,Montageart,wandgebunden (Wannen),de,DE
+15,Kernspezifikationen,L1000,Installation Type,05,Montageart,Eckmontage,de,DE
+15,Kernspezifikationen,L1000,Installation Type,06,Montageart,Standmontage,de,DE
+15,Kernspezifikationen,L1000,Installation Type,07,Montageart,Direkt an Ständerwerk,de,DE
+15,Kernspezifikationen,L1000,Installation Type,08,Montageart,Einbau,de,DE
+15,Kernspezifikationen,L1000,Installation Type,10,Montageart,Bodenstehend,de,DE
+15,Kernspezifikationen,L1000,Installation Type,12,Montageart,Freistehend,de,DE
+15,Kernspezifikationen,L1000,Installation Type,23,Montageart,Wandhängend,de,DE
+15,Kernspezifikationen,L1000,Installation Type,25,Montageart,Wandmontage Aufputz,de,DE
+15,Kernspezifikationen,L1000,Installation Type,28,Montageart,"Wandmontage, Sichtmontage - Vertica",de,DE
+15,Kernspezifikationen,L1000,Installation Type,26,Montageart,Deckenmontage,de,DE
+16,Kernspezifikationen,L1015,position of SLF lever,1,Position des EHM Hebels,Oben,de,DE
+16,Kernspezifikationen,L1015,position of SLF lever,3,Position des EHM Hebels,Frontal,de,DE
+16,Kernspezifikationen,L1015,position of SLF lever,2,Position des EHM Hebels,Seitlich,de,DE
+17,Kernspezifikationen,L1228,Number of Push Controls,1,Anzahl der Drucktasten,1-Tasten-Bedienung,de,DE
+17,Kernspezifikationen,L1228,Number of Push Controls,2,Anzahl der Drucktasten,2-Tasten-Bedienung,de,DE
+17,Kernspezifikationen,L1228,Number of Push Controls,3,Anzahl der Drucktasten,3-Tasten-Bedienung,de,DE
+18,Kernspezifikationen,L1042,Number of Spray Types Handshow,1,Anzahl der Strahlarten,1 Strahlart,de,DE
+18,Kernspezifikationen,L1042,Number of Spray Types Handshow,2,Anzahl der Strahlarten,2 Strahlarten,de,DE
+18,Kernspezifikationen,L1042,Number of Spray Types Handshow,3,Anzahl der Strahlarten,3 Strahlarten,de,DE
+18,Kernspezifikationen,L1042,Number of Spray Types Handshow,4,Anzahl der Strahlarten,4 Strahlarten,de,DE
+18,Kernspezifikationen,L1042,Number of Spray Types Handshow,5,Anzahl der Strahlarten,5 Strahlarten,de,DE
+18,Kernspezifikationen,L1042,Number of Spray Types Handshow,M,Anzahl der Strahlarten,Multifunktion,de,DE
+18,Kernspezifikationen,L1042,Number of Spray Types Handshow,I,Anzahl der Strahlarten,1 Strahlart,de,DE
+18,Kernspezifikationen,L1042,Number of Spray Types Handshow,II,Anzahl der Strahlarten,2 Strahlarten,de,DE
+18,Kernspezifikationen,L1042,Number of Spray Types Handshow,III,Anzahl der Strahlarten,3 Strahlarten,de,DE
+18,Kernspezifikationen,L1042,Number of Spray Types Handshow,IV,Anzahl der Strahlarten,4 Strahlarten,de,DE
+18,Kernspezifikationen,L1042,Number of Spray Types Handshow,V,Anzahl der Strahlarten,5 Strahlarten,de,DE
+19,Kernspezifikationen,L1291,Number of Spray Types Headshw,1,Anzahl der Strahlarten der Kopfbrause,1 Strahlart,de,DE
+19,Kernspezifikationen,L1291,Number of Spray Types Headshw,I,Anzahl der Strahlarten der Kopfbrause,1 Strahlart,de,DE
+19,Kernspezifikationen,L1291,Number of Spray Types Headshw,2,Anzahl der Strahlarten der Kopfbrause,2 Strahlarten,de,DE
+19,Kernspezifikationen,L1291,Number of Spray Types Headshw,3,Anzahl der Strahlarten der Kopfbrause,3 Strahlarten,de,DE
+19,Kernspezifikationen,L1291,Number of Spray Types Headshw,4,Anzahl der Strahlarten der Kopfbrause,4 Strahlarten,de,DE
+19,Kernspezifikationen,L1291,Number of Spray Types Headshw,5,Anzahl der Strahlarten der Kopfbrause,5 Strahlarten,de,DE
+19,Kernspezifikationen,L1291,Number of Spray Types Headshw,M,Anzahl der Strahlarten der Kopfbrause,Multifunktion,de,DE
+19,Kernspezifikationen,L1291,Number of Spray Types Headshw,II,Anzahl der Strahlarten der Kopfbrause,2 Strahlarten,de,DE
+19,Kernspezifikationen,L1291,Number of Spray Types Headshw,III,Anzahl der Strahlarten der Kopfbrause,3 Strahlarten,de,DE
+19,Kernspezifikationen,L1291,Number of Spray Types Headshw,IV,Anzahl der Strahlarten der Kopfbrause,4 Strahlarten,de,DE
+19,Kernspezifikationen,L1291,Number of Spray Types Headshw,V,Anzahl der Strahlarten der Kopfbrause,5 Strahlarten,de,DE
+20,Kernspezifikationen,L1292,Numb.of Spray Types Body Spray,1,Anzahl der Strahlarten (Seitenbrause),1 Strahlart,de,DE
+20,Kernspezifikationen,L1292,Numb.of Spray Types Body Spray,3,Anzahl der Strahlarten (Seitenbrause),3 Strahlarten,de,DE
+20,Kernspezifikationen,L1292,Numb.of Spray Types Body Spray,2,Anzahl der Strahlarten (Seitenbrause),2 Strahlarten,de,DE
+20,Kernspezifikationen,L1292,Numb.of Spray Types Body Spray,4,Anzahl der Strahlarten (Seitenbrause),4 Strahlarten,de,DE
+20,Kernspezifikationen,L1292,Numb.of Spray Types Body Spray,5,Anzahl der Strahlarten (Seitenbrause),5 Strahlarten,de,DE
+20,Kernspezifikationen,L1292,Numb.of Spray Types Body Spray,M,Anzahl der Strahlarten (Seitenbrause),Multifunktion,de,DE
+21,Kernspezifikationen,L1152,shape of escutcheon,01,Form der Rosette,Rund,de,DE
+21,Kernspezifikationen,L1152,shape of escutcheon,02,Form der Rosette,Eckig,de,DE
+21,Kernspezifikationen,L1152,shape of escutcheon,03,Form der Rosette,Rechteckig,de,DE
+21,Kernspezifikationen,L1152,shape of escutcheon,04,Form der Rosette,Andere,de,DE
+22,Kernspezifikationen,L1018,Shape of Spout,C,Form des Auslaufs,C-Auslauf,de,DE
+22,Kernspezifikationen,L1018,Shape of Spout,L,Form des Auslaufs,L-Auslauf,de,DE
+22,Kernspezifikationen,L1018,Shape of Spout,U,Form des Auslaufs,U-Auslauf,de,DE
+22,Kernspezifikationen,L1018,Shape of Spout,S,Form des Auslaufs,S-Auslauf,de,DE
+22,Kernspezifikationen,L1018,Shape of Spout,SP,Form des Auslaufs,Flexibler C-Auslauf,de,DE
+23,Kernspezifikationen,L1047,Shape of Hand Shower,01,Form der Handbrause,Rund,de,DE
+23,Kernspezifikationen,L1047,Shape of Hand Shower,02,Form der Handbrause,Eckig,de,DE
+24,Kernspezifikationen,L1105,Shape of Head Shower,01,Form der Kopfbrause,Rund,de,DE
+24,Kernspezifikationen,L1105,Shape of Head Shower,02,Form der Kopfbrause,Eckig,de,DE
+24,Kernspezifikationen,L1105,Shape of Head Shower,03,Form der Kopfbrause,Rautenform,de,DE
+25,Kernspezifikationen,L1363,Shape of Body Spray,1,Form des Körpersprays,Rund,de,DE
+25,Kernspezifikationen,L1363,Shape of Body Spray,2,Form des Körpersprays,Eckig,de,DE
+26,Kernspezifikationen,L1143,Shape of Plate,04,Form der Betätigungsplatte,Organisch,de,DE
+26,Kernspezifikationen,L1143,Shape of Plate,01,Form der Betätigungsplatte,Rund,de,DE
+26,Kernspezifikationen,L1143,Shape of Plate,02,Form der Betätigungsplatte,Eckig,de,DE
+26,Kernspezifikationen,L1143,Shape of Plate,03,Form der Betätigungsplatte,Rautenform,de,DE
+27,Kernspezifikationen,L1180,Shape of Seat,01,Form des Sitzes,Rund,de,DE
+27,Kernspezifikationen,L1180,Shape of Seat,02,Form des Sitzes,Eckig,de,DE
+27,Kernspezifikationen,L1180,Shape of Seat,03,Form des Sitzes,Verlängert,de,DE
+27,Kernspezifikationen,L1180,Shape of Seat,04,Form des Sitzes,Weiche Kante,de,DE
+27,Kernspezifikationen,L1180,Shape of Seat,05,Form des Sitzes,U-Form,de,DE
+27,Kernspezifikationen,L1180,Shape of Seat,06,Form des Sitzes,D-Form,de,DE
+27,Kernspezifikationen,L1180,Shape of Seat,07,Form des Sitzes,V-Form,de,DE
+28,Kernspezifikationen,L1183,Bowl shape,01,Form der WC Keramik,Verlängert,de,DE
+28,Kernspezifikationen,L1183,Bowl shape,02,Form der WC Keramik,Teilweise verlängert,de,DE
+28,Kernspezifikationen,L1183,Bowl shape,03,Form der WC Keramik,Runde Front,de,DE
+28,Kernspezifikationen,L1183,Bowl shape,04,Form der WC Keramik,Eckig,de,DE
+28,Kernspezifikationen,L1183,Bowl shape,05,Form der WC Keramik,Soft Square,de,DE
+28,Kernspezifikationen,L1183,Bowl shape,06,Form der WC Keramik,U-Form,de,DE
+29,Kernspezifikationen,L1248,Tub Interior Bath Shape,01,Innere Wannenform,Oval,de,DE
+29,Kernspezifikationen,L1248,Tub Interior Bath Shape,02,Innere Wannenform,Rechteckig,de,DE
+29,Kernspezifikationen,L1248,Tub Interior Bath Shape,03,Innere Wannenform,Rund,de,DE
+29,Kernspezifikationen,L1248,Tub Interior Bath Shape,04,Innere Wannenform,Dreieck,de,DE
+29,Kernspezifikationen,L1248,Tub Interior Bath Shape,05,Innere Wannenform,Andere,de,DE
+30,Kernspezifikationen,L1247,Tub Exterior Bath Shape,01,Äußere Wannenform,Oval,de,DE
+30,Kernspezifikationen,L1247,Tub Exterior Bath Shape,02,Äußere Wannenform,Rechteckig,de,DE
+30,Kernspezifikationen,L1247,Tub Exterior Bath Shape,03,Äußere Wannenform,Rund,de,DE
+30,Kernspezifikationen,L1247,Tub Exterior Bath Shape,04,Äußere Wannenform,Dreieck,de,DE
+30,Kernspezifikationen,L1247,Tub Exterior Bath Shape,05,Äußere Wannenform,Andere,de,DE
+31,Abmessungen ,L1044,Diameter Handshower (mm),,Durchmesser Handbrause (mm) ,,de,DE
+32,Abmessungen ,L1045,Diameter Handshower (Inch),,Durchmesser Handbrause (Zoll) ,,de,DE
+33,Abmessungen ,L1102,Diameter Headshower (mm),,Durchmesser Kopfbrause (mm) ,,de,DE
+34,Abmessungen ,L1103,Diameter Headshower (Inch),,Durchmesser Kopfbrause (Zoll) ,,de,DE
+35,Abmessungen ,L1049,Length of Shower Hose (mm),,Länge des Brauseschlauchs (mm) ,,de,DE
+36,Abmessungen ,L1050,Length of Shower Hose (Inch),,Länge Brauseschlauch (Zoll),,de,DE
+37,Abmessungen ,L1051,Length of Shower Rail (mm),,Länge Brausestange (mm),,de,DE
+38,Abmessungen ,L1052,Length of Shower Rail (Inch),,Länge der Brausestange (Zoll),,de,DE
+39,Abmessungen ,L1107,length of shower arm (mm),,Länge des Brausearms (mm),,de,DE
+40,Abmessungen ,L1108,Length of Shower Arm (inch),,Länge des Duscharms (Zoll),,de,DE
+41,Abmessungen ,L1008,Centre Distance,"8""",Stichmaß,"8""",de,DE
+41,Abmessungen ,L1008,Centre Distance,"4""",Stichmaß,"4""",de,DE
+41,Abmessungen ,L1008,Centre Distance,75 MM,Stichmaß,75 mm,de,DE
+41,Abmessungen ,L1008,Centre Distance,110 MM,Stichmaß,110 mm,de,DE
+41,Abmessungen ,L1008,Centre Distance,150 MM,Stichmaß,150 mm,de,DE
+41,Abmessungen ,L1008,Centre Distance,200 MM,Stichmaß,200 mm,de,DE
+41,Abmessungen ,L1008,Centre Distance,40 MM,Stichmaß,40 mm,de,DE
+41,Abmessungen ,L1008,Centre Distance,120 MM,Stichmaß,120 mm,de,DE
+41,Abmessungen ,L1008,Centre Distance,140 MM,Stichmaß,140 mm,de,DE
+41,Abmessungen ,L1008,Centre Distance,153 MM,Stichmaß,153 mm,de,DE
+41,Abmessungen ,L1008,Centre Distance,160 MM,Stichmaß,160 mm,de,DE
+42,Abmessungen ,L1328,Height of Shower System (Inch),,Höhe des Duschsystems (Zoll),,de,DE
+43,Abmessungen ,L1330,Height of Shower System (mm),,Höhe des Duschsystems (mm),,de,DE
+44,Abmessungen ,L1361,Diameter Body Spray (mm),,Höhe des Duschsystems (Zoll),,de,DE
+45,Abmessungen ,L1362,Diameter Body Spray (Inch),,Höhe des Duschsystems (mm),,de,DE
+46,Abmessungen ,L1066,Nominal Size Length (mm),,Nenngröße Länge (mm),,de,DE
+47,Abmessungen ,L1067,Nominal Size Length (Inch),,Nenngröße Länge (Zoll),,de,DE
+48,Abmessungen ,L1149,diameter (mm),,Durchmesser (mm),,de,DE
+49,Abmessungen ,L1243,diameter (inch),,Durchmesser (Zoll) ,,de,DE
+50,Abmessungen ,L1148,width (mm),,Breite (mm),,de,DE
+51,Abmessungen ,L1242,width (inch),,Breite (Zoll),,de,DE
+52,Abmessungen ,L1147,length (mm),,Länge (mm) ,,de,DE
+53,Abmessungen ,L1241,length (inch),,Länge (Zoll) ,,de,DE
+54,Abmessungen ,L1170,depth (mm),,Tiefe (mm),,de,DE
+55,Abmessungen ,L1068,Nominal Size Width (mm),,Nenngröße Breite (mm),,de,DE
+56,Abmessungen ,L1069,Nominal Size Width (Inch),,Nenngröße Breite (Zoll),,de,DE
+57,Abmessungen ,L1064,nominal size height (mm),,Nenngröße Höhe (mm),,de,DE
+58,Abmessungen ,L1065,nominal size height (inch),,Nenngröße Höhe (Zoll),,de,DE
+59,Abmessungen ,L1137,bowl height,01,Höhe WC,Behindertengerecht,de,DE
+59,Abmessungen ,L1137,bowl height,02,Höhe WC,Standardhöhe,de,DE
+60,Abmessungen ,L1308,Nominal Size (LxW) mm,,Nenngröße Länge x Breite (mm),,de,DE
+61,Abmessungen ,L1309,"Nominal Size (LxW or WxH) """,,Nenngröße Länge x Breite (Zoll),,de,DE
+62,Abmessungen ,L3082,Height w.closed lever BAS/SINK,,Höhe mit geschlossenem Hebel (mm),,de,DE
+63,Abmessungen ,L1112,size of filter (filtration shw,,Filtergröße (Zoll),,de,DE
+64,Abmessungen ,L1006,Size of Lavatory/Sink Faucet,XS,Armaturengröße,XS,de,DE
+64,Abmessungen ,L1006,Size of Lavatory/Sink Faucet,S,Armaturengröße,S ,de,DE
+64,Abmessungen ,L1006,Size of Lavatory/Sink Faucet,M,Armaturengröße,M,de,DE
+64,Abmessungen ,L1006,Size of Lavatory/Sink Faucet,L,Armaturengröße,L,de,DE
+64,Abmessungen ,L1006,Size of Lavatory/Sink Faucet,XL,Armaturengröße,XL ,de,DE
+64,Abmessungen ,L1006,Size of Lavatory/Sink Faucet,XXL,Armaturengröße,XXL ,de,DE
+64,Abmessungen ,L1006,Size of Lavatory/Sink Faucet,HIGH,Armaturengröße,Hoher Auslauf,de,DE
+64,Abmessungen ,L1006,Size of Lavatory/Sink Faucet,MEDIUM,Armaturengröße,Mittelhoher Auslauf,de,DE
+64,Abmessungen ,L1006,Size of Lavatory/Sink Faucet,LOW,Armaturengröße,Niedriger Auslauf,de,DE
+65,Abmessungen ,L1003,Size of Waste Set,"1""",Größe der Ablaufgarnitur,"1""",de,DE
+65,Abmessungen ,L1003,Size of Waste Set,"1 1/4""",Größe der Ablaufgarnitur,"1 1/4""",de,DE
+65,Abmessungen ,L1003,Size of Waste Set,"1 1/2""",Größe der Ablaufgarnitur,"1 1/2""",de,DE
+65,Abmessungen ,L1003,Size of Waste Set,"3 1/2""",Größe der Ablaufgarnitur,"3 1/2""",de,DE
+66,Abmessungen ,L1100,Size of Cartridge,,Größe Kartusche/ Oberteil (mm oder Zoll),,de,DE
+67,Abmessungen ,L1079,Size of Connection,,Anschlussgröße,,de,DE
+67,Abmessungen ,L1079,Size of Connection,XXX,Anschlussgröße,XXX,de,DE
+67,Abmessungen ,L1079,Size of Connection,SLIP ON,Anschlussgröße,Aufsteckbar,de,DE
+68,Abmessungen ,L1136,rough in size (mm),,Anschlussgröße (mm),,de,DE
+69,Abmessungen ,L1169,height Installation Syst (mm),,Höhe Installationssystem (mm),,de,DE
+70,Abmessungen ,L3059,inside diameter (GROHE),,Innendurchmesser (mm),,de,DE
+71,Abmessungen ,L1347,Width of Frame,1,Rahmenbreite,Schmal,de,DE
+71,Abmessungen ,L1347,Width of Frame,3,Rahmenbreite,Breit,de,DE
+71,Abmessungen ,L1347,Width of Frame,2,Rahmenbreite,Standard,de,DE
+72,Abmessungen ,L1226,size of THM cartridge,,Größe Thermoelement (Zoll),,de,DE
+73,Abmessungen ,L1095,size of outlet connection,,Größe Abgang (Zoll),,de,DE
+73,Abmessungen ,L1095,size of outlet connection,SLIP ON,Größe Abgang (Zoll),Aufsteckbar,de,DE
+74,Abmessungen ,L1070,nominal size (depth) in mm,,Nenngröße Tiefe (mm),,de,DE
+75,Abmessungen ,L1249,Tub Internal Depth (mm),,Innentiefe Wanne (mm),,de,DE
+76,Abmessungen ,L1071,Tub Internal Depth (Inch),,Innentiefe Wanne (Zoll),,de,DE
+77,Abmessungen ,L1092,treshold height (mm),,Schwellenhöhe (mm),,de,DE
+78,Abmessungen ,L1093,treshold height (Inch),,Schwellenhöhe (Zoll),,de,DE
+79,Abmessungen ,L1250,Tub Overflow Height,,Überlaufhöhe Wanne (mm),,de,DE
+80,Abmessungen ,L1267,Overflow Opening Size,,Größe Überlauf (mm),,de,DE
+81,Abmessungen ,L1246,Tub Drain Opening Size (mm),,Größe Wannenablauf (mm),,de,DE
+82,Abmessungen ,L1204,Size of Cabinet (cm),,Schrankbreite (cm),,de,DE
+83,Abmessungen ,L1020,swivel radius,90,Schwenkradius,90,de,DE
+83,Abmessungen ,L1020,swivel radius,0+150,Schwenkradius,0+150,de,DE
+83,Abmessungen ,L1020,swivel radius,0+150+360,Schwenkradius,0+150+360,de,DE
+83,Abmessungen ,L1020,swivel radius,120,Schwenkradius,120,de,DE
+83,Abmessungen ,L1020,swivel radius,140,Schwenkradius,140,de,DE
+83,Abmessungen ,L1020,swivel radius,150,Schwenkradius,150,de,DE
+83,Abmessungen ,L1020,swivel radius,180,Schwenkradius,180,de,DE
+83,Abmessungen ,L1020,swivel radius,360,Schwenkradius,360,de,DE
+83,Abmessungen ,L1020,swivel radius,XX,Schwenkradius,XX,de,DE
+84,Abmessungen ,L1140,volume (ml),,Volumen/Inhalt (ml),,de,DE
+85,Abmessungen ,L1288,horizontal rough in dimension,,Horizontales Einbaumaß,,de,DE
+86,Abmessungen ,L1287,vertical rough in dimension,,Vertikales Einbaumaß,,de,DE
+87,Zusätzlich,L1035,temperature stop in °C,,Temperaturbegrenzung (°C),,de,DE
+88,Zusätzlich,L1036,temperature stop in °F,,Temperaturbegrenzung (°F),,de,DE
+89,Zusätzlich,L1011,type of (S-)Unions,Y1,Art der (S-)Anschlüsse,Mit S-Anschlüssen,de,DE
+89,Zusätzlich,L1011,type of (S-)Unions,Y2,Art der (S-)Anschlüsse,Mit absperrbaren S-Anschlüssen,de,DE
+89,Zusätzlich,L1011,type of (S-)Unions,Y3,Art der (S-)Anschlüsse,Standanschluss,de,DE
+89,Zusätzlich,L1011,type of (S-)Unions,N,Art der (S-)Anschlüsse,Ohne S-Anschlüsse,de,DE
+90,Zusätzlich,L1230,kind of diverter,01,Art der Umstellung,Automatisch,de,DE
+90,Zusätzlich,L1230,kind of diverter,02,Art der Umstellung,Manuell,de,DE
+90,Zusätzlich,L1230,kind of diverter,03,Art der Umstellung,Aquadimmer (An/Aus+Umsteller),de,DE
+91,Zusätzlich,L1058,with rough in included,Y,Rohbauset inklusive,Ja,de,DE
+91,Zusätzlich,L1058,with rough in included,N,Rohbauset inklusive,Nein,de,DE
+92,Zusätzlich,L1076,number of outlets,1,Anzahl Abgänge,1,de,DE
+92,Zusätzlich,L1076,number of outlets,3,Anzahl Abgänge,3,de,DE
+92,Zusätzlich,L1076,number of outlets,2,Anzahl Abgänge,2,de,DE
+92,Zusätzlich,L1076,number of outlets,4,Anzahl Abgänge,4,de,DE
+92,Zusätzlich,L1076,number of outlets,5,Anzahl Abgänge,5,de,DE
+92,Zusätzlich,L1076,number of outlets,6,Anzahl Abgänge,6,de,DE
+93,Zusätzlich,L1090,Drain Location,04,Position des Ablaufs,Umkehrbar,de,DE
+93,Zusätzlich,L1090,Drain Location,01,Position des Ablaufs,Ablauf links,de,DE
+93,Zusätzlich,L1090,Drain Location,02,Position des Ablaufs,Ablauf rechts,de,DE
+93,Zusätzlich,L1090,Drain Location,03,Position des Ablaufs,Mittiger Ablauf,de,DE
+94,Zusätzlich,L1014,for Use w.Open Water Heater,N,Für offene Warmwasserbereiter,Nein,de,DE
+94,Zusätzlich,L1014,for Use w.Open Water Heater,Y,Für offene Warmwasserbereiter,Ja,de,DE
+95,Zusätzlich,L1135,trapway / type of trap,01,Ablaufart,P-Siphon,de,DE
+95,Zusätzlich,L1135,trapway / type of trap,02,Ablaufart,S-Siphon,de,DE
+95,Zusätzlich,L1135,trapway / type of trap,03,Ablaufart,P + S-Siphon,de,DE
+95,Zusätzlich,L1135,trapway / type of trap,04,Ablaufart,Ohne Siphon,de,DE
+96,Zusätzlich,L1370,Sink Drain,RV,Ablauf Küchenspüle,Umkehrbar,de,DE
+96,Zusätzlich,L1370,Sink Drain,LH,Ablauf Küchenspüle,Links,de,DE
+96,Zusätzlich,L1370,Sink Drain,RH,Ablauf Küchenspüle,Rechts,de,DE
+96,Zusätzlich,L1370,Sink Drain,XX,Ablauf Küchenspüle,Ohne Ablaufeinsatz,de,DE
+97,Zusätzlich,L1201,Sink Waste,01,Ablauf Spüle,"Gittereinsatz, kein Stopf/Sieb",de,DE
+97,Zusätzlich,L1201,Sink Waste,02,Ablauf Spüle,Mit Siebeinsatz,de,DE
+97,Zusätzlich,L1201,Sink Waste,03,Ablauf Spüle,Mit Müllzerkleinerer,de,DE
+97,Zusätzlich,L1201,Sink Waste,04,Ablauf Spüle,Mit Stopfen,de,DE
+97,Zusätzlich,L1201,Sink Waste,05,Ablauf Spüle,Ohne Ablaufeinsatz,de,DE
+98,Zusätzlich,L1200,number of bowls,1,Anzahl der Becken,1,de,DE
+98,Zusätzlich,L1200,number of bowls,"1,5",Anzahl der Becken,1.5,de,DE
+98,Zusätzlich,L1200,number of bowls,2,Anzahl der Becken,2,de,DE
+98,Zusätzlich,L1200,number of bowls,3,Anzahl der Becken,3,de,DE
+99,Zusätzlich,L1203,position of bigger bowl,LH,Position des größeren Beckens,Links,de,DE
+99,Zusätzlich,L1203,position of bigger bowl,RH,Position des größeren Beckens,Rechts,de,DE
+99,Zusätzlich,L1203,position of bigger bowl,RV,Position des größeren Beckens,Umkehrbar,de,DE
+100,Zusätzlich,L1017,type of sprays (Kitchen spray),01,Strahlart der Spülbrause,Mousseur,de,DE
+100,Zusätzlich,L1017,type of sprays (Kitchen spray),02,Strahlart der Spülbrause,Mousseur + Brausestrahl,de,DE
+100,Zusätzlich,L1017,type of sprays (Kitchen spray),03,Strahlart der Spülbrause,Mousseur + Brausestrahl + Blade,de,DE
+100,Zusätzlich,L1017,type of sprays (Kitchen spray),04,Strahlart der Spülbrause,Mousseur + Brausestrahl + Blade + Nebel,de,DE
+100,Zusätzlich,L1017,type of sprays (Kitchen spray),05,Strahlart der Spülbrause,Laminarstrahl,de,DE
+100,Zusätzlich,L1017,type of sprays (Kitchen spray),06,Strahlart der Spülbrause,Laminarstrahl + Brausestrahl,de,DE
+100,Zusätzlich,L1017,type of sprays (Kitchen spray),07,Strahlart der Spülbrause,Laminarstrahl + Brausestrahl + Blade,de,DE
+100,Zusätzlich,L1017,type of sprays (Kitchen spray),08,Strahlart der Spülbrause,Mousseur + Blade + Nebel,de,DE
+101,Zusätzlich,L1016,Kind of Spray Head,08,Art der Spülbrause,Nicht ausziehbar,de,DE
+101,Zusätzlich,L1016,Kind of Spray Head,01,Art der Spülbrause,Pull-down Perlator (1 Strahl),de,DE
+101,Zusätzlich,L1016,Kind of Spray Head,02,Art der Spülbrause,Pull-out Perlator (1 Strahl),de,DE
+101,Zusätzlich,L1016,Kind of Spray Head,03,Art der Spülbrause,Pull-down Dualstrahl,de,DE
+101,Zusätzlich,L1016,Kind of Spray Head,10,Art der Spülbrause,Pull-down Dualstrahl mit Boost,de,DE
+101,Zusätzlich,L1016,Kind of Spray Head,04,Art der Spülbrause,Pull-out Dualbrause,de,DE
+101,Zusätzlich,L1016,Kind of Spray Head,05,Art der Spülbrause,Pull-down 3-fach Strahl,de,DE
+101,Zusätzlich,L1016,Kind of Spray Head,11,Art der Spülbrause,Pull-down 3-fach Strahl mit Boost,de,DE
+101,Zusätzlich,L1016,Kind of Spray Head,06,Art der Spülbrause,Pull-down 4-fach Strahl,de,DE
+101,Zusätzlich,L1016,Kind of Spray Head,07,Art der Spülbrause,Seitenbrause,de,DE
+101,Zusätzlich,L1016,Kind of Spray Head,09,Art der Spülbrause,Profi Spray,de,DE
+102,Zusätzlich,L1235,mixed water,Y,Gemischtes Wasser,Ja,de,DE
+102,Zusätzlich,L1235,mixed water,N,Gemischtes Wasser,Nein,de,DE
+103,Zusätzlich,L1234,boiling water,Y,Kochendes Wasser,Ja ,de,DE
+103,Zusätzlich,L1234,boiling water,N,Kochendes Wasser,Nein,de,DE
+104,Zusätzlich,L1233,cooled water,Y,Gekühltes Wasser,Ja,de,DE
+104,Zusätzlich,L1233,cooled water,N,Gekühltes Wasser,Nein,de,DE
+105,Zusätzlich,L1232,sparkling water,Y,Sprudelndes Wasser,Ja,de,DE
+105,Zusätzlich,L1232,sparkling water,N,Sprudelndes Wasser,Nein,de,DE
+106,Zusätzlich,L1231,filtered water,Y,Gefiltertes Wasser,Ja,de,DE
+106,Zusätzlich,L1231,filtered water,N,Gefiltertes Wasser,Nein,de,DE
+107,Zusätzlich,L1214,filter capacity,,Filterkapazität,,de,DE
+108,Zusätzlich,L1217,Size of Boiler,X,Größe des Boilers,Ohne Boiler,de,DE
+108,Zusätzlich,L1217,Size of Boiler,S,Größe des Boilers,S-size,de,DE
+108,Zusätzlich,L1217,Size of Boiler,M,Größe des Boilers,M-size,de,DE
+108,Zusätzlich,L1217,Size of Boiler,L,Größe des Boilers,L-size,de,DE
+109,Zusätzlich,L1109,Type of Filter,11,Filtertyp,Umkehrosmose-Chinafilter,de,DE
+109,Zusätzlich,L1109,Type of Filter,XX,Filtertyp,Kein Filter enthalten,de,DE
+109,Zusätzlich,L1109,Type of Filter,01,Filtertyp,Aktivkohlefilter,de,DE
+109,Zusätzlich,L1109,Type of Filter,03,Filtertyp,KDF,de,DE
+109,Zusätzlich,L1109,Type of Filter,04,Filtertyp,Mg + Zn-Filter,de,DE
+109,Zusätzlich,L1109,Type of Filter,05,Filtertyp,Ultrasafe-Filter,de,DE
+109,Zusätzlich,L1109,Type of Filter,06,Filtertyp,RO Filter,de,DE
+109,Zusätzlich,L1109,Type of Filter,07,Filtertyp,RO+ Filter,de,DE
+109,Zusätzlich,L1109,Type of Filter,08,Filtertyp,S-Size Filter,de,DE
+109,Zusätzlich,L1109,Type of Filter,09,Filtertyp,M-Size Filter,de,DE
+109,Zusätzlich,L1109,Type of Filter,10,Filtertyp,L-Size Filter,de,DE
+110,Zusätzlich,L1113,filter life,3,Lebensdauer Filter,3 Monate,de,DE
+110,Zusätzlich,L1113,filter life,6,Lebensdauer Filter,6 Monate,de,DE
+111,Zusätzlich,L1215,Content CO2 Bottle,0,Inhalt CO2-Flasche,0 kg (leer),de,DE
+111,Zusätzlich,L1215,Content CO2 Bottle,"1,5KG",Inhalt CO2-Flasche,1.5 kg,de,DE
+111,Zusätzlich,L1215,Content CO2 Bottle,425 G,Inhalt CO2-Flasche,425 g,de,DE
+111,Zusätzlich,L1215,Content CO2 Bottle,360 G,Inhalt CO2-Flasche,360 g,de,DE
+111,Zusätzlich,L1215,Content CO2 Bottle,2 KG,Inhalt CO2-Flasche,2 kg,de,DE
+112,Zusätzlich,L1216,Type of CO2 Bottle,1,Art der CO2-Flasche,Starter,de,DE
+112,Zusätzlich,L1216,Type of CO2 Bottle,2,Art der CO2-Flasche,Refill,de,DE
+112,Zusätzlich,L1216,Type of CO2 Bottle,3,Art der CO2-Flasche,Leere Flasche,de,DE
+113,Zusätzlich,L1220,Volume Waste Bin,2X8L,Volumen Abfallbehälter,2x8 L,de,DE
+113,Zusätzlich,L1220,Volume Waste Bin,2X15L,Volumen Abfallbehälter,2x15 L,de,DE
+113,Zusätzlich,L1220,Volume Waste Bin,2X8+11L,Volumen Abfallbehälter,2x8 L + 11 L,de,DE
+113,Zusätzlich,L1220,Volume Waste Bin,29L,Volumen Abfallbehälter,29 L,de,DE
+113,Zusätzlich,L1220,Volume Waste Bin,29+11L,Volumen Abfallbehälter,29 + 11 L,de,DE
+114,Zusätzlich,L1239,automatic cleaning,Y,Automatische Reinigung,Ja,de,DE
+114,Zusätzlich,L1239,automatic cleaning,N,Automatische Reinigung,Nein,de,DE
+115,Zusätzlich,L1238,Bluetooth,Y,Bluetooth,Ja,de,DE
+115,Zusätzlich,L1238,Bluetooth,N,Bluetooth,Nein,de,DE
+116,Zusätzlich,L1237,Wi-Fi,Y,Wi-Fi,Ja,de,DE
+116,Zusätzlich,L1237,Wi-Fi,N,Wi-Fi,Nein,de,DE
+117,Zusätzlich,L1159,Type of Installation System,2,Art des Installationssystems,2-in-1,de,DE
+117,Zusätzlich,L1159,Type of Installation System,3,Art des Installationssystems,3-in-1,de,DE
+117,Zusätzlich,L1159,Type of Installation System,4,Art des Installationssystems,4-in-1,de,DE
+117,Zusätzlich,L1159,Type of Installation System,5,Art des Installationssystems,5-in-1,de,DE
+117,Zusätzlich,L1159,Type of Installation System,6,Art des Installationssystems,6-in-1,de,DE
+118,Zusätzlich,L1280,Type of Access,1,Art des Zugangs,Hinten,de,DE
+118,Zusätzlich,L1280,Type of Access,2,Art des Zugangs,Vorne,de,DE
+119,Zusätzlich,L1132,Flush Type,06,Spülart,Stadium Modus,de,DE
+119,Zusätzlich,L1132,Flush Type,01,Spülart,Single Flush,de,DE
+119,Zusätzlich,L1132,Flush Type,02,Spülart,Dual Flush,de,DE
+119,Zusätzlich,L1132,Flush Type,05,Spülart,Start/Stopp,de,DE
+120,Zusätzlich,L1284,flush valve operation,1,Bedienung,Manuell,de,DE
+120,Zusätzlich,L1284,flush valve operation,3,Bedienung,Elektronisch,de,DE
+120,Zusätzlich,L1284,flush valve operation,2,Bedienung,Pneumatisch,de,DE
+121,Zusätzlich,L1157,Tank/Flush Valve Operator,01,Betätigung Spülkasten/Spülventil,Drucktaste,de,DE
+121,Zusätzlich,L1157,Tank/Flush Valve Operator,02,Betätigung Spülkasten/Spülventil,Zugknopf,de,DE
+121,Zusätzlich,L1157,Tank/Flush Valve Operator,03,Betätigung Spülkasten/Spülventil,Griff/Hebel,de,DE
+121,Zusätzlich,L1157,Tank/Flush Valve Operator,04,Betätigung Spülkasten/Spülventil,Berührungslos,de,DE
+121,Zusätzlich,L1157,Tank/Flush Valve Operator,05,Betätigung Spülkasten/Spülventil,Andere,de,DE
+121,Zusätzlich,L1157,Tank/Flush Valve Operator,07,Betätigung Spülkasten/Spülventil,Betätigungshebel links,de,DE
+121,Zusätzlich,L1157,Tank/Flush Valve Operator,08,Betätigung Spülkasten/Spülventil,Fußbetätigung,de,DE
+121,Zusätzlich,L1157,Tank/Flush Valve Operator,09,Betätigung Spülkasten/Spülventil,Kette,de,DE
+121,Zusätzlich,L1157,Tank/Flush Valve Operator,10,Betätigung Spülkasten/Spülventil,Touch (elektron. Betätigung),de,DE
+121,Zusätzlich,L1157,Tank/Flush Valve Operator,11,Betätigung Spülkasten/Spülventil,Fernbedienung,de,DE
+121,Zusätzlich,L1157,Tank/Flush Valve Operator,12,Betätigung Spülkasten/Spülventil,"Betätigungsplatte, manuell",de,DE
+121,Zusätzlich,L1157,Tank/Flush Valve Operator,13,Betätigung Spülkasten/Spülventil,Seitlicher Hebel rechts,de,DE
+121,Zusätzlich,L1157,Tank/Flush Valve Operator,14,Betätigung Spülkasten/Spülventil,Seitlicher Hebel links,de,DE
+121,Zusätzlich,L1157,Tank/Flush Valve Operator,06,Betätigung Spülkasten/Spülventil,Betätigungshebel rechts,de,DE
+122,Zusätzlich,L1182,Outlet Location,3,Position Ablauf,Oben,de,DE
+122,Zusätzlich,L1182,Outlet Location,1,Position Ablauf,Horizontal/Rückseitig (Wand),de,DE
+122,Zusätzlich,L1182,Outlet Location,2,Position Ablauf,Vertikal (Boden),de,DE
+123,Zusätzlich,L1355,Spud Location/Flush Pipe Entry,3,Spülrohr Einlass,Oben & hinten,de,DE
+123,Zusätzlich,L1355,Spud Location/Flush Pipe Entry,1,Spülrohr Einlass,Oben,de,DE
+123,Zusätzlich,L1355,Spud Location/Flush Pipe Entry,2,Spülrohr Einlass,Hinten,de,DE
+124,Zusätzlich,L1158,Water Inlet,05,Wasser Einlass,Hinten/Oben/Seitlich,de,DE
+124,Zusätzlich,L1158,Water Inlet,06,Wasser Einlass,Hinten/Oben,de,DE
+124,Zusätzlich,L1158,Water Inlet,07,Wasser Einlass,Oben/Seitlich,de,DE
+124,Zusätzlich,L1158,Water Inlet,01,Wasser Einlass,Hinten,de,DE
+124,Zusätzlich,L1158,Water Inlet,02,Wasser Einlass,Unten,de,DE
+124,Zusätzlich,L1158,Water Inlet,03,Wasser Einlass,Seitlich,de,DE
+124,Zusätzlich,L1158,Water Inlet,04,Wasser Einlass,Oben,de,DE
+125,Zusätzlich,L1366,Left/Right Drain,L,Abfluss links/rechts,Ablauf links,de,DE
+125,Zusätzlich,L1366,Left/Right Drain,R,Abfluss links/rechts,Ablauf rechts,de,DE
+126,Zusätzlich,L3004,Size of Plate (Grohe),01,Größe Betätigungsplatte,Standard,de,DE
+126,Zusätzlich,L3004,Size of Plate (Grohe),02,Größe Betätigungsplatte,Klein,de,DE
+127,Zusätzlich,L1359,Direction of Actuation Plate,3,Ausrichtung Betätigungsplatte,Horizontal oder vertikal,de,DE
+127,Zusätzlich,L1359,Direction of Actuation Plate,1,Ausrichtung Betätigungsplatte,Nur horizontal,de,DE
+127,Zusätzlich,L1359,Direction of Actuation Plate,2,Ausrichtung Betätigungsplatte,Nur vertikal,de,DE
+128,Zusätzlich,L1142,Position Flush Actuation,1,Position der Betätigungsplatte ,Vorne,de,DE
+128,Zusätzlich,L1142,Position Flush Actuation,2,Position der Betätigungsplatte ,Oben,de,DE
+128,Zusätzlich,L1142,Position Flush Actuation,3,Position der Betätigungsplatte ,Vorne oder oben,de,DE
+129,Zusätzlich,L1281,type of battery,01,Batterietyp,AA - Alkaline,de,DE
+129,Zusätzlich,L1281,type of battery,02,Batterietyp,AAA – Alkaline,de,DE
+129,Zusätzlich,L1281,type of battery,03,Batterietyp,CRP-2/E,de,DE
+129,Zusätzlich,L1281,type of battery,04,Batterietyp,PWRX (Langzeit),de,DE
+129,Zusätzlich,L1281,type of battery,05,Batterietyp,Lithium,de,DE
+130,Zusätzlich,L1282,Batteries included,Y,inklusive Batterien,Ja ,de,DE
+130,Zusätzlich,L1282,Batteries included,N,inklusive Batterien,Nein,de,DE
+130,Zusätzlich,L1282,Batteries included,X,inklusive Batterien,n/a,de,DE
+131,Zusätzlich,L1283,Number of Batteries Needed,1,Anzahl der benötigten Batterien,1,de,DE
+131,Zusätzlich,L1283,Number of Batteries Needed,3,Anzahl der benötigten Batterien,3,de,DE
+131,Zusätzlich,L1283,Number of Batteries Needed,2,Anzahl der benötigten Batterien,2,de,DE
+131,Zusätzlich,L1283,Number of Batteries Needed,4,Anzahl der benötigten Batterien,4,de,DE
+132,Zusätzlich,L1039,Power Supply,03,Versorgungsspannung,AC/DC,de,DE
+132,Zusätzlich,L1039,Power Supply,04,Versorgungsspannung,AC/DC/Hydro,de,DE
+132,Zusätzlich,L1039,Power Supply,01,Versorgungsspannung,AC,de,DE
+132,Zusätzlich,L1039,Power Supply,02,Versorgungsspannung,DC,de,DE
+132,Zusätzlich,L1039,Power Supply,05,Versorgungsspannung,Hydro Generator,de,DE
+132,Zusätzlich,L1039,Power Supply,06,Versorgungsspannung,PWRX,de,DE
+132,Zusätzlich,L1039,Power Supply,07,Versorgungsspannung,BASE,de,DE

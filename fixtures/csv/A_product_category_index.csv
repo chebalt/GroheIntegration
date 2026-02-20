@@ -1,0 +1,215 @@
+ID,Language,Market,Name,ParentId,Slug,Image,Priority,MenuVisibility,Type
+100000,de,DE,Bad,,Bad,,1,TRUE,Link
+100001,de,DE,Küche,,Küche,,2,TRUE,Link
+100002,de,DE,GROHE SPA,,GROHE_SPA,,3,TRUE,Link
+200001,de,DE,Duschbereich,100000,Duschbereich,https://cdn.cloud.grohe.com/prod/20/26/26558000/480/26558000_1_1.jpg,1,TRUE,Link
+200032,de,DE,Wannenbereich,100000,Wannenbereich,https://cdn.cloud.grohe.com/prod/30/39/39729000/480/39729000_1_1.jpg,2,TRUE,Link
+200052,de,DE,Waschtischbereich,100000,Waschtischbereich,https://cdn.cloud.grohe.com/prod/10/10/102417SH00/1500/102417SH00.jpg,3,TRUE,Link
+200070,de,DE,Toilettenbereich,100000,Toilettenbereich,https://cdn.cloud.grohe.com/prod/10/10/102510SH00/480/102510SH00_1_1.jpg,4,TRUE,Link
+200097,de,DE,Besonderheiten für öffentliche Bereiche,100000,Besonderheiten_für_öffentliche_Bereiche,https://cdn.cloud.grohe.com/prod/30/36/36327002/1500/36327002.jpg,5,TRUE,Link
+200150,de,DE,Küchenarmatur,100001,Küchenarmatur,https://cdn.cloud.grohe.com/prod/30/32/32168000/480/32168000_1_1.jpg,1,TRUE,Link
+200159,de,DE,Wassersystem,100001,Wassersystem,https://cdn.cloud.grohe.com/prod/30/30/30581000/1500/30581000.jpg,2,TRUE,Link
+200170,de,DE,Wassersprudler,100001,Wassersprudler,https://cdn.cloud.grohe.com/prod/30/31/31941K00/480/31941K00_1_1.jpg,3,TRUE,Link
+200173,de,DE,Küchenspüle,100001,Küchenspüle,https://cdn.cloud.grohe.com/prod/30/31/31574SD0/480/31574SD0_1_1.jpg,4,TRUE,Link
+200177,de,DE,Küchenaccessoires,100001,Küchenaccessoires,https://cdn.cloud.grohe.com/prod/40/40/ZZF_40535000_001_01/1500/ZZF_40535000_001_01.jpg,5,TRUE,Link
+200184,de,DE,Für den gewerblichen Gebrauch,100001,Für_den_gewerblichen_Gebrauch,https://cdn.cloud.grohe.com/prod/30/31/31379000/1500/31379000.jpg,6,TRUE,Link
+200200,de,DE,Luxuriöser Duschbereich,100002,Luxuriöser_Duschbereich,https://cdn.cloud.grohe.com/prod/10/10/1009620000/480/1009620000.jpg,1,TRUE,Link
+200201,de,DE,Luxuriöser Wannenbereich,100002,Luxuriöser_Wannenbereich,https://cdn.cloud.grohe.com/prod/30/32/32146001/480/32146001_1_1.jpg,2,TRUE,Link
+200202,de,DE,Luxuriöser Waschtischbereich,100002,Luxuriöser_Waschtischbereich,https://cdn.cloud.grohe.com/prod/30/39/3996600H/480/3996600H_1_1.jpg,3,TRUE,Link
+200203,de,DE,Luxuriöse Toilette,100002,Luxuriöse_Toilette,https://cdn.cloud.grohe.com/prod/10/10/1046440000/480/1046440000_1_1.jpg,4,TRUE,Link
+200204,de,DE,Luxuriöses Zubehör,100002,Luxuriöses_Zubehör,https://cdn.cloud.grohe.com/prod/40/40/40886000/480/40886000_1_1.jpg,5,TRUE,Link
+300001,de,DE,Komplette Duschlösung,200001,Komplette_Duschlösung,https://cdn.cloud.grohe.com/prod/20/26/26075001/480/26075001_1_1.jpg,1,TRUE,Link
+300005,de,DE,Einzelne Duschprodukte,200001,Einzelne_Duschprodukte,https://cdn.cloud.grohe.com/prod/20/26/26558000/480/26558000_1_1.jpg,2,TRUE,Link
+300025,de,DE,Für die Installation,200001,Für_die_Installation,https://cdn.cloud.grohe.com/prod/30/35/35604000/480/35604000_1_1.jpg,3,TRUE,Link
+300027,de,DE,Zubehör & Verbrauchsmaterial,200001,Zubehör_&_Verbrauchsmaterial,https://cdn.cloud.grohe.com/prod/20/27/27523001/480/27523001_1_1.jpg,4,TRUE,Link
+300032,de,DE,Badewanne,200032,Badewanne,https://cdn.cloud.grohe.com/prod/30/39/39617000/480/39617000_1_1.jpg,1,TRUE,Link
+300035,de,DE,Duschsystem für Badewanne,200032,Duschsystem_für_Badewanne,https://cdn.cloud.grohe.com/prod/30/34/34874000/480/34874000_1_1.jpg,2,TRUE,Link
+300036,de,DE,Duschkomponenten & Armaturen,200032,Duschkomponenten_&_Armaturen,https://cdn.cloud.grohe.com/prod/20/26/26564000/480/26564000_1_1.jpg,3,TRUE,Link
+300050,de,DE,Für die Installation,200032,Für_die_Installation,https://cdn.cloud.grohe.com/prod/10/19/19952000/480/19952000_1_1.jpg,4,TRUE,Link
+300052,de,DE,Waschtisch,200052,Waschtisch,https://cdn.cloud.grohe.com/prod/10/10/102415SH00/480/102415SH00_1_1.jpg,1,TRUE,Link
+300058,de,DE,Waschtischarmatur,200052,Waschtischarmatur,https://cdn.cloud.grohe.com/prod/20/24/24179001/480/24179001_1_1.jpg,2,TRUE,Link
+300067,de,DE,Zubehör & Verbrauchsmaterial,200052,Zubehör_&_Verbrauchsmaterial,https://cdn.cloud.grohe.com/prod/40/40/40365001/1500/40365001.jpg,3,TRUE,Link
+300068,de,DE,Für die Installation,200052,Für_die_Installation,https://cdn.cloud.grohe.com/prod/30/38/38541000/480/38541000_1_1.jpg,4,TRUE,Link
+300070,de,DE,Komplettes WC-System,200070,Komplettes_WC-System,https://cdn.cloud.grohe.com/prod/10/12/120184SH00/480/120184SH00_1_1.jpg,1,TRUE,Link
+300071,de,DE,WC,200070,WC,https://cdn.cloud.grohe.com/prod/10/10/102510SH00/480/102510SH00_1_1.jpg,2,TRUE,Link
+300072,de,DE,WC,200070,WC,,3,FALSE,Link
+300080,de,DE,Dusch-WC,200070,Dusch-WC,https://cdn.cloud.grohe.com/prod/30/36/36508SH0/480/36508SH0_1_1.jpg,4,TRUE,Link
+300086,de,DE,Urinal,200070,Urinal,https://cdn.cloud.grohe.com/prod/30/39/39438000/480/39438000_1_1.jpg,5,TRUE,Link
+300088,de,DE,Bidet,200070,Bidet,https://cdn.cloud.grohe.com/prod/10/10/102487SH00/480/102487SH00_1_1.jpg,6,TRUE,Link
+300091,de,DE,Für die Installation,200070,Für_die_Installation,https://cdn.cloud.grohe.com/zzh_i/3/385/ZZH_38528001_G04_01/original/2880/ZZH_38528001_G04_01.jpg,7,TRUE,Link
+300096,de,DE,"Zubehör für WC, Urinal & Bidet",200070,"Zubehör_für_WC,_Urinal_&_Bidet",https://cdn.cloud.grohe.com/prod/40/40/40407001/1500/40407001.jpg,8,TRUE,Link
+300097,de,DE,Dusche,200097,Dusche,https://cdn.cloud.grohe.com/prod/30/36/36456000/480/36456000_1_1.jpg,1,TRUE,Link
+300099,de,DE,Waschtisch,200097,Waschtisch,https://cdn.cloud.grohe.com/prod/30/36/36332000/480/36332000_1_1.jpg,2,TRUE,Link
+300102,de,DE,WC,200097,WC,https://cdn.cloud.grohe.com/zzh_i/1/102/ZZH_102510SH00_H00_02/original/2880/ZZH_102510SH00_H00_02.jpg,3,TRUE,Link
+300107,de,DE,Zubehör & Verbrauchsmaterial,200097,Zubehör_&_Verbrauchsmaterial,https://cdn.cloud.grohe.com/prod/40/40/40794001/320/40794001.jpg,4,TRUE,Link
+300108,de,DE,Für die Installation,200097,Für_die_Installation,https://cdn.cloud.grohe.com/prod/30/39/39596000/1500/39596000.jpg,5,TRUE,Link
+300150,de,DE,Standardarmatur,200150,Standardarmatur,https://cdn.cloud.grohe.com/prod/30/32/32168000/480/32168000_1_1.jpg,1,TRUE,Link
+300151,de,DE,Berührungslose Armatur,200150,Berührungslose_Armatur,https://cdn.cloud.grohe.com/prod/30/36/36332000/480/36332000_1_1.jpg,2,TRUE,Link
+300152,de,DE,Armatur mit herausziehbarem Auslauf,200150,Armatur_mit_herausziehbarem Auslauf,https://cdn.cloud.grohe.com/prod/30/32/32168000/480/32168000_1_1.jpg,3,TRUE,Link
+300153,de,DE,Niederdruckarmatur,200150,Niederdruckarmatur,https://cdn.cloud.grohe.com/prod/10/10/1012310000/480/1012310000_1_1.jpg,4,TRUE,Link
+300154,de,DE,Vor-Fenster-Armatur,200150,Vor-Fenster-Armatur,https://cdn.cloud.grohe.com/prod/10/10/1012320000/480/1012320000_1_1.jpg,5,TRUE,Link
+300155,de,DE,Wassersystem,200150,Wassersystem,https://cdn.cloud.grohe.com/prod/30/30/30589000/480/30589000_1_1.jpg,6,FALSE,Link
+300158,de,DE,Armatur für den professionellen Einsatz,200150,Armatur_für den professionellen Einsatz,https://cdn.cloud.grohe.com/prod/30/30/30361000/480/30361000_1_1.jpg,7,TRUE,Link
+300159,de,DE,Für gefiltertes Wasser,200159,Für_gefiltertes_Wasser,https://cdn.cloud.grohe.com/prod/30/30/30581000/320/30581000.jpg,1,TRUE,Link
+300160,de,DE,"Für gefiltertes, gekühltes & sprudelndes Wasser",200159,"Für_gefiltertes,_gekühltes_&_sprudelndes_Wasser",https://cdn.cloud.grohe.com/prod/30/31/31455001/1500/31455001.jpg,2,TRUE,Link
+300166,de,DE,Für gefiltertes & kochendes Wasser,200159,Für_gefiltertes_&_kochendes Wasser,https://cdn.cloud.grohe.com/prod/30/30/30031KS1/480/30031KS1_1_1.jpg,3,TRUE,Link
+300167,de,DE,Verbrauchsmaterial,200159,Verbrauchsmaterial,https://cdn.cloud.grohe.com/prod/40/40/40422000/480/40422000_1_1.jpg,4,TRUE,Link
+300170,de,DE,Standardmodell,200170,Standardmodell,https://cdn.cloud.grohe.com/prod/30/31/31941K00/480/31941K00_1_1.jpg,1,TRUE,Filter
+300171,de,DE,Erweitertes Modell,200170,Erweitertes Modell,https://cdn.cloud.grohe.com/prod/30/31/31945LK0/480/31945LK0_1_1.jpg,2,TRUE,Filter
+300172,de,DE,Zubehör & Verbrauchsmaterial,200170,Zubehör_&_Verbrauchsmaterial,https://cdn.cloud.grohe.com/prod/40/41/41250K00/480/41250K00_1_1.jpg,3,TRUE,Filter
+300173,de,DE,Unterbaumontage,200173,Unterbaumontage,https://cdn.cloud.grohe.com/prod/30/31/31574SD0/480/31574SD0_1_1.jpg,1,TRUE,Filter
+300174,de,DE,Aufsatzmontage,200173,Aufsatzmontage,https://cdn.cloud.grohe.com/prod/30/31/31583SD1/480/31583SD1_1_1.jpg,2,TRUE,Filter
+300175,de,DE,Flächenbündige Montage,200173,Flächenbündige_Montage,https://cdn.cloud.grohe.com/prod/30/31/31573SD1/480/31573SD1_1_1.jpg,3,TRUE,Filter
+300176,de,DE,Spüle für den professionellen Einsatz,200173,Spüle_für_den_professionellen_Einsatz,https://cdn.cloud.grohe.com/prod/30/31/31581SD1/480/31581SD1_1_1.jpg,4,FALSE,Filter
+300177,de,DE,Spülenzubehör,200177,Spülenzubehör,https://cdn.cloud.grohe.com/prod/40/40/40852SD0/480/40852SD0_1_1.jpg,1,TRUE,Filter
+300178,de,DE,Thermosflasche,200177,Thermosflasche,https://cdn.cloud.grohe.com/prod/40/40/40848AL0/480/40848AL0_1_1.jpg,2,TRUE,Filter
+300179,de,DE,Gläser,200177,Gläser,https://cdn.cloud.grohe.com/prod/40/40/40437000/480/40437000_1_1.jpg,3,TRUE,Filter
+300180,de,DE,Zubehör für Wassersprudler,200177,Zubehör_für_Wassersprudler,https://cdn.cloud.grohe.com/prod/40/40/40422000/1500/40422000.jpg,4,TRUE,Filter
+300181,de,DE,Verbrauchsmaterial für Wasserfiltersysteme,200177,Verbrauchsmaterial_für_Wasserfiltersysteme,https://cdn.cloud.grohe.com/prod/40/40/40404001/480/40404001_1_1.jpg,5,TRUE,Filter
+300182,de,DE,Abfallbehälter,200177,Abfallbehälter,https://cdn.cloud.grohe.com/prod/40/40/40980000/480/40980000_1_1.jpg,6,TRUE,Filter
+300183,de,DE,Seifenspender,200177,Seifenspender,https://cdn.cloud.grohe.com/prod/40/40/40535000/480/40535000_1_1.jpg,7,TRUE,Filter
+300184,de,DE,Küchenarmatur,200184,Küchenarmatur,https://cdn.cloud.grohe.com/prod/30/31/31379000/1500/31379000.jpg,1,TRUE,Link
+300185,de,DE,Küchenspüle,200184,Küchenspüle,https://cdn.cloud.grohe.com/prod/30/31/31581SD1/480/31581SD1_1_1.jpg,2,FALSE,Link
+300186,de,DE,"Wassersystem für gefiltertes, gekühltes & sprudelndes Wasser",200184,"Wassersystem_für_gefiltertes,_gekühltes_&_sprudelndes_Wasser",https://cdn.cloud.grohe.com/prod/30/31/31323002/320/31323002.jpg,3,TRUE,Link
+300192,de,DE,Wassersystem für gefiltertes & kochendes Wasser,200184,Wassersystem_für_gefiltertes_&_kochendes_Wasser,https://cdn.cloud.grohe.com/prod/30/30/30079001/320/30079001.jpg,4,TRUE,Link
+400001,de,DE,Unterputz-Duschsystem,300001,Unterputz-Duschsystem,https://cdn.cloud.grohe.com/prod/30/34/34863000/480/34863000_1_1.jpg,1,TRUE,Filter
+400002,de,DE,Aufputz-Duschsystem,300001,Aufputz-Duschsystem,https://cdn.cloud.grohe.com/prod/20/26/26075001/480/26075001_1_1.jpg,2,TRUE,Filter 
+400003,de,DE,DeLuxe/Luxuriöse begehbare Dusche,300001,DeLuxe/Luxuriöse_begehbare_Dusche,https://cdn.cloud.grohe.com/prod/20/26/26863000/480/26863000_1_1.jpg,3,FALSE,Filter
+400004,de,DE,Everstream Wasser-Recyclingsystem,300001,Everstream_Wasser-Recyclingsystem,https://cdn.cloud.grohe.com/prod/10/10/1050740000/320/1050740000.jpg,4,FALSE,Filter
+400005,de,DE,Kopfbrause,300005,Kopfbrause,https://cdn.cloud.grohe.com/prod/20/26/26558000/480/26558000_1_1.jpg,1,TRUE,Link
+400009,de,DE,Handbrause,300005,Handbrause,https://cdn.cloud.grohe.com/prod/20/26/26581000/480/26581000_1_1.jpg,2,TRUE,Link
+400011,de,DE,Duschthermostat,300005,Duschthermostat,https://cdn.cloud.grohe.com/prod/20/29/29121000/480/29121000_1_1.jpg,3,TRUE,Link
+400013,de,DE,Duschbatterie,300005,Duschbatterie,https://cdn.cloud.grohe.com/prod/20/24/24168001/480/24168001_1_1.jpg,4,TRUE,Link
+400018,de,DE,Schaumdusche,300005,Schaumdusche,https://cdn.cloud.grohe.com/prod/10/10/1050740000/480/1050740000_1_1.jpg,5,TRUE,Link
+400019,de,DE,Brauseschlauch,300005,Brauseschlauch,https://cdn.cloud.grohe.com/prod/20/28/28388001/480/28388001_1_1.jpg,6,TRUE,Link
+400020,de,DE,"Brausestange & Wandbrausehalter, Wandabgangsbogen",300005,"Brausestange_&_Wandbrausehalter,_Wandabgangsbogen",https://cdn.cloud.grohe.com/prod/20/26/26602000/480/26602000_1_1.jpg,7,TRUE,Link
+400021,de,DE,Duschwanne,300005,Duschwanne,https://cdn.cloud.grohe.com/prod/30/39/39300000/480/39300000_1_1.jpg,8,FALSE,Link
+400022,de,DE,Seitenbrausen,300005,Seitenbrausen,https://cdn.cloud.grohe.com/prod/20/28/28286000/480/28286000_1_1.jpg,9,TRUE,Link
+400023,de,DE,Dampfgenerator ,300005,Dampfgenerator ,https://cdn.cloud.grohe.com/prod/20/26/26828000/480/26828000_1_1.jpg,10,TRUE,Link
+400024,de,DE,Duschrahmen,300005,Duschrahmen,https://cdn.cloud.grohe.com/prod/10/10/1039949990/480/1039949990_1_1.jpg,11,TRUE,Link
+400025,de,DE,Installationssysteme,300025,Installationssysteme,https://cdn.cloud.grohe.com/prod/30/35/35604000/480/35604000_1_1.jpg,1,TRUE,Filter
+400026,de,DE,Installationswerkzeuge,300025,Installationswerkzeuge,https://cdn.cloud.grohe.com/prod/10/14/14245000/480/14245000_1_1.jpg,2,FALSE,Filter
+400027,de,DE,Zubehör,300027,Zubehör,https://cdn.cloud.grohe.com/prod/20/27/27074000/480/27074000_1_1.jpg,1,TRUE,Filter
+400028,de,DE,Beleuchtung,300027,Beleuchtung,https://cdn.cloud.grohe.com/prod/30/36/36472000/480/36472000_1_1.jpg,2,TRUE,Filter
+400029,de,DE,Lautsprecher für den Einbau in der Dusche,300027,Lautsprecher_für_den_Einbau_in_der_Dusche,https://cdn.cloud.grohe.com/prod/30/36/36473000/480/36473000_1_1.jpg,3,TRUE,Filter
+400030,de,DE,Kartusche für Schaumdusche,300027,Kartusche_für_Schaumdusche,https://cdn.cloud.grohe.com/prod/10/10/1033699990/480/1033699990_1_1.jpg,4,TRUE,Filter
+400031,de,DE,Filter für Duschsystem,300027,Filter_für_Duschsystem,https://cdn.cloud.grohe.com/prod/10/10/1016729990/480/1016729990_1_1.jpg,5,FALSE,Filter
+400032,de,DE,Freistehende Badewanne,300032,Freistehende_Badewanne,https://cdn.cloud.grohe.com/prod/30/39/39729000/480/39729000_1_1.jpg,1,TRUE,Filter
+400033,de,DE,Badewanne mit Wandanschluss,300032,Badewanne_mit_Wandanschluss,https://cdn.cloud.grohe.com/prod/30/39/39622000/480/39622000_1_1.jpg,2,TRUE,Filter
+400034,de,DE,Einbau-Badewanne,300032,Einbau-Badewanne,https://cdn.cloud.grohe.com/prod/30/39/39617000/480/39617000_1_1.jpg,3,TRUE,Filter
+400036,de,DE,Kopfbrause,300036,Kopfbrause,https://cdn.cloud.grohe.com/prod/20/26/26568000/480/26568000_1_1.jpg,1,TRUE,Link
+400037,de,DE,Handbrause,300036,Handbrause,https://cdn.cloud.grohe.com/prod/20/26/26581000/480/26581000_1_1.jpg,2,TRUE,Link
+400039,de,DE,Wannen-Thermostat,300036,Wannen-Thermostat,https://cdn.cloud.grohe.com/prod/30/34/34830000/480/34830000_1_1.jpg,3,TRUE,Link
+400041,de,DE,Wannenarmatur,300036,Wannenarmatur,https://cdn.cloud.grohe.com/prod/20/25/25250001/480/25250001_1_1.jpg,4,TRUE,Link
+400045,de,DE,Einzelauslauf & Wasserfall,300036,Einzelauslauf_&_Wasserfall,https://cdn.cloud.grohe.com/prod/10/13/13449001/480/13449001_1_1.jpg,5,TRUE,Link
+400046,de,DE,Brauseschlauch,300036,Brauseschlauch,https://cdn.cloud.grohe.com/prod/20/28/28388001/480/28388001_1_1.jpg,6,TRUE,Link
+400047,de,DE,"Brausestange & Wandbrausehalter, Wandabgangsbogen",300036,"Brausestange_&_Wandbrausehalter,_Wandabgangsbogen",https://cdn.cloud.grohe.com/prod/20/26/26602000/480/26602000_1_1.jpg,7,TRUE,Link
+400048,de,DE,"Wannenfüll-, Ab- und Überlaufgarnitur",300036,"Wannenfüll-,_Ab-_und_Überlaufgarnitur",https://cdn.cloud.grohe.com/prod/10/19/19952000/480/19952000_1_1.jpg,8,TRUE,Link
+400049,de,DE,Zubehör & Verbrauchsmaterial,300036,Zubehör_&_Verbrauchsmaterial,https://cdn.cloud.grohe.com/prod/40/40/40421001/480/40421001_1_1.jpg,9,TRUE,Link
+400050,de,DE,Abfallsystem,300050,Abfallsystem,https://cdn.cloud.grohe.com/prod/20/28/28943000/480/28943000_1_1.jpg,1,TRUE,Filter
+400051,de,DE,Verdeckte Elemente,300050,Verdeckte Elemente,https://cdn.cloud.grohe.com/prod/40/49/49115000/480/49115000_1_1.jpg,2,TRUE,Filter
+400052,de,DE,Unterbau-Waschtisch,300052,Unterbau-Waschtisch,https://cdn.cloud.grohe.com/prod/30/39/39423000/480/39423000_1_1.jpg,1,TRUE,Filter
+400053,de,DE,Wandhängender Waschtisch,300052,Wandhängender_Waschtisch,https://cdn.cloud.grohe.com/prod/10/10/102415SH00/480/102415SH00_1_1.jpg,2,TRUE,Filter
+400054,de,DE,Aufsatzschale,300052,Aufsatzschale,https://cdn.cloud.grohe.com/prod/10/10/102434SH00/480/102434SH00_1_1.jpg,3,TRUE,Filter
+400055,de,DE,Aufsatzwaschtisch,300052,Aufsatzwaschtisch,https://cdn.cloud.grohe.com/prod/30/39/3947700H/480/3947700H_1_1.jpg,4,TRUE,Filter
+400056,de,DE,Einbauwaschtisch,300052,Einbauwaschtisch,https://cdn.cloud.grohe.com/prod/30/39/3947900H/480/3947900H_1_1.jpg,5,TRUE,Filter
+400057,de,DE,Halbaufsatzwaschtisch,300052,Halbaufsatzwaschtisch,https://cdn.cloud.grohe.com/prod/30/39/3970800H/1500/3970800H.jpg,6,TRUE,Filter
+400058,de,DE,Einhebelmischer,300058,Einhebelmischer,https://cdn.cloud.grohe.com/prod/20/24/24179001/480/24179001_1_1.jpg,1,TRUE,Link
+400060,de,DE,Zweigriffarmatur,300058,Zweigriffarmatur,https://cdn.cloud.grohe.com/prod/20/20/20296001/480/20296001_1_1.jpg,2,TRUE,Link
+400062,de,DE,Berührungslose Armatur,300058,Berührungslose_Armatur,https://cdn.cloud.grohe.com/prod/30/36/36444000/480/36444000_1_1.jpg,3,TRUE,Link
+400063,de,DE,Niederdruckarmatur,300058,Niederdruckarmatur,https://cdn.cloud.grohe.com/prod/20/23/23972001/1500/23972001.jpg,4,FALSE,Link
+400064,de,DE,Individualisierbare Armatur ,300058,Individualisierbare Armatur ,https://cdn.cloud.grohe.com/prod/20/20/20672000/480/20672000_1_1.jpg,5,TRUE,Link
+400066,de,DE,Spezialarmatur: Gesundheit & Pflege,300058,Spezialarmatur:_Gesundheit_&_Pflege,https://cdn.cloud.grohe.com/prod/20/23/23985003/480/23985003_1_1.jpg,6,TRUE,Link
+400068,de,DE,Installationswerkzeuge,300068,Installationswerkzeuge,https://cdn.cloud.grohe.com/prod/40/41/41050000/320/41050000.jpg,1,FALSE,Filter
+400069,de,DE,Installationssystem,300068,Installationssystem,https://cdn.cloud.grohe.com/prod/20/28/28912000/1500/28912000.jpg,2,TRUE,Filter
+400071,de,DE,Wand-WC,300071,Wand-WC,https://cdn.cloud.grohe.com/prod/10/10/102510SH00/480/102510SH00_1_1.jpg,1,TRUE,Link
+400072,de,DE,Stand-WC,300071,Stand-WC,https://cdn.cloud.grohe.com/prod/10/10/102513SH00/480/102513SH00_1_1.jpg,1,TRUE,Link
+400073,de,DE,WC-Sitz,300071,WC-Sitz,https://cdn.cloud.grohe.com/prod/30/39/39648SH0/480/39648SH0_1_1.jpg,2,TRUE,Link
+400076,de,DE,Betätigungsplatte,300071,Betätigungsplatte,https://cdn.cloud.grohe.com/prod/30/37/37535000/480/37535000_1_1.jpg,3,TRUE,Link
+400079,de,DE,Monoblock-WC,300072,Monoblock-WC,https://cdn.cloud.grohe.com/prod/30/39/39377LS0/480/39377LS0_1_1.jpg,4,FALSE,Link
+400080,de,DE,Wandhängendes Dusch-WC,300080,Wandhängendes Dusch-WC,https://cdn.cloud.grohe.com/prod/30/36/36508SH0/480/36508SH0_1_1.jpg,1,TRUE,Link
+400081,de,DE,Stand-Dusch-WC,300080,Stand-Dusch-WC,https://cdn.cloud.grohe.com/Web/4_3/ZZH_IKONEC011_001_01_4_3/4_3/1280/ZZH_IKONEC011_001_01_4_3_4_3.jpg,2,FALSE,Link
+400082,de,DE,Toilettensitz mit Duschfunktion,300080,Toilettensitz_mit_Duschfunktion,https://cdn.cloud.grohe.com/prod/30/39/39648SH0/480/39648SH0_1_1.jpg,3,TRUE,Link
+400083,de,DE,Betätigungsplatte,300080,Betätigungsplatte,https://cdn.cloud.grohe.com/prod/30/37/37535000/480/37535000_1_1.jpg,4,TRUE,Link
+400086,de,DE,Wandhängendes Urinal,300086,Wandhängendes_Urinal,https://cdn.cloud.grohe.com/prod/30/39/39438000/480/39438000_1_1.jpg,1,TRUE,Filter
+400087,de,DE,Betätigungsplatte,300086,Betätigungsplatte,https://cdn.cloud.grohe.com/prod/30/38/38784000/480/38784000_1_1.jpg,2,TRUE,Filter
+400088,de,DE,Wandhängendes Bidet,300088,Wandhängendes Bidet,https://cdn.cloud.grohe.com/prod/10/10/102487SH00/480/102487SH00_1_1.jpg,1,TRUE,Filter
+400089,de,DE,Standbidet,300088,Standbidet,https://cdn.cloud.grohe.com/prod/30/39/39340000/480/39340000_1_1.jpg,2,TRUE,Filter
+400090,de,DE,Bidetarmatur,300088,Bidetarmatur,https://cdn.cloud.grohe.com/prod/30/32/32935001/480/32935001_1_1.jpg,3,TRUE,Filter
+400091,de,DE,Installationswerkzeuge,300091,Installationswerkzeuge,https://cdn.cloud.grohe.com/Web/4_3/ZZH_IKONEC011_001_01_4_3/4_3/1280/ZZH_IKONEC011_001_01_4_3_4_3.jpg,1,FALSE,Link
+400092,de,DE,Installationssystem,300091,Installationssystem,https://cdn.cloud.grohe.com/prod/30/38/38528001/480/38528001_1_1.jpg,2,TRUE,Link
+400097,de,DE,Berührungslose Dusche,300097,Berührungslose_Dusche,https://cdn.cloud.grohe.com/prod/30/36/36456000/480/36456000_1_1.jpg,1,TRUE,Filter
+400098,de,DE,Nicht berührungslose Dusche,300097,Nicht_berührungslose_Dusche,https://cdn.cloud.grohe.com/prod/30/36/36321000/480/36321000_1_1.jpg,2,TRUE,Filter
+400099,de,DE,Berührungslose Armatur,300099,Berührungslose_Armatur,https://cdn.cloud.grohe.com/prod/30/36/36332000/480/36332000_1_1.jpg,1,TRUE,Filter
+400100,de,DE,Selbstschlußarmatur,300099,Selbstschlußarmatur,https://cdn.cloud.grohe.com/prod/30/36/36317000/480/36317000_1_1.jpg,2,TRUE,Filter
+400101,de,DE,Höhenverstellbarer Waschtisch,300099,Höhenverstellbarer_Waschtisch,https://cdn.cloud.grohe.com/Web/4_3/ZZH_IKONEC011_001_01_4_3/4_3/1280/ZZH_IKONEC011_001_01_4_3_4_3.jpg,3,FALSE,Filter
+400102,de,DE,Urinal,300102,Urinal,https://cdn.cloud.grohe.com/prod/30/39/39438000/320/39438000.jpg,1,TRUE,Filter
+400103,de,DE,Höhenverstellbare Toilette,300102,Höhenverstellbare_Toilette,https://cdn.cloud.grohe.com/Web/4_3/ZZH_IKONEC011_001_01_4_3/4_3/1280/ZZH_IKONEC011_001_01_4_3_4_3.jpg,2,FALSE,Filter
+400104,de,DE,Berührungslose Betätigungsplatte,300102,Berührungslose_Betätigungsplatte,https://cdn.cloud.grohe.com/prod/30/38/38698SD1/480/38698SD1_1_1.jpg,3,TRUE,Filter
+400105,de,DE,Druckventil,300102,Druckventil,https://cdn.cloud.grohe.com/prod/30/37/37347000/480/37347000_1_1.jpg,4,TRUE,Filter
+400106,de,DE,Handfernbedienung/Spülung,300102,Handfernbedienung/Spülung,https://cdn.cloud.grohe.com/prod/30/36/36407000/480/36407000_1_1.jpg,5,FALSE,Filter
+400155,de,DE,Für gefiltertes Wasser,300155,Für_gefiltertes_Wasser,https://cdn.cloud.grohe.com/prod/30/30/30581000/320/30581000.jpg,1,TRUE,Filter
+400156,de,DE,"Für gefiltertes, gekühltes & sprudelndes Wasser",300155,"Für_gefiltertes,_gekühltes_&_sprudelndes_Wasser",https://cdn.cloud.grohe.com/prod/30/31/31323002/320/31323002.jpg,2,TRUE,Filter
+400157,de,DE,Für gefiltertes & kochendes Wasser,300155,Für_gefiltertes_&_kochendes Wasser,https://cdn.cloud.grohe.com/prod/30/30/30079001/320/30079001.jpg,3,TRUE,Filter
+400160,de,DE,Armatur,300160,Armatur,https://cdn.cloud.grohe.com/prod/30/31/31543000/1500/31543000.jpg,1,TRUE,Filter
+400161,de,DE,Kühler,300160,Kühler,https://cdn.cloud.grohe.com/prod/40/40/40711000/1500/40711000.jpg,2,FALSE,Filter
+400162,de,DE,CO2-Flasche,300160,CO2-Flasche,https://cdn.cloud.grohe.com/prod/40/40/40422000/480/40422000_1_1.jpg,3,TRUE,Filter
+400163,de,DE,Filter,300160,Filter,https://cdn.cloud.grohe.com/prod/40/40/40404001/480/40404001_1_1.jpg,4,TRUE,Filter
+400164,de,DE,Zubehör,300160,Zubehör,https://cdn.cloud.grohe.com/prod/40/40/40405001/480/40405001_1_1.jpg,5,TRUE,Filter
+400165,de,DE,Für die Installation,300160,Für_die_Installation,https://cdn.cloud.grohe.com/prod/40/40/40843000/480/40843000_1_1.jpg,6,TRUE,Filter
+400167,de,DE,CO2-Flasche,300167,CO2-Flasche,https://cdn.cloud.grohe.com/prod/40/40/40422000/480/40422000_1_1.jpg,1,TRUE,Filter
+400168,de,DE,Filter,300167,Filter,https://cdn.cloud.grohe.com/prod/40/40/40691002/480/40691002_1_1.jpg,2,TRUE,Filter
+400169,de,DE,Reinigungskartusche,300167,Reinigungskartusche,https://cdn.cloud.grohe.com/prod/40/40/40434001/480/40434001_1_1.jpg,3,TRUE,Filter
+400186,de,DE,For filtered & sparkling water,,For_filtered_sparkling_water,https://cdn.cloud.grohe.com/prod/10/10/1044210001/480/1044210001_1_1.jpg,1,FALSE,Filter
+400192,de,DE,Filtered & boiling water,,Filtered_boiling_water,https://cdn.cloud.grohe.com/prod/30/30/30031DC1/480/30031DC1_1_1.jpg,2,FALSE,Filter
+500005,de,DE,Kopfbrauseset,400005,Kopfbrauseset,https://cdn.cloud.grohe.com/prod/20/26/26558000/480/26558000_1_1.jpg,1,TRUE,Filter
+500006,de,DE,Kopfbrause Unterputz,400005,Kopfbrause_Unterputz,https://cdn.cloud.grohe.com/prod/20/26/26373001/480/26373001_1_1.jpg,2,TRUE,Filter
+500007,de,DE,Kopfbrause Aufputz,400005,Kopfbrause_Aufputz,https://cdn.cloud.grohe.com/prod/20/26/26569000/480/26569000_1_1.jpg,3,TRUE,Filter
+500008,de,DE,Zubehör für Kopfbrause,400005,Zubehör_für_Kopfbrause,https://cdn.cloud.grohe.com/prod/20/28/28361000/480/28361000_1_1.jpg,4,TRUE,Filter
+500009,de,DE,Handbrauseset,400009,Handbrauseset,https://cdn.cloud.grohe.com/prod/20/26/26581000/480/26581000_1_1.jpg,1,TRUE,Filter
+500010,de,DE,Einzelhandbrause,400009,Einzelhandbrause,https://cdn.cloud.grohe.com/prod/20/26/26590000/480/26590000_1_1.jpg,2,TRUE,Filter
+500011,de,DE,Brausethermostat Unterputz,400011,Brausethermostat_Unterputz,https://cdn.cloud.grohe.com/prod/20/29/29121000/480/29121000_1_1.jpg,1,TRUE,Filter
+500012,de,DE,Brausethermostat Aufputz,400011,Brausethermostat_Aufputz,https://cdn.cloud.grohe.com/prod/30/34/34827000/480/34827000_1_1.jpg,2,TRUE,Filter
+500013,de,DE,Brausebatterie Unterputz,400013,Brausebatterie_Unterputz,https://cdn.cloud.grohe.com/prod/20/29/29121000/480/29121000_1_1.jpg,1,TRUE,Filter
+500014,de,DE,Brausebatterie Aufputz,400013,Brausebatterie_Aufputz,https://cdn.cloud.grohe.com/prod/30/34/34827000/480/34827000_1_1.jpg,2,TRUE,Filter
+500015,de,DE,Einhand-Brausebatterie Unterputz,400013,Einhand-Brausebatterie_Unterputz,https://cdn.cloud.grohe.com/prod/20/24/24168001/480/24168001_1_1.jpg,3,TRUE,Filter
+500016,de,DE,Einhand-Brausebatterie Aufputz,400013,Einhand-Brausebatterie_Aufputz,https://cdn.cloud.grohe.com/prod/30/33/33636001/480/33636001_1_1.jpg,4,TRUE,Filter
+500017,de,DE,Druckausgleichsventil-Brausebatterie,400013,Druckausgleichsventil-Brausebatterie,https://cdn.cloud.grohe.com/Web/4_3/ZZH_IKONEC011_001_01_4_3/4_3/1280/ZZH_IKONEC011_001_01_4_3_4_3.jpg,5,FALSE,Filter
+500037,de,DE,Handbrauseset,400037,Handbrauseset,https://cdn.cloud.grohe.com/prod/20/26/26581000/480/26581000_1_1.jpg,1,TRUE,Filter
+500038,de,DE,Einzelhandbrause,400037,Einzelhandbrause,https://cdn.cloud.grohe.com/prod/20/26/26574000/480/26574000_1_1.jpg,2,TRUE,Filter
+500039,de,DE,Wannen-Thermostat Aufputz,400039,Wannen-Thermostat_Aufputz,https://cdn.cloud.grohe.com/prod/30/34/34830000/480/34830000_1_1.jpg,1,TRUE,Filter
+500040,de,DE,Wannen-Thermostat Unterputz,400039,Wannen-Thermostat_Unterputz,https://cdn.cloud.grohe.com/prod/20/29/29124000/480/29124000_1_1.jpg,2,TRUE,Filter
+500041,de,DE,Wannenarmatur Aufputz,400041,Wannenarmatur_Aufputz,https://cdn.cloud.grohe.com/prod/20/25/25250001/480/25250001_1_1.jpg,1,TRUE,Filter
+500042,de,DE,Wannenarmatur Unterputz,400041,Wannenarmatur_Unterputz,https://cdn.cloud.grohe.com/prod/20/24/24167001/480/24167001_1_1.jpg,2,TRUE,Filter
+500043,de,DE,Armatur für Wannenrand-Montage,400041,Armatur_für_Wannenrand-Montage,https://cdn.cloud.grohe.com/prod/10/19/19976001/480/19976001_1_1.jpg,3,TRUE,Filter
+500044,de,DE,Freistehende Wannenbatterie,400041,Freistehende_Wannenbatterie,https://cdn.cloud.grohe.com/prod/20/23/23491001/1500/23491001.jpg,4,TRUE,Filter
+500058,de,DE,Armatur für Randmontage,400058,Armatur_für_Randmontage,https://cdn.cloud.grohe.com/prod/20/24/24179001/480/24179001_1_1.jpg,1,TRUE,Filter
+500059,de,DE,Wandarmatur,400058,Wandarmatur,https://cdn.cloud.grohe.com/prod/20/29/29193001/480/29193001_1_1.jpg,2,TRUE,Filter
+500060,de,DE,Armatur für Randmontage,400060,Armatur_für_Randmontage,https://cdn.cloud.grohe.com/prod/20/20/20296001/480/20296001_1_1.jpg,1,TRUE,Filter
+500061,de,DE,Wandarmatur,400060,Wandarmatur,https://cdn.cloud.grohe.com/prod/20/20/20164003/480/20164003_1_1.jpg,2,TRUE,Filter
+500062,de,DE,Armatur für Randmontage,400062,Armatur_für_Randmontage,https://cdn.cloud.grohe.com/prod/30/36/36444000/480/36444000_1_1.jpg,1,TRUE,Filter
+500063,de,DE,Wandarmatur,400062,Wandarmatur,https://cdn.cloud.grohe.com/prod/30/36/36447000/480/36447000_1_1.jpg,2,TRUE,Filter
+500064,de,DE,Armatur für Randmontage,400064,Armatur_für_Randmontage,https://cdn.cloud.grohe.com/prod/20/20/20672000/480/20672000_1_1.jpg,1,TRUE,Filter
+500065,de,DE,Wandarmatur,400064,Wandarmatur,https://cdn.cloud.grohe.com/prod/20/20/20587000/480/20587000_1_1.jpg,2,TRUE,Filter
+500066,de,DE,Armatur für Randmontage,400063,Armatur_für_Randmontage,https://cdn.cloud.grohe.com/prod/20/23/23972001/1500/23972001.jpg,1,TRUE,Filter
+500067,de,DE,Wandarmatur,400063,Wandarmatur,,2,FALSE,Filter
+500073,de,DE,Standard-WC-Sitz,400073,Standard-WC-Sitz,https://cdn.cloud.grohe.com/prod/10/10/102501SH00/480/102501SH00_1_1.jpg,1,TRUE,Filter
+500074,de,DE,WC-Sitz mit Absenkautomatik,400073,WC-Sitz_mit_Absenkautomatik,https://cdn.cloud.grohe.com/prod/10/10/102501SH00/480/102501SH00_1_1.jpg,2,TRUE,Filter
+500075,de,DE,Toilettensitz mit Duschfunktion,400073,Toilettensitz_mit_Duschfunktion,https://cdn.cloud.grohe.com/prod/30/39/39648SH0/480/39648SH0_1_1.jpg,3,TRUE,Filter
+500076,de,DE,Betätigungsplatte in Standardgröße,400076,Betätigungsplatte_in_Standardgröße,https://cdn.cloud.grohe.com/prod/30/37/37535000/480/37535000_1_1.jpg,1,TRUE,Filter
+500077,de,DE,Kleine Betätigungsplatte,400076,Kleine_Betätigungsplatte,https://cdn.cloud.grohe.com/prod/30/38/38732000/480/38732000_1_1.jpg,2,TRUE,Filter
+500078,de,DE,Berührungslose Betätigungsplatte,400076,Berührungslose_Betätigungsplatte,https://cdn.cloud.grohe.com/prod/30/38/38698SD1/480/38698SD1_1_1.jpg,3,TRUE,Filter
+500083,de,DE,Betätigungsplatte in Standardgröße,400083,Betätigungsplatte_in_Standardgröße,https://cdn.cloud.grohe.com/prod/30/37/37535000/480/37535000_1_1.jpg,1,TRUE,Filter
+500084,de,DE,Kleine Betätigungsplatte,400083,Kleine_Betätigungsplatte,https://cdn.cloud.grohe.com/prod/30/38/38732000/480/38732000_1_1.jpg,2,TRUE,Filter
+500085,de,DE,Berührungslose Betätigungsplatte,400083,Berührungslose_Betätigungsplatte,https://cdn.cloud.grohe.com/prod/30/38/38698SD1/480/38698SD1_1_1.jpg,3,TRUE,Filter
+500092,de,DE,Für das WC,400092,Für_das_WC,https://cdn.cloud.grohe.com/prod/30/38/38528001/480/38528001_1_1.jpg,1,TRUE,Filter
+500093,de,DE,Für das Bidet,400092,Für_das_Bidet,https://cdn.cloud.grohe.com/prod/30/38/38553001/480/38553001_1_1.jpg,2,TRUE,Filter
+500094,de,DE,Für das Dusch-WC,400092,Für_das_Dusch-WC,https://cdn.cloud.grohe.com/prod/30/39/39596000/480/39596000_1_1.jpg,3,TRUE,Filter
+500095,de,DE,Für das Urinal,400092,Für_das_Urinal,https://cdn.cloud.grohe.com/prod/30/39/39376000/1500/39376000.jpg,4,TRUE,Filter
+500186,de,DE,Armatur,300186,Armatur,https://cdn.cloud.grohe.com/prod/30/31/31347003/1500/31347003.jpg,1,TRUE,Filter
+500187,de,DE,Kühler,300186,Kühler,https://cdn.cloud.grohe.com/prod/40/40/40554002/1500/40554002.jpg,2,FALSE,Filter
+500188,de,DE,CO2-Flasche,300186,CO2-Flasche,https://cdn.cloud.grohe.com/prod/40/40/40422000/480/40422000_1_1.jpg,3,TRUE,Filter
+500189,de,DE,Filter,300186,Filter,https://cdn.cloud.grohe.com/prod/40/40/40404001/480/40404001_1_1.jpg,4,TRUE,Filter
+500190,de,DE,Zubehör,300186,Zubehör,https://cdn.cloud.grohe.com/prod/40/40/40405001/480/40405001_1_1.jpg,5,TRUE,Filter
+500191,de,DE,Für die Installation,300186,Für_die_Installation,https://cdn.cloud.grohe.com/prod/40/40/40843000/480/40843000_1_1.jpg,6,FALSE,Filter
+600001,de,DE,Other,,Other,,1,TRUE,Filter

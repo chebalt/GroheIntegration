@@ -1,0 +1,14 @@
+id,ranking,name,color,language,market
+1,1,Aktion,red,de,DE
+2,2,Bestseller,blue,de,DE
+3,3,Neu ,blue,de,DE
+4,5,Wassersparend,green,de,DE
+5,6,Energiesparend,green,de,DE
+6,7,Bundle,gray,de,DE
+7,8,Quickfix,quickfixblue,de,DE
+8,9,Do it yourself,gray,de,DE
+9,10,Ausgezeichnet,gray,de,DE
+10,11,Mit Installation ,gray,de,DE
+11,12,Starterset ,gray,de,DE
+12,13,Nachfüllset,gray,de,DE
+13,4,EU-Taxonomie,green,de,DE
