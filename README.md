@@ -1,78 +1,146 @@
 # Grohe NEO — Integration Test Harness
 
+## Status
+
+| Phase | Scope | Status |
+|---|---|---|
+| **Phase 1** | ETL pipeline → Firestore state | ✅ **Done** — `make test-pipeline` works |
+| **Phase 2** | Sync logic + Indexing API + WireMock | 🔲 Planned |
+| **Phase 3** | .NET service HTTP tests | 🔲 Planned |
+| **Phase 4** | Business scenario tests (acceptance gate) | 🔲 Planned |
+
+---
+
 ## Vision
 
 A cross-project test harness that spins up the full Grohe NEO backend stack locally —
-Firestore emulator, mocked external APIs, and real .NET services — so that multi-repo tasks
-can be validated end-to-end automatically, and Claude can run tests, analyze failures,
-and fix code across repos without manual intervention.
+Firestore emulator, mocked external APIs, real .NET services — so that **multi-repo tasks
+can be validated end-to-end automatically**, and Claude can run tests, read failures,
+fix code across repos, and iterate to green without manual intervention.
 
 ---
 
 ## The Problem This Solves
 
-Most tasks in Grohe NEO touch **multiple repos**. A typical example:
+Most tasks in Grohe NEO touch **multiple repos**. Example:
 
 > "Add field `sustainability_label` to PLProductContent and expose it in the Products API."
 
-This requires changes in:
-- `grohe-neo-data-loader` — `transformer.py`, `pl_product_content.py`
+Changes needed:
+- `grohe-neo-data-loader` — `transformer.py`, `output_models/pl_product_content.py`
 - `grohe-neo-services` — `ProductsApi` models, mappings, controller
 
-Right now, validating that change requires:
-1. Running the loader against real Firestore (slow, risky)
-2. Starting the service locally (manual config)
-3. Testing via Postman or browser (manual)
+Validating that today requires: running the loader against real Firestore, starting
+the service locally, testing via Postman. Slow, risky, manual.
 
 **This project eliminates all of that.**
 
 ---
 
-## Architecture
+## Quick Start (Phase 1)
+
+```bash
+# One-time setup
+make setup
+
+# Start Firestore emulator (requires Docker Desktop)
+make infra-up
+
+# Run ETL pipeline tests
+make test-pipeline
+
+# Stop emulator
+make infra-down
+```
+
+### Prerequisites
+- Docker Desktop running
+- Python 3.11+ on PATH
+- data-loader venv set up:
+  ```bash
+  cd ../grohe-neo-data-loader
+  python -m venv .venv
+  .venv/Scripts/pip install -r requirements.txt   # Windows
+  .venv/bin/pip install -r requirements.txt       # Linux/Mac
+  ```
+
+---
+
+## Repository Layout
 
 ```
 integration/
-├── docker-compose.yml        ← Firestore emulator + WireMock + .NET services
-├── Makefile                  ← Orchestration: make test-all / make pipeline / etc.
-├── CLAUDE.md                 ← Instructions for Claude: how to run, read, and fix
+├── docker-compose.yml          Firestore emulator (port 8080)          [Phase 1 ✅]
+│                               WireMock (port 8081)                    [Phase 2 🔲]
+├── Makefile                    All orchestration commands
+├── requirements.txt            pytest, pytest-json-report, google-cloud-firestore
+├── pytest.ini                  Test discovery + markers
+├── CLAUDE.md                   Claude's run guide + failure→source trace table
 ├── fixtures/
-│   ├── csv/                  ← Controlled test CSV batches (complete, small)
-│   │   ├── minimal/          ← 1-2 products, all 18 CSV types present
-│   │   └── full/             ← ~10 products, realistic batch for broader tests
-│   └── mocks/
-│       ├── hybris/           ← WireMock stubs: cart, orders, users, pricing
-│       ├── sitecore-search/  ← WireMock stubs: ingestion capture + discovery
-│       ├── sitecore-edge/    ← WireMock stubs: GraphQL layout/content responses
-│       └── idp/              ← WireMock stubs: OAuth token + JWT public keys
+│   ├── csv/                    Real de/DE CSV batch — 17 files from NEO/data_input/
+│   └── mocks/                  WireMock stub definitions                [Phase 2 🔲]
+│       ├── hybris/             Hybris API stubs
+│       ├── sitecore-search/    Ingestion capture + Discovery stubs
+│       ├── sitecore-edge/      GraphQL response stubs
+│       └── idp/                OAuth token + JWT public key stubs
 ├── tests/
-│   ├── conftest.py           ← pytest fixtures: Firestore client, HTTP clients, WireMock
-│   ├── pipeline/             ← ETL: loader → Firestore state assertions
-│   ├── sync/                 ← Sync: ProductIndexData → products-index-updates
-│   ├── services/             ← .NET service HTTP tests (Products, Search, etc.)
-│   ├── indexing/             ← Indexing API → assert WireMock captured correct payload
-│   └── scenarios/            ← Business scenario tests (named after real task types)
+│   ├── conftest.py             Shared fixtures: firestore_client, pipeline_result
+│   ├── pipeline/               Layer 1: ETL → Firestore assertions      [Phase 1 ✅]
+│   ├── sync/                   Layer 2: ProductIndexData → index queue  [Phase 2 🔲]
+│   ├── services/               Layer 3: .NET service HTTP tests         [Phase 3 🔲]
+│   ├── indexing/               Layer 4: Indexing API → WireMock capture [Phase 2 🔲]
+│   └── scenarios/              Layer 5: Cross-repo business scenarios   [Phase 4 🔲]
 ├── scripts/
-│   ├── wait-for-services.sh  ← Health-check poller before tests run
-│   └── run-pipeline.sh       ← Runs data-loader with emulator flags
-└── reports/                  ← pytest JSON + HTML output (gitignored)
+│   └── wait_for_emulator.py   Portable health-check poller
+└── reports/                    Generated test output — gitignored
 ```
 
 ---
 
-## Infrastructure Layer
+## Makefile Commands
 
-Three containers via Docker Compose:
+```bash
+# Setup
+make setup              # Create .venv + install test deps
 
-### 1. Firestore Emulator
+# Infrastructure
+make infra-up           # Start Docker containers
+make infra-down         # Stop Docker containers
+make wait               # Poll until emulator is ready
+
+# Tests
+make test-pipeline      # Layer 1: ETL pipeline tests
+make test-sync          # Layer 2: sync tests              [Phase 2]
+make test-services      # Layer 3: .NET service tests      [Phase 3]
+make test-indexing      # Layer 4: indexing tests          [Phase 2]
+make test-scenarios     # Layer 5: scenario tests          [Phase 4]
+make test-all           # All available layers
+
+# Claude fix loop
+make fix-loop           # Run all tests → reports/results.json
+
+# Reporting
+make report             # Open HTML report in browser
+make clean              # Remove reports + caches
+```
+
+---
+
+## Infrastructure
+
+### Phase 1 (implemented): Firestore emulator only
+
 ```yaml
 firestore-emulator:
-  image: gcr.io/google.com/cloudsdktool/google-cloud-cli
+  image: gcr.io/google.com/cloudsdktool/google-cloud-cli:emulators
   port: 8080
+  project: demo-project
 ```
-The data-loader already supports this out of the box (`--firestore-emulator` flag, targets `localhost:8080`).
-.NET services connect via `FIRESTORE_EMULATOR_HOST=localhost:8080` env var.
 
-### 2. WireMock
+The data-loader supports this out of the box via `--firestore-emulator` (targets `localhost:8080`).
+
+### Phase 2 (planned): Add WireMock
+
 ```yaml
 wiremock:
   image: wiremock/wiremock:latest
@@ -80,22 +148,22 @@ wiremock:
   volumes: ./fixtures/mocks:/home/wiremock/mappings
 ```
 
-Replaces **all** external HTTP dependencies with a single container:
+Replaces all external HTTP dependencies:
 
-| External System | WireMock replaces |
+| External System | WireMock path prefix |
 |---|---|
-| Hybris (SAP Commerce) | Cart, orders, users, pricing endpoints |
-| Sitecore Search Ingestion | `discover-euc1.sitecorecloud.io/ingestion/v1` |
-| Sitecore Search Discovery | `discover-euc1.sitecorecloud.io/discover/v2/{domainId}` |
-| Sitecore Edge GraphQL | `edge-platform.sitecorecloud.io` |
-| IDP / OAuth2 | Token endpoint + JWT public keys |
-| Google Places API | Address autocomplete |
-| Vercel revalidation | Cache invalidation endpoint |
+| Hybris (SAP Commerce) | `/hybris` |
+| Sitecore Search Ingestion | `/sitecore-ingestion` → `discover-euc1.sitecorecloud.io/ingestion/v1` |
+| Sitecore Search Discovery | `/sitecore-discovery` → `discover-euc1.sitecorecloud.io/discover/v2/{domainId}` |
+| Sitecore Edge GraphQL | `/sitecore-edge` → `edge-platform.sitecorecloud.io` |
+| IDP / OAuth2 | `/idp` |
+| Google Places API | `/places` |
+| Vercel revalidation | `/vercel` |
 
-WireMock's **request capture** feature lets tests assert *what was sent* to Sitecore Search,
-not just that the call happened.
+WireMock's **request journal** lets tests assert *what payload was sent* to Sitecore Search.
 
-### 3. .NET Services (per test scenario)
+### Phase 3 (planned): Add .NET services
+
 ```yaml
 products-api:
   build: ../grohe-neo-services
@@ -103,33 +171,37 @@ products-api:
     FIRESTORE_EMULATOR_HOST: firestore-emulator:8080
     HYBRIS_BASE_URL: http://wiremock:8081/hybris
     SITECORE_SEARCH_INGESTION_URL: http://wiremock:8081/sitecore-ingestion
-    # ... etc.
 ```
 
-Only the services needed for the current test scenario run, to keep startup time low.
+Only services needed per scenario run (keep startup fast).
 
 ---
 
 ## Test Layers
 
-### Layer 1 — Pipeline tests (`tests/pipeline/`)
-**Scope:** data-loader only. No .NET services.
-**Verifies:** Firestore document state after ETL.
+### Layer 1 — Pipeline tests ✅ `tests/pipeline/`
 
-```
-test_extracts_all_csv_types_without_errors
-test_pl_product_content_has_correct_fields
-test_pl_category_hierarchy_is_correct
-test_pl_variant_groups_by_finish
-test_blue_green_database_switch_toggles_correctly
-test_collections_are_cleared_before_load
-test_document_size_stays_below_900kb
-```
+**Scope:** data-loader subprocess only. No .NET services, no WireMock.
+**How:** Runs `main.py --to-firestore --firestore-emulator`, asserts Firestore state.
+**Fixture data:** Real de/DE CSV batch (`fixtures/csv/`, 17 files).
 
-### Layer 2 — Sync tests (`tests/sync/`)
+Implemented tests:
+
+| File | Tests |
+|---|---|
+| `test_pipeline_runs.py` | Exit code 0, completion message, no critical errors, all collections mentioned |
+| `test_collections.py` | All 6 collections populated, document IDs match `{SKU}_de_DE` / `{BaseSKU}_{Seq}_de_DE` format |
+| `test_document_structure.py` | PLProductContent fields (SKU, EAN, Slug, images, Finish, Variants, <900KB), ProductIndexData fields (finish_definitions, all_category_ids, image_url, tag_definitions), PLCategory (Language/Market), PLVariant (SKU identifier) |
+
+Known fixture SKUs: `66838000`, `40806000`
+Known ProductIndexData IDs: `66838_0_de_DE`, `40806_0_de_DE`
+
+### Layer 2 — Sync tests 🔲 `tests/sync/`
+
 **Scope:** `sync_product_index.py` only.
-**Verifies:** `products-index-updates` collection after sync.
+**Verifies:** `products-index-updates` collection state after sync.
 
+Planned tests:
 ```
 test_new_product_creates_update_record_with_operation_update
 test_changed_product_updates_record_when_hash_differs
@@ -138,10 +210,12 @@ test_removed_product_marks_record_as_delete
 test_finished_flag_is_set_to_false_on_change
 ```
 
-### Layer 3 — Service tests (`tests/services/`)
-**Scope:** .NET services via HTTP. Firestore pre-loaded with known data.
-**Verifies:** API responses for known inputs.
+### Layer 3 — Service tests 🔲 `tests/services/`
 
+**Scope:** Running .NET services via HTTP. Firestore pre-loaded, WireMock for external deps.
+**Verifies:** API response shape and content for known inputs.
+
+Planned tests:
 ```
 test_products_api_returns_product_by_sku
 test_products_api_returns_category_tree
@@ -151,10 +225,12 @@ test_search_api_forwards_request_to_wiremock
 test_indexing_api_reads_unfinished_queue_records
 ```
 
-### Layer 4 — Indexing tests (`tests/indexing/`)
-**Scope:** Full pipeline from Firestore queue to Sitecore Search.
-**Verifies:** What the Indexing API *sent* to Sitecore Search (via WireMock capture).
+### Layer 4 — Indexing tests 🔲 `tests/indexing/`
 
+**Scope:** Full pipeline: Firestore queue → Indexing API → Sitecore Search (WireMock).
+**Verifies:** Exact payload sent to Sitecore Search Ingestion API.
+
+Planned tests:
 ```
 test_full_product_indexing_pipeline_sends_correct_payload
 test_deleted_product_sends_delete_operation_to_sitecore
@@ -163,10 +239,12 @@ test_ingestion_payload_includes_finish_definitions
 test_ingestion_payload_locale_is_correct
 ```
 
-### Layer 5 — Scenario tests (`tests/scenarios/`)
-**Scope:** Business-level, multi-project, named after real task types.
-**These become the acceptance criteria for tasks given to Claude.**
+### Layer 5 — Scenario tests 🔲 `tests/scenarios/`
 
+**Scope:** Business-level, multi-project. Named after real task patterns.
+**Purpose:** These are the **acceptance criteria for tasks given to Claude**.
+
+Planned tests:
 ```
 test_scenario__new_field_in_loader_appears_in_products_api_and_search_index
 test_scenario__new_locale_flows_through_full_pipeline
@@ -177,152 +255,120 @@ test_scenario__product_content_update_triggers_incremental_sync
 
 ---
 
-## Makefile Commands
-
-```makefile
-make infra-up          # Start Firestore emulator + WireMock
-make infra-down        # Stop and clean up containers
-make seed              # Load fixture CSVs into emulator via data-loader
-
-make test-pipeline     # Layer 1: pipeline tests only
-make test-sync         # Layer 2: sync tests only
-make test-services     # Layer 3: service API tests
-make test-indexing     # Layer 4: indexing + WireMock capture tests
-make test-scenarios    # Layer 5: business scenario tests
-make test-all          # All layers, sequential
-
-make report            # Open HTML report in browser
-make fix-loop          # Run test-all → emit reports/results.json (for Claude)
-```
-
----
-
 ## The Automated Fix Loop
 
-This is what enables Claude to work autonomously across repos.
-
-### Workflow
+This is the core workflow for multi-repo tasks.
 
 ```
-1. You give Claude a task (e.g. "Add field X to PLProductContent and Products API")
-
-2. Claude identifies affected repos and files
-
-3. Claude makes changes across repos
-
-4. Claude runs: make fix-loop
-   → Produces: reports/results.json (pytest JSON output)
-
-5. Claude reads results.json:
-   - Green: reports what was changed and why
-   - Red: reads failing test names + assertion messages
-         → traces failure back to source files
-         → fixes code
-         → re-runs from step 4
-
-6. When all tests pass: Claude summarises the changes made
+You give Claude a task
+    ↓
+Claude identifies affected repos + files
+    ↓
+Claude makes code changes across repos
+    ↓
+Claude runs: make fix-loop
+    → reports/results.json produced
+    ↓
+Claude reads results.json
+    ├── All green → summarise changes, done
+    └── Failures → read test name + assertion
+                → trace to source file (see CLAUDE.md table)
+                → fix code
+                → loop back to make fix-loop
 ```
 
-### Why pytest JSON output works for this
+### Why JSON output enables this
 
 ```json
 {
-  "tests": [
-    {
-      "nodeid": "tests/pipeline/test_pl_product_content.py::test_field_sustainability_label_present",
-      "outcome": "failed",
-      "call": {
-        "longrepr": "AssertionError: 'sustainability_label' not found in document fields\nActual keys: ['sku', 'name', 'description', ...]"
-      }
+  "tests": [{
+    "nodeid": "tests/pipeline/test_document_structure.py::TestPLProductContentStructure::test_has_sustainability_label",
+    "outcome": "failed",
+    "call": {
+      "longrepr": "AssertionError: 'SustainabilityLabel' not found in document fields.\nActual keys: ['SKU', 'EAN', 'Slug', ...]"
     }
-  ]
+  }]
 }
 ```
 
-The test name + assertion message directly tells Claude:
-- **Which layer failed** (pipeline vs sync vs service)
-- **Which file to look at** (`test_pl_product_content.py` → `pl_product_content.py`)
-- **What was expected vs actual**
+Test name → layer → source file → fix. No ambiguity.
 
-### Test naming convention for traceability
+### Test naming conventions
 
-Test names follow the pattern: `test_{what}_{condition}_{expected_outcome}`
+- Unit-level: `test_{field/behaviour}_{condition}`
+- Scenario-level: `test_scenario__{task_description_in_snake_case}`
 
-And scenario tests are named after the task type they validate:
-`test_scenario__new_field_in_loader_appears_in_products_api`
-
-This means Claude can match a task description to a relevant scenario test directly.
+Scenario test names map directly to task descriptions so Claude can identify
+which test to run before and after making changes.
 
 ---
 
-## Implementation Phases
+## How to Add Tests
 
-### Phase 1 — Pipeline foundation ← Start here
+### New Firestore field
+```python
+# tests/pipeline/test_document_structure.py → TestPLProductContentStructure
+def test_has_sustainability_label(self):
+    assert "SustainabilityLabel" in self._doc
+```
 
-**Goal:** `make test-pipeline` works end-to-end.
+### New collection
+```python
+# tests/pipeline/test_collections.py
+def test_new_collection_is_populated(self, pipeline_result, firestore_client):
+    ids = collection_doc_ids(firestore_client, "NewCollection")
+    assert len(ids) > 0
+```
 
-1. `docker-compose.yml` — Firestore emulator only
-2. `fixtures/csv/minimal/` — complete set of all 18 CSV types, 2-3 products
-   (extend from `grohe-neo-data-loader/small_input/`)
-3. `tests/pipeline/` — pytest tests that run `main.py --firestore-emulator`
-   and assert Firestore document shape
-4. `Makefile` with `infra-up`, `seed`, `test-pipeline`, `infra-down`
-5. `CLAUDE.md` — run instructions + failure guide
-
-**Deliverable:** Full ETL pipeline testable locally in ~60 seconds.
-
-### Phase 2 — Sync + Indexing
-
-**Goal:** `make test-indexing` validates the full product → Sitecore Search pipeline.
-
-1. Add WireMock to Docker Compose, load Sitecore Search stubs
-2. `tests/sync/` — sync logic assertions
-3. `tests/indexing/` — add Indexing API to Docker Compose, assert WireMock captures
-4. Update Makefile
-
-**Deliverable:** Can verify that a change in the data-loader produces the correct Sitecore Search ingestion payload.
-
-### Phase 3 — Service tests
-
-**Goal:** `make test-services` validates .NET service API responses.
-
-1. Add Products API + Search API to Docker Compose
-2. WireMock stubs for Hybris, Sitecore Edge GraphQL
-3. `tests/services/` — HTTP tests against running services
-4. Pre-seeded Firestore fixture data (JSON snapshots)
-
-**Deliverable:** Can validate API contract changes without touching real cloud infrastructure.
-
-### Phase 4 — Scenario tests
-
-**Goal:** `make test-scenarios` is the acceptance gate for cross-repo tasks.
-
-1. Write scenario tests that map to common task patterns
-2. Each scenario test becomes a task acceptance criterion
-3. Full `make fix-loop` command documented in `CLAUDE.md`
-
-**Deliverable:** Claude can receive a task, run the relevant scenario test, and iterate to green autonomously.
+### New scenario
+```python
+# tests/scenarios/test_new_locale.py
+@pytest.mark.scenario
+def test_scenario__new_locale_flows_through_full_pipeline(self, ...):
+    ...
+```
 
 ---
 
-## Tech Stack
+## Tech Stack Decisions
 
-| Concern | Choice | Reason |
+| Concern | Choice | Rationale |
 |---|---|---|
-| Test framework | **pytest** | Data-loader is Python; services testable via HTTP; excellent JSON output |
-| HTTP mocking | **WireMock** | Captures + asserts requests; single container for all external APIs |
-| Firestore | **Official emulator** | Already supported by data-loader (`--firestore-emulator` flag) |
-| .NET services | **Docker Compose** | Real binaries, real config, connects to emulator |
-| Orchestration | **Makefile** | Simple, universal, no extra tooling |
-| Report format | **pytest-json-report** | Machine-readable; Claude parses for the fix loop |
-| Fixtures | **CSV files** (extend `small_input/`) | Already validated format, version-controlled |
+| Test framework | **pytest** | Python-native (data-loader is Python); services testable via HTTP; excellent JSON report output |
+| HTTP mocking | **WireMock** | Industry standard; captures + asserts requests; single container replaces all external APIs |
+| Firestore | **Official Google emulator** | Already supported by data-loader (`--firestore-emulator` flag, port 8080) |
+| .NET services | **Docker Compose** | Real compiled binaries; real config; connects to emulator via env var |
+| Orchestration | **Makefile** | Universal, no extra tooling, readable targets |
+| Report format | **pytest-json-report** | Machine-readable for Claude fix loop |
+| Fixtures | **Real CSV files** from `NEO/data_input/` | Real data catches real bugs; format already validated by production |
+| Test language | **Python only** (not .NET xUnit for integration) | Single language at integration layer; services tested black-box over HTTP |
+
+### Rejected alternatives
+- **pytest-xdist** (parallel tests): rejected for Phase 1 — session-scoped pipeline fixture
+  runs once and is shared; parallelism would require per-worker emulator instances.
+- **Testcontainers** (Python): considered for programmatic container lifecycle; deferred in
+  favour of explicit `make infra-up/down` for clarity and debuggability.
+- **Importing data-loader modules directly**: rejected in favour of subprocess — black-box
+  testing is more realistic and avoids dependency conflicts between the two venvs.
 
 ---
 
-## Key Design Principles
+## Updating CSV Fixtures
 
-1. **Fast by default** — Phase 1 (pipeline only) runs in ~60s with no .NET services
-2. **Incremental** — each phase adds a layer; early phases stay green as later ones are added
-3. **Traceable** — test names map directly to source files and business concepts
-4. **Self-contained** — no cloud credentials needed; everything mocked locally
-5. **Claude-friendly** — JSON output, clear failure messages, documented fix patterns
+When a new data batch is available in `NEO/data_input/`:
+
+```bash
+cp ../data_input/*.csv fixtures/csv/
+# Then re-run tests to confirm format compatibility
+make test-pipeline
+```
+
+---
+
+## Design Principles
+
+1. **Fast by default** — Phase 1 runs in ~60s; no .NET services needed
+2. **Incremental** — each phase adds a layer; earlier layers stay green
+3. **Traceable** — test names → source files → repos; no ambiguity
+4. **Self-contained** — no cloud credentials; everything mocked locally
+5. **Claude-friendly** — JSON output, structured failures, documented trace table
