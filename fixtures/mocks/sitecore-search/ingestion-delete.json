@@ -1,0 +1,16 @@
+{
+  "request": {
+    "method": "DELETE",
+    "urlPattern": "^/ingestion/v1/domains/.+/sources/.+/entities/.+/documents/.+"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "enqueued": true,
+      "incremental_update_ids": [ "test-delete-update-id-001" ]
+    }
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPattern": "^/discover/v2/integration"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "widgets": [
+        {
+          "rfk_id": "rfkid_7",
+          "type": "search",
+          "content": [
+            {
+              "id": "PROD-001",
+              "name": "Test Product 001",
+              "base_sku": "PROD-001",
+              "url": "/de-de/test-product-001",
+              "image_url": null,
+              "short_description": "Integration test product"
+            }
+          ],
+          "total_item": 1,
+          "limit": 10,
+          "offset": 0,
+          "facet": [],
+          "suggestion": {}
+        }
+      ],
+      "dt": 5,
+      "ts": 1708518000000
+    }
+  }
+}
