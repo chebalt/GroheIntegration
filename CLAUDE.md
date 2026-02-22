@@ -10,6 +10,7 @@ Firestore emulator (and WireMock in Phase 2+) and validates behaviour across rep
 **Phase 3 ✅** IndexingApi → WireMock — **5 passed** (requires `infra-phase3-up`)
 **Phase 4 ✅** .NET ProductsApi + NavigationApi HTTP tests — **10 passed** (requires `infra-phase4-up`)
 **Phase 5 ✅** SearchApi HTTP tests — **5 passed** (requires `infra-phase5-up`, no Firestore seeding)
+**Phase 6 ✅** ProjectListsApi CRUD + PDF tests — **10 passed** (requires `infra-phase6-up`)
 
 ---
 
@@ -31,19 +32,24 @@ make infra-phase4-up   # Firestore (8080) + WireMock (8081) + NavigationApi (808
 # 2d. Start Phase 5 infrastructure (SearchApi — no Firestore needed)
 make infra-phase5-up   # WireMock (8081) + SearchApi (8085)
 
+# 2e. Start Phase 6 infrastructure (ProjectListsApi — installs Chrome, ~15-20 min first build)
+make infra-phase6-up   # Firestore (8080) + WireMock (8081) + ProjectListsApi (8086)
+
 # 3. Run tests
-make test-pipeline     # Layer 1: ETL pipeline (~10-11 min)
-make test-sync         # Layer 2: sync logic  (~15 sec)
-make test-indexing     # Layer 4: IndexingApi → WireMock (~30 sec, needs Phase 3 infra)
-make test-services     # Layer 3: NavigationApi + ProductsApi + SearchApi (~60 sec, needs Phase 4+5 infra)
-make test-search       # Phase 5: SearchApi only (~30 sec, needs Phase 5 infra)
-make test-all          # All layers
+make test-pipeline          # Layer 1: ETL pipeline (~10-11 min)
+make test-sync              # Layer 2: sync logic  (~15 sec)
+make test-indexing          # Layer 4: IndexingApi → WireMock (~30 sec, needs Phase 3 infra)
+make test-services          # Layer 3: NavigationApi + ProductsApi + SearchApi (~60 sec, needs Phase 4+5 infra)
+make test-search            # Phase 5: SearchApi only (~30 sec, needs Phase 5 infra)
+make test-project-lists     # Phase 6: ProjectListsApi CRUD + PDF (~60 sec, needs Phase 6 infra)
+make test-all               # All layers
 
 # 4. Stop containers when done
 make infra-down            # Phase 1+2
 make infra-phase3-down     # Phase 3 (all containers)
 make infra-phase4-down     # Phase 4 (all containers)
 make infra-phase5-down     # Phase 5 (all containers)
+make infra-phase6-down     # Phase 6 (all containers)
 ```
 
 ---
@@ -67,11 +73,15 @@ make infra-phase5-down     # Phase 5 (all containers)
 | `make infra-phase5-up` | Build + start SearchApi (no Firestore seeding needed) |
 | `make infra-phase5-down` | Stop all Phase 5 Docker containers |
 | `make wait-search-api` | Wait until SearchApi /health responds |
+| `make infra-phase6-up` | Build + start ProjectListsApi (Firestore + WireMock required) |
+| `make infra-phase6-down` | Stop all Phase 6 Docker containers |
+| `make wait-project-lists-api` | Wait until ProjectListsApi /health responds |
 | `make test-pipeline` | Layer 1: ETL pipeline tests → `reports/pipeline.json` |
 | `make test-sync` | Layer 2: sync logic tests → `reports/sync.json` |
 | `make test-indexing` | Layer 4: IndexingApi → WireMock → `reports/indexing.json` |
 | `make test-services` | Layer 3: NavigationApi + ProductsApi + SearchApi → `reports/services.json` |
 | `make test-search` | Phase 5: SearchApi only → `reports/search.json` |
+| `make test-project-lists` | Phase 6: ProjectListsApi CRUD + PDF → `reports/project-lists.json` |
 | `make test-all` | All available layers → `reports/results.json` |
 | `make fix-loop` | Run all tests + emit `reports/results.json` (Claude fix loop) |
 | `make report` | Open HTML report in browser |
@@ -103,6 +113,7 @@ integration/
 │                             NavigationApi (8083, profile=phase4 — built from source)
 │                             ProductsApi (8084, profile=phase4 — built from source)
 │                             SearchApi (8085, profile=phase5 — no Firestore)
+│                             ProjectListsApi (8086, profile=phase6 — Firestore CRUD + PDF)
 ├── Makefile                  All orchestration commands
 ├── requirements.txt          pytest, pytest-json-report, pytest-html, google-cloud-firestore
 ├── pytest.ini                Test discovery config + markers (pythonpath = .)
@@ -113,6 +124,8 @@ integration/
 │       │   ├── ingestion-update.json   PUT stub → {"enqueued":true,"incremental_update_id":"..."}
 │       │   ├── ingestion-delete.json   DELETE stub → {"enqueued":true,"incremental_update_ids":[...]}
 │       │   └── discovery-search.json   POST stub → SearchResults with 1 product (Phase 5)
+│       ├── project-lists/    Phase 6 stubs (idp-token, products-detail, products-variants,
+│       │                     xmcloud-graphql, xmcloud-apikey)
 │       ├── hybris/           (empty)
 │       ├── sitecore-edge/    (empty — Phase 5)
 │       └── idp/              (empty — Phase 5)
@@ -136,9 +149,12 @@ integration/
 │       ├── products/
 │       │   ├── conftest.py   products_result module fixture
 │       │   └── test_products_api.py
-│       └── search/           Phase 5: SearchApi (no Firestore dependency)
-│           ├── conftest.py   search_result module fixture (waits for SearchApi only)
-│           └── test_search_api.py
+│       ├── search/           Phase 5: SearchApi (no Firestore dependency)
+│       │   ├── conftest.py   search_result module fixture (waits for SearchApi only)
+│       │   └── test_search_api.py
+│       └── project-lists/    Phase 6: ProjectListsApi CRUD + PDF (10 tests)
+│           ├── conftest.py   project_lists_result module fixture (waits + seeds 2 docs)
+│           └── test_project_lists_api.py
 ├── scripts/
 │   ├── wait_for_emulator.py  Generic service health-check poller (--host, --path, --timeout)
 │   └── seed_config.py        Seeds configuration collection before Phase 4 services start
@@ -265,6 +281,20 @@ missing `lang` → 400, POST /autosuggest/v1/suggest → 200 or 204.
 - WireMock stub returns `{"widgets":[{"rfk_id":"rfkid_7","content":[{"id":"PROD-001","name":"Test Product 001","base_sku":"PROD-001",...}],"total_item":1}]}`
 - Source locale `"de_de"` mapped to source ID `"integration"` (appsettings.Integration.json)
 
+**Phase 6 (ProjectListsApi) — seeded in-memory, WireMock stubs for PDF:**
+- `SEEDED_LIST_ID = "integration-test-list-001"` — used for read/update/PDF tests (userId=test-user-id)
+- `SEEDED_DELETE_ID = "integration-test-list-002"` — deleted by test 9 (userId=test-user-id)
+- Collection name: `project-lists`; Firestore field names are PascalCase (`Id`, `UserId`, `ProjectListName`, ...)
+- JWT: unsigned fake JWT with `{"sub":"test-user-id"}` payload, sent as raw value (no "Bearer " prefix)
+  (`GetClaimValue` strips "OndusBearer" prefix then calls ReadJwtToken — no RSA verification)
+- WireMock stubs in `fixtures/mocks/project-lists/`:
+  - `idp-token.json` — POST /oauth/token → fake token (for XMCloud OAuth)
+  - `products-detail.json` — GET /neo/product/v1/PROD-001.* → product detail
+  - `products-variants.json` — GET /neo/product/v1/variants.* → finish values
+  - `xmcloud-graphql.json` — POST /graphql → empty dictionary results
+  - `xmcloud-apikey.json` — POST /apikey/v1 → plain text API key (SitecoreEdgeService calls
+    this after OAuth before every GraphQL query to get an XMCloud Edge key)
+
 ---
 
 ## Reading Test Results (for Claude)
@@ -300,6 +330,7 @@ After `make fix-loop`, read `reports/results.json`:
 | `services/navigation/test_navigation_api.py::TestNavigationApi` | NavigationApi HTTP | `grohe-neo-services/GroheNeo.ProductsDynamicNavigationApi/` |
 | `services/products/test_products_api.py::TestProductsApi` | ProductsApi HTTP | `grohe-neo-services/GroheNeo.ProductsApi/` |
 | `services/search/test_search_api.py::TestSearchApi` | SearchApi HTTP | `grohe-neo-services/GroheNeo.SearchApi/` |
+| `services/project-lists/test_project_lists_api.py::TestProjectListsApi` | ProjectListsApi HTTP | `grohe-neo-services/GroheNeo.ProjectListsApi/` |
 
 ---
 
@@ -325,10 +356,12 @@ When Claude is given a task that touches the data-loader or its Firestore output
 | Layer 2 (sync) | ~15 sec | Seeds 4 docs directly, no ETL; subprocess timeout: 120s |
 | Layer 4 (indexing) | ~30 sec | Seeds 2 docs, calls IndexingApi, inspects WireMock journal |
 | Layer 3 (services) | ~90 sec | Seeds minimal docs (Nav+Products), calls NavigationApi + ProductsApi + SearchApi |
+| Phase 6 (project-lists) | ~60 sec | Seeds 2 docs, calls ProjectListsApi CRUD + PDF |
 | IndexingApi Docker build | ~5–10 min (first time) | Subsequent builds are cached |
 | NavigationApi Docker build | ~2–3 min (first time) | No Chrome; subsequent builds cached |
 | ProductsApi Docker build | ~15–20 min (first time) | Installs Chrome ~100MB; subsequent builds cached |
 | SearchApi Docker build | ~2–3 min (first time) | No Chrome, no Firestore; subsequent builds cached |
+| ProjectListsApi Docker build | ~15–20 min (first time) | Installs Chrome ~100MB; subsequent builds cached |
 
 ---
 
@@ -505,6 +538,53 @@ JSON request key is `"lang"` (not `"language"`), query key is `"q"` (not `"query
 `http://wiremock:8080` so Refit calls WireMock instead of GCP during integration tests.
 This file is added to the `.csproj` with `CopyToOutputDirectory: Always`.
 
+## ProjectListsApi Notes (Phase 6)
+
+- Host port: `8086`; container internal port: `8080`
+- Docker profile: `phase6` — started with `docker compose --profile phase6 up -d --build`
+- Build time: ~15–20 min first time (installs Chrome v142 ~100MB + deps); subsequent builds cached
+- Health endpoint: `GET http://localhost:8086/health` → HTTP 200
+- Firestore collection: `project-lists` (field names PascalCase: `Id`, `UserId`, `ProjectListName`, ...)
+- Config override: `ASPNETCORE_ENVIRONMENT=Integration` loads `appsettings.Integration.json`
+  (file: `grohe-neo-services/src/GroheNeo.ProjectListsApi/appsettings.Integration.json`)
+- **No `seed_config.py` needed** — reads Firestore credentials from env vars, not Firestore docs
+
+**Critical — EmulatorDetection:**
+Both `FirestoreDbBuilder` instances in `DependencyInjectionExtensions.cs` must have:
+```csharp
+builder.EmulatorDetection = Google.Api.Gax.EmulatorDetection.EmulatorOrProduction;
+```
+Without this, `FIRESTORE_EMULATOR_HOST` is ignored and Firestore calls fail with auth errors.
+
+**JWT auth:**
+`IdpTokenHelper.GetClaimValue()` strips the "OndusBearer" prefix and calls `ReadJwtToken()`
+(payload decode only — no RSA signature verification). Tests send a fake unsigned JWT:
+```python
+header.payload.fakesig  # raw JWT, no "Bearer " prefix in Authorization header
+```
+`AuthorizationService.GetBaseParameters()` is called for write endpoints; since the JWT is
+non-empty, `isAnonymousUser = false` and the anonymous token call (GET /token) is NOT made.
+
+**ConfigurationXmCloud validation (ValidateOnStart):**
+All required fields must be non-empty at startup. `appsettings.Integration.json` provides:
+`EdgeClientId`, `EdgeClientSecret`, `AutomationClientId`, `AutomationClientSecret`,
+`EnvironmentId` — all set to dummy integration values.
+
+**PDF generation (test 10):**
+- SEEDED_LIST_ID doc must exist in Firestore (seeded by fixture, not deleted by test 9)
+- SEEDED_DELETE_ID is seeded separately for test 9 to delete
+- WireMock provides product data (GET /neo/product/v1/PROD-001*) and XMCloud OAuth + API key
+- Empty dictionary from GraphQL is fine — PDF generates with default labels
+- Full stub chain: POST /oauth/token → POST /apikey/v1 → POST /graphql; GET /neo/product/v1/PROD-001.*
+
+**`UpdateProjectListRequestStorageMapper` fix (already applied):**
+Bug: `UpdatedTimestamp = input.CreatedTimestamp` — used CreatedTimestamp for both fields.
+Fix: `UpdatedTimestamp = DateTime.SpecifyKind(input.UpdatedTimestamp, DateTimeKind.Utc)` and
+`CreatedTimestamp = DateTime.SpecifyKind(input.CreatedTimestamp, DateTimeKind.Utc)`.
+Without this, update requests crash Firestore with "DateTime kind must be Utc".
+
+**Services host ports:** ProjectListsApi=8086
+
 ## WireMock Notes
 
 - Host port: `8081`; container internal port: `8080`
@@ -524,5 +604,14 @@ file is added while the container is already up, trigger a reload with:
 ```bash
 curl -s -X POST http://localhost:8081/__admin/mappings/reset
 ```
-This is not needed in normal workflow because `infra-phase5-up` starts WireMock fresh.
+This is not needed in normal workflow because `infra-phase*-up` starts WireMock fresh.
 It is only needed if the stub file was created after the container was already running.
+
+**`urlPattern` requires `.*` suffix for URLs with query params:**
+WireMock matches `urlPattern` against the full URL string using Java `matches()` (not `find()`).
+A pattern like `^/neo/product/v1/PROD-001` only matches the exact path with no query string.
+To match requests with query params (`?locale=de-de&...`), always append `.*`:
+```json
+"urlPattern": "^/neo/product/v1/PROD-001.*"
+```
+Patterns ending with `.+` (like the ingestion stubs) already handle this correctly.

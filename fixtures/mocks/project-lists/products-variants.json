@@ -1,0 +1,21 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPattern": "^/neo/product/v1/variants.*"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "finishValues": [
+        {
+          "id": 1,
+          "name": "Alpine White"
+        }
+      ],
+      "sku": "PROD-001"
+    }
+  }
+}

@@ -9,6 +9,7 @@
 | **Phase 3** | IndexingApi → WireMock ingestion capture | ✅ **5 passed** — `test-indexing` (requires `infra-phase3-up`) |
 | **Phase 4** | ProductsApi + NavigationApi HTTP tests | ✅ **10 passed** — `test-services` (requires `infra-phase4-up`) |
 | **Phase 5** | SearchApi HTTP tests (Sitecore Search integration) | ✅ **5 passed** — `test-search` (requires `infra-phase5-up`) |
+| **Phase 6** | ProjectListsApi CRUD + PDF generation tests | ✅ **10 passed** — `test-project-lists` (requires `infra-phase6-up`) |
 
 ---
 
@@ -64,6 +65,11 @@ make infra-phase4-down
 make infra-phase5-up   # WireMock (8081) + SearchApi (8085)
 make test-search       # Phase 5: SearchApi HTTP tests (~30 sec)
 make infra-phase5-down
+
+# Phase 6: Start ProjectListsApi (Firestore + WireMock — first build ~15-20 min — downloads Chrome)
+make infra-phase6-up   # Firestore emulator + WireMock + ProjectListsApi (8086)
+make test-project-lists  # Phase 6: ProjectListsApi CRUD + PDF (~120 sec)
+make infra-phase6-down
 ```
 
 ### Prerequisites
@@ -89,6 +95,7 @@ integration/
 │                               NavigationApi (port 8083, profile=phase4)[Phase 4 ✅]
 │                               ProductsApi (port 8084, profile=phase4)  [Phase 4 ✅]
 │                               SearchApi (port 8085, profile=phase5)   [Phase 5 ✅]
+│                               ProjectListsApi (port 8086, profile=phase6) [Phase 6 ✅]
 ├── Makefile                    All orchestration commands
 ├── requirements.txt            pytest, pytest-json-report, pytest-html, google-cloud-firestore
 ├── pytest.ini                  Test discovery + markers (pythonpath = .)
@@ -98,6 +105,8 @@ integration/
 │   └── mocks/                  WireMock stub definitions
 │       ├── sitecore-search/    Ingestion stubs (PUT + DELETE) [Phase 3 ✅]
 │       │                       Discovery stub (POST search)  [Phase 5 ✅]
+│       ├── project-lists/      ProjectListsApi WireMock stubs          [Phase 6 ✅]
+│       │                       (idp-token, products-detail, products-variants, xmcloud-graphql)
 │       ├── hybris/             Hybris API stubs                        [planned]
 │       ├── sitecore-edge/      GraphQL response stubs                  [planned]
 │       └── idp/                OAuth token + JWT public key stubs      [planned]
@@ -118,9 +127,12 @@ integration/
 │   │   ├── products/
 │   │   │   ├── conftest.py     products_result fixture (seeds PLProductContent + waits)
 │   │   │   └── test_products_api.py    5 tests
-│   │   └── search/             Phase 5: SearchApi (no Firestore dependency)  [Phase 5 ✅]
-│   │       ├── conftest.py     search_result fixture (waits for SearchApi only)
-│   │       └── test_search_api.py      5 tests
+│   │   ├── search/             Phase 5: SearchApi (no Firestore dependency)  [Phase 5 ✅]
+│   │   │   ├── conftest.py     search_result fixture (waits for SearchApi only)
+│   │   │   └── test_search_api.py      5 tests
+│   │   └── project-lists/      Phase 6: ProjectListsApi CRUD + PDF          [Phase 6 ✅]
+│   │       ├── conftest.py     project_lists_result fixture (seeds Firestore + waits)
+│   │       └── test_project_lists_api.py  10 tests
 │   └── scenarios/              Layer 5: Cross-repo business scenarios   [planned]
 ├── scripts/
 │   └── wait_for_emulator.py    Generic health-check poller (--host, --path, --timeout)
@@ -157,12 +169,18 @@ make infra-phase5-up        # Build + start SearchApi (WireMock + SearchApi only
 make infra-phase5-down      # Stop all Phase 5 containers
 make wait-search-api        # Poll until SearchApi /health responds
 
+# Phase 6 Infrastructure (slow — first build ~15-20 min — downloads Chrome)
+make infra-phase6-up        # Build + start ProjectListsApi (Firestore + WireMock + ProjectListsApi)
+make infra-phase6-down      # Stop all Phase 6 containers
+make wait-project-lists-api # Poll until ProjectListsApi /health responds
+
 # Tests
 make test-pipeline          # Layer 1: ETL pipeline tests                     [Phase 1 ✅]
 make test-sync              # Layer 2: sync logic tests                       [Phase 2 ✅]
 make test-indexing          # Layer 4: IndexingApi → WireMock                 [Phase 3 ✅]
 make test-services          # Layer 3: NavigationApi + ProductsApi + SearchApi [Phase 4+5 ✅]
 make test-search            # Phase 5: SearchApi only                         [Phase 5 ✅]
+make test-project-lists     # Phase 6: ProjectListsApi CRUD + PDF             [Phase 6 ✅]
 make test-all               # All layers
 
 # Claude fix loop
@@ -308,6 +326,57 @@ Config overrides live in `grohe-neo-services/src/GroheNeo.SearchApi/appsettings.
 > **Language format:** SearchApi uses XM Cloud format `xx-xx` (5 chars). JSON request keys
 > are `"lang"` (not `"language"`) and `"q"` (not `"query"`).
 
+### Phase 6 ✅ — ProjectListsApi (.NET)
+
+```yaml
+project-lists-api:
+  profiles: ["phase6"]
+  build:
+    context: ../grohe-neo-services
+    dockerfile: src/GroheNeo.ProjectListsApi/Dockerfile
+  ports: ["8086:8080"]
+  environment:
+    ASPNETCORE_ENVIRONMENT: Integration   # loads appsettings.Integration.json
+    FIRESTORE_EMULATOR_HOST: firestore-emulator:8080
+    Firebase_Source_Project_Id: demo-project
+    Firebase_Source_Project_Database_Id: "(default)"
+    Firebase_Source_Product_Database_Id: "(default)"
+    TOKEN_API_URL: http://wiremock:8080/oauth/token
+    ProductApiBaseUrl: http://wiremock:8080
+```
+
+Config overrides live in `grohe-neo-services/src/GroheNeo.ProjectListsApi/appsettings.Integration.json`:
+- XMCloud OAuth → `http://wiremock:8080/oauth/token`
+- XMCloud Edge GraphQL → `http://wiremock:8080/graphql`
+- ProductsApi → `http://wiremock:8080` (via `ProductApiBaseUrl` env var)
+- All required `ConfigurationXmCloud` fields set to dummy values to pass `ValidateOnStart`
+
+**EmulatorDetection fix:** Applied to both `FirestoreDbBuilder` instances in
+`GroheNeo.ProjectListsApi/DependencyInjectionExtensions.cs` — the keyed "ProjectList" builder
+(project lists collection) and the unkeyed builder (product Firestore).
+
+**JWT auth — no RSA signature check:** `IdpTokenHelper.GetClaimValue()` strips the `"OndusBearer"`
+prefix then calls `JwtSecurityTokenHandler.ReadJwtToken()` — payload base64-decode only, no RSA
+verification. Tests send a fake unsigned JWT (header.payload.fakesig) directly as the
+`Authorization` header value with no `"Bearer "` prefix.
+
+**WireMock stubs** in `fixtures/mocks/project-lists/`:
+- `idp-token.json` — `POST /oauth/token` → `{"access_token": "fake-integration-token", ...}`
+- `products-detail.json` — `GET /neo/product/v1/PROD-001*` → minimal product detail with `"sku": "PROD-001"`
+- `products-variants.json` — `GET /neo/product/v1/variants*` → variant finish list
+- `xmcloud-graphql.json` — `POST /graphql` → empty dictionary results (graceful no-op)
+
+**Firestore collection:** `"project-lists"` with PascalCase field names (`Id`, `UserId`,
+`ProjectListName`, `Sections`, etc.). Two docs are seeded per test run:
+- `integration-test-list-001` — used for read, update, and PDF generation tests
+- `integration-test-list-002` — used for the delete test (separate doc so delete doesn't break PDF test)
+
+> **Build time:** First build ~15–20 min — PuppeteerSharp downloads Chromium (~100MB) to render PDFs.
+> Subsequent builds are fast (layer cache).
+
+> **No seed_config.py needed:** ProjectListsApi reads its Firestore project ID from environment
+> variables (`Firebase_Source_Project_Id`), not from a Firestore `configuration` document.
+
 ---
 
 ## Test Layers
@@ -404,6 +473,25 @@ Implemented tests:
 | `test_product_search_response_contains_items_when_200` | Response body has non-empty `results` array |
 | `test_product_search_returns_400_for_missing_language` | POST without `lang` field → 400 |
 | `test_autosuggest_returns_ok_for_valid_query` | POST /autosuggest/v1/suggest `{"lang":"de-de","q":"product"}` → 200 or 204 |
+
+#### ProjectListsApi (10 tests) `tests/services/project-lists/`
+
+**Infrastructure required:** `make infra-phase6-up` (Firestore emulator + WireMock + ProjectListsApi)
+
+| Test | Scenario |
+|---|---|
+| `test_health_returns_200` | GET /health → 200 |
+| `test_get_public_list_returns_200_for_known_id` | GET /neo/project-lists/v1/projectList?projectListId={SEEDED_LIST_ID}&locale=de-de → 200 + projectListId in body |
+| `test_get_public_list_contains_correct_name` | Same endpoint → name == "Integration Test List" |
+| `test_get_public_list_returns_404_for_unknown_id` | GET …?projectListId=does-not-exist-xyz → 404 |
+| `test_get_public_list_returns_400_without_params` | GET /neo/project-lists/v1/projectList (no params) → 400 |
+| `test_create_project_list_returns_200_with_jwt` | POST /neo/project-lists/v1/createList with JWT → 200 + projectListId in body |
+| `test_get_user_lists_returns_seeded_list` | GET /neo/project-lists/v1/user?userId=test-user-id&locale=en with JWT → 200 + non-empty list |
+| `test_update_project_list_changes_name` | POST /neo/project-lists/v1/projectList with new name + JWT → 200 + returned name matches |
+| `test_delete_project_list_returns_200` | DELETE /neo/project-lists/v1/projectList for SEEDED_DELETE_ID with JWT → 200 |
+| `test_generate_specification_document_returns_pdf` | POST /neo/project-lists/v1/specificationDocument with SEEDED_LIST_ID + PROD-001 SKU + JWT → 200 + Content-Type: application/pdf |
+
+**Timing:** ~120 seconds (PDF generation via Chrome is the slow path; first test run also waits for Chrome download).
 
 ### Layer 5 — Scenario tests `tests/scenarios/` (planned)
 

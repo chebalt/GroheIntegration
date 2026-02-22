@@ -1,0 +1,27 @@
+{
+  "request": {
+    "method": "POST",
+    "url": "/graphql"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "data": {
+        "site": {
+          "siteInfo": {
+            "dictionary": {
+              "results": [],
+              "pageInfo": {
+                "hasNext": false,
+                "endCursor": null
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

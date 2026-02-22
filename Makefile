@@ -26,11 +26,12 @@ ifeq ($(wildcard $(PYTHON)),)
 endif
 
 # Firestore emulator / service hosts
-EMULATOR_HOST        := localhost:8080
-INDEXING_API_HOST    := localhost:8082
-NAVIGATION_API_HOST  := localhost:8083
-PRODUCTS_API_HOST    := localhost:8084
-SEARCH_API_HOST      := localhost:8085
+EMULATOR_HOST             := localhost:8080
+INDEXING_API_HOST         := localhost:8082
+NAVIGATION_API_HOST       := localhost:8083
+PRODUCTS_API_HOST         := localhost:8084
+SEARCH_API_HOST           := localhost:8085
+PROJECT_LISTS_API_HOST    := localhost:8086
 
 .DEFAULT_GOAL := help
 
@@ -41,7 +42,7 @@ SEARCH_API_HOST      := localhost:8085
 .PHONY: help
 help:
 	@echo ""
-	@echo "Grohe NEO Integration Test Harness — Phase 1 + 2 + 3 + 4"
+	@echo "Grohe NEO Integration Test Harness — Phase 1 + 2 + 3 + 4 + 5 + 6"
 	@echo ""
 	@echo "  make setup               Install Python test dependencies"
 	@echo ""
@@ -67,13 +68,19 @@ help:
 	@echo "  make infra-phase5-down   Stop all Phase 5 containers"
 	@echo "  make wait-search-api     Wait until SearchApi /health responds"
 	@echo ""
+	@echo "  Phase 6 infrastructure (ProjectListsApi — installs Chrome, build ~15-20 min):"
+	@echo "  make infra-phase6-up     Build + start ProjectListsApi"
+	@echo "  make infra-phase6-down   Stop all Phase 6 containers"
+	@echo "  make wait-project-lists-api  Wait until ProjectListsApi /health responds"
+	@echo ""
 	@echo "  Tests:"
-	@echo "  make test-pipeline       Layer 1: ETL pipeline tests (requires emulator)"
-	@echo "  make test-sync           Layer 2: sync_product_index.py tests"
-	@echo "  make test-indexing       Layer 4: Indexing API tests (requires Phase 3 infra)"
-	@echo "  make test-services       Layer 3: NavigationApi + ProductsApi + SearchApi tests (requires Phase 4+5 infra)"
-	@echo "  make test-all            All layers"
-	@echo "  make fix-loop            Run tests + emit reports/results.json (for Claude)"
+	@echo "  make test-pipeline            Layer 1: ETL pipeline tests (requires emulator)"
+	@echo "  make test-sync                Layer 2: sync_product_index.py tests"
+	@echo "  make test-indexing            Layer 4: Indexing API tests (requires Phase 3 infra)"
+	@echo "  make test-services            Layer 3: NavigationApi + ProductsApi + SearchApi tests (requires Phase 4+5 infra)"
+	@echo "  make test-project-lists       Phase 6: ProjectListsApi tests (requires Phase 6 infra)"
+	@echo "  make test-all                 All layers"
+	@echo "  make fix-loop                 Run tests + emit reports/results.json (for Claude)"
 	@echo ""
 	@echo "  make report              Open HTML report in browser"
 	@echo "  make clean               Remove reports and __pycache__"
@@ -212,6 +219,33 @@ wait-search-api:
 	$(PYTHON) scripts/wait_for_emulator.py --host $(SEARCH_API_HOST) --path /health --timeout 180
 
 # ─────────────────────────────────────────────────────────────────────────────
+# Infrastructure — Phase 6 (+ ProjectListsApi — installs Chrome, ~15-20 min)
+# ─────────────────────────────────────────────────────────────────────────────
+
+.PHONY: infra-phase6-up
+infra-phase6-up:
+	@echo "→ Ensuring Firestore emulator + WireMock are running..."
+	docker compose up -d
+	$(PYTHON) scripts/wait_for_emulator.py --host $(EMULATOR_HOST) --timeout 90
+	@echo "→ Building Phase 6 Docker image (first run: ProjectListsApi ~15-20 min — installs Chrome)..."
+	docker compose --profile phase6 build project-lists-api
+	@echo "→ Starting Phase 6 services..."
+	docker compose --profile phase6 up -d
+	@echo "→ Waiting for ProjectListsApi /health (up to 5 min — Chrome install on first build)..."
+	$(PYTHON) scripts/wait_for_emulator.py --host $(PROJECT_LISTS_API_HOST) --path /health --timeout 300
+	@echo "✓ Phase 6 infrastructure ready."
+
+.PHONY: infra-phase6-down
+infra-phase6-down:
+	@echo "→ Stopping all Phase 6 containers..."
+	docker compose --profile phase6 down
+	@echo "✓ Phase 6 infrastructure stopped."
+
+.PHONY: wait-project-lists-api
+wait-project-lists-api:
+	$(PYTHON) scripts/wait_for_emulator.py --host $(PROJECT_LISTS_API_HOST) --path /health --timeout 300
+
+# ─────────────────────────────────────────────────────────────────────────────
 # Tests
 # ─────────────────────────────────────────────────────────────────────────────
 
@@ -271,6 +305,20 @@ test-search: $(REPORTS_DIR)
 		-p no:cacheprovider
 	@echo "✓ SearchApi tests complete. Report: reports/search.html"
 
+.PHONY: test-project-lists
+test-project-lists: $(REPORTS_DIR)
+	@echo "→ Running ProjectListsApi tests (Phase 6 — requires Phase 6 infrastructure)..."
+	FIRESTORE_EMULATOR_HOST=$(EMULATOR_HOST) \
+	PROJECT_LISTS_API_HOST=$(PROJECT_LISTS_API_HOST) \
+	$(PYTEST) tests/services/project-lists/ \
+		-v \
+		--json-report \
+		--json-report-file=$(REPORTS_DIR)/project-lists.json \
+		--html=$(REPORTS_DIR)/project-lists.html \
+		--self-contained-html \
+		-p no:cacheprovider
+	@echo "✓ ProjectListsApi tests complete. Report: reports/project-lists.html"
+
 .PHONY: test-services
 test-services: $(REPORTS_DIR)
 	@echo "→ Running service tests (Layer 3 — requires Phase 4+5 infrastructure)..."
@@ -295,6 +343,7 @@ test-all: $(REPORTS_DIR)
 	NAVIGATION_API_HOST=$(NAVIGATION_API_HOST) \
 	PRODUCTS_API_HOST=$(PRODUCTS_API_HOST) \
 	SEARCH_API_HOST=$(SEARCH_API_HOST) \
+	PROJECT_LISTS_API_HOST=$(PROJECT_LISTS_API_HOST) \
 	$(PYTEST) tests/ \
 		-v \
 		--json-report \
@@ -314,6 +363,7 @@ fix-loop: $(REPORTS_DIR)
 	NAVIGATION_API_HOST=$(NAVIGATION_API_HOST) \
 	PRODUCTS_API_HOST=$(PRODUCTS_API_HOST) \
 	SEARCH_API_HOST=$(SEARCH_API_HOST) \
+	PROJECT_LISTS_API_HOST=$(PROJECT_LISTS_API_HOST) \
 	$(PYTEST) tests/ \
 		--json-report \
 		--json-report-file=$(REPORTS_DIR)/results.json \
