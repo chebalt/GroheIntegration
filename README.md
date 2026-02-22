@@ -66,9 +66,9 @@ make infra-phase5-up   # WireMock (8081) + SearchApi (8085)
 make test-search       # Phase 5: SearchApi HTTP tests (~30 sec)
 make infra-phase5-down
 
-# Phase 6: Start ProjectListsApi (Firestore + WireMock — first build ~15-20 min — downloads Chrome)
-make infra-phase6-up   # Firestore emulator + WireMock + ProjectListsApi (8086)
-make test-project-lists  # Phase 6: ProjectListsApi CRUD + PDF (~120 sec)
+# Phase 6: Start ProductsApi + ProjectListsApi (first build ~15-20 min each — downloads Chrome)
+make infra-phase6-up   # seeds config + Firestore (8080) + WireMock (8081) + ProductsApi (8084) + ProjectListsApi (8086)
+make test-project-lists  # Phase 6: ProjectListsApi CRUD + PDF (~30 sec)
 make infra-phase6-down
 ```
 
@@ -93,7 +93,7 @@ integration/
 │                               WireMock (port 8081)                    [Phase 2 ✅]
 │                               IndexingApi (port 8082, profile=phase3) [Phase 3 ✅]
 │                               NavigationApi (port 8083, profile=phase4)[Phase 4 ✅]
-│                               ProductsApi (port 8084, profile=phase4)  [Phase 4 ✅]
+│                               ProductsApi (port 8084, profile=phase4+phase6) [Phase 4 ✅]
 │                               SearchApi (port 8085, profile=phase5)   [Phase 5 ✅]
 │                               ProjectListsApi (port 8086, profile=phase6) [Phase 6 ✅]
 ├── Makefile                    All orchestration commands
@@ -105,8 +105,9 @@ integration/
 │   └── mocks/                  WireMock stub definitions
 │       ├── sitecore-search/    Ingestion stubs (PUT + DELETE) [Phase 3 ✅]
 │       │                       Discovery stub (POST search)  [Phase 5 ✅]
-│       ├── project-lists/      ProjectListsApi WireMock stubs          [Phase 6 ✅]
-│       │                       (idp-token, products-detail, products-variants, xmcloud-graphql)
+│       ├── project-lists/      ProjectListsApi WireMock stubs (XMCloud only) [Phase 6 ✅]
+│       │                       (idp-token, xmcloud-apikey, xmcloud-graphql)
+│       │                       product data served by real ProductsApi — no product stubs
 │       ├── hybris/             Hybris API stubs                        [planned]
 │       ├── sitecore-edge/      GraphQL response stubs                  [planned]
 │       └── idp/                OAuth token + JWT public key stubs      [planned]
@@ -169,8 +170,8 @@ make infra-phase5-up        # Build + start SearchApi (WireMock + SearchApi only
 make infra-phase5-down      # Stop all Phase 5 containers
 make wait-search-api        # Poll until SearchApi /health responds
 
-# Phase 6 Infrastructure (slow — first build ~15-20 min — downloads Chrome)
-make infra-phase6-up        # Build + start ProjectListsApi (Firestore + WireMock + ProjectListsApi)
+# Phase 6 Infrastructure (slow — first build ~15-20 min each — downloads Chrome)
+make infra-phase6-up        # Seed config + build + start ProductsApi + ProjectListsApi
 make infra-phase6-down      # Stop all Phase 6 containers
 make wait-project-lists-api # Poll until ProjectListsApi /health responds
 
@@ -278,7 +279,7 @@ navigation-api:
     Neo_XMCloudApi_BaseUrl: http://wiremock:8080
 
 products-api:
-  profiles: ["phase4"]
+  profiles: ["phase4", "phase6"]
   build: { context: ../grohe-neo-services, dockerfile: src/GroheNeo.ProductsApi/Dockerfile }
   ports: ["8084:8080"]
   environment:
@@ -342,13 +343,16 @@ project-lists-api:
     Firebase_Source_Project_Database_Id: "(default)"
     Firebase_Source_Product_Database_Id: "(default)"
     TOKEN_API_URL: http://wiremock:8080/oauth/token
-    ProductApiBaseUrl: http://wiremock:8080
+    ProductApiBaseUrl: http://products-api:8080   # real ProductsApi — no WireMock bridge
+  depends_on:
+    products-api:
+      condition: service_healthy
 ```
 
 Config overrides live in `grohe-neo-services/src/GroheNeo.ProjectListsApi/appsettings.Integration.json`:
 - XMCloud OAuth → `http://wiremock:8080/oauth/token`
 - XMCloud Edge GraphQL → `http://wiremock:8080/graphql`
-- ProductsApi → `http://wiremock:8080` (via `ProductApiBaseUrl` env var)
+- ProductsApi → `http://products-api:8080` (real service via `ProductApiBaseUrl` env var)
 - All required `ConfigurationXmCloud` fields set to dummy values to pass `ValidateOnStart`
 
 **EmulatorDetection fix:** Applied to both `FirestoreDbBuilder` instances in
@@ -360,11 +364,13 @@ prefix then calls `JwtSecurityTokenHandler.ReadJwtToken()` — payload base64-de
 verification. Tests send a fake unsigned JWT (header.payload.fakesig) directly as the
 `Authorization` header value with no `"Bearer "` prefix.
 
-**WireMock stubs** in `fixtures/mocks/project-lists/`:
+**WireMock stubs** in `fixtures/mocks/project-lists/` (XMCloud only — 3 stubs):
 - `idp-token.json` — `POST /oauth/token` → `{"access_token": "fake-integration-token", ...}`
-- `products-detail.json` — `GET /neo/product/v1/PROD-001*` → minimal product detail with `"sku": "PROD-001"`
-- `products-variants.json` — `GET /neo/product/v1/variants*` → variant finish list
+- `xmcloud-apikey.json` — `POST /apikey/v1` → plain-text API key string
 - `xmcloud-graphql.json` — `POST /graphql` → empty dictionary results (graceful no-op)
+
+Product detail and variants are fetched from **real ProductsApi** (port 8084) which reads from
+the Firestore emulator. No WireMock product stubs needed or present.
 
 **Firestore collection:** `"project-lists"` with PascalCase field names (`Id`, `UserId`,
 `ProjectListName`, `Sections`, etc.). Two docs are seeded per test run:
@@ -374,8 +380,12 @@ verification. Tests send a fake unsigned JWT (header.payload.fakesig) directly a
 > **Build time:** First build ~15–20 min — PuppeteerSharp downloads Chromium (~100MB) to render PDFs.
 > Subsequent builds are fast (layer cache).
 
-> **No seed_config.py needed:** ProjectListsApi reads its Firestore project ID from environment
-> variables (`Firebase_Source_Project_Id`), not from a Firestore `configuration` document.
+> **seed_config.py is required:** ProductsApi (a phase6 dependency) reads the `configuration`
+> Firestore collection at startup. `make infra-phase6-up` runs `make seed-config` automatically.
+
+> **ETL data required for PDF test:** Test 10 uses SKU `1039960000` with `locale=de-DE`. The
+> corresponding `PLProductContent` documents must be in Firestore before running the test.
+> Run `make test-pipeline` (or load data manually) to populate the emulator.
 
 ---
 
@@ -489,9 +499,9 @@ Implemented tests:
 | `test_get_user_lists_returns_seeded_list` | GET /neo/project-lists/v1/user?userId=test-user-id&locale=en with JWT → 200 + non-empty list |
 | `test_update_project_list_changes_name` | POST /neo/project-lists/v1/projectList with new name + JWT → 200 + returned name matches |
 | `test_delete_project_list_returns_200` | DELETE /neo/project-lists/v1/projectList for SEEDED_DELETE_ID with JWT → 200 |
-| `test_generate_specification_document_returns_pdf` | POST /neo/project-lists/v1/specificationDocument with SEEDED_LIST_ID + PROD-001 SKU + JWT → 200 + Content-Type: application/pdf |
+| `test_generate_specification_document_returns_pdf` | POST /neo/project-lists/v1/specificationDocument with SEEDED_LIST_ID + SKU 1039960000 + JWT → 200 + Content-Type: application/pdf (real ProductsApi + real Firestore data) |
 
-**Timing:** ~120 seconds (PDF generation via Chrome is the slow path; first test run also waits for Chrome download).
+**Timing:** ~30 seconds (PDF generation via Chrome; Chrome is already running in the container).
 
 ### Layer 5 — Scenario tests `tests/scenarios/` (planned)
 

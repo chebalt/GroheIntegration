@@ -102,7 +102,7 @@ services:
       start_period: 60s
 
   # Phase 6 — .NET ProjectListsApi (installs Chrome — first build ~15–20 min)
-  # Start with: docker compose --profile phase6 up -d --build
+  # Start with: make infra-phase6-up  (seeds configuration + builds ProductsApi + ProjectListsApi)
   project-lists-api:
     profiles: ["phase6"]
     build:
@@ -119,11 +119,13 @@ services:
       Firebase_Source_Project_Database_Id: "(default)"
       Firebase_Source_Product_Database_Id: "(default)"
       TOKEN_API_URL: http://wiremock:8080/oauth/token
-      ProductApiBaseUrl: http://wiremock:8080
+      ProductApiBaseUrl: http://products-api:8080
     depends_on:
       firestore-emulator:
         condition: service_healthy
       wiremock:
+        condition: service_healthy
+      products-api:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
@@ -132,9 +134,9 @@ services:
       retries: 24
       start_period: 120s
 
-  # Phase 4 — .NET ProductsApi (installs Chrome — first build ~15–20 min)
+  # Phase 4 + 6 — .NET ProductsApi (installs Chrome — first build ~15–20 min)
   products-api:
-    profiles: ["phase4"]
+    profiles: ["phase4", "phase6"]
     build:
       context: ../grohe-neo-services
       dockerfile: src/GroheNeo.ProductsApi/Dockerfile

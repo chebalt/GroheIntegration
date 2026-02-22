@@ -68,8 +68,8 @@ help:
 	@echo "  make infra-phase5-down   Stop all Phase 5 containers"
 	@echo "  make wait-search-api     Wait until SearchApi /health responds"
 	@echo ""
-	@echo "  Phase 6 infrastructure (ProjectListsApi — installs Chrome, build ~15-20 min):"
-	@echo "  make infra-phase6-up     Build + start ProjectListsApi"
+	@echo "  Phase 6 infrastructure (ProductsApi + ProjectListsApi — installs Chrome, ~15-20 min each):"
+	@echo "  make infra-phase6-up     Seed config + build + start ProductsApi + ProjectListsApi"
 	@echo "  make infra-phase6-down   Stop all Phase 6 containers"
 	@echo "  make wait-project-lists-api  Wait until ProjectListsApi /health responds"
 	@echo ""
@@ -227,10 +227,14 @@ infra-phase6-up:
 	@echo "→ Ensuring Firestore emulator + WireMock are running..."
 	docker compose up -d
 	$(PYTHON) scripts/wait_for_emulator.py --host $(EMULATOR_HOST) --timeout 90
-	@echo "→ Building Phase 6 Docker image (first run: ProjectListsApi ~15-20 min — installs Chrome)..."
-	docker compose --profile phase6 build project-lists-api
-	@echo "→ Starting Phase 6 services..."
+	@echo "→ Seeding configuration collection (required for ProductsApi)..."
+	$(MAKE) seed-config
+	@echo "→ Building Phase 6 Docker images (first run: ProductsApi + ProjectListsApi ~15-20 min each — installs Chrome)..."
+	docker compose --profile phase6 build
+	@echo "→ Starting Phase 6 services (ProductsApi + ProjectListsApi)..."
 	docker compose --profile phase6 up -d
+	@echo "→ Waiting for ProductsApi /health (up to 5 min)..."
+	$(PYTHON) scripts/wait_for_emulator.py --host $(PRODUCTS_API_HOST) --path /health --timeout 300
 	@echo "→ Waiting for ProjectListsApi /health (up to 5 min — Chrome install on first build)..."
 	$(PYTHON) scripts/wait_for_emulator.py --host $(PROJECT_LISTS_API_HOST) --path /health --timeout 300
 	@echo "✓ Phase 6 infrastructure ready."

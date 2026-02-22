@@ -32,8 +32,8 @@ make infra-phase4-up   # Firestore (8080) + WireMock (8081) + NavigationApi (808
 # 2d. Start Phase 5 infrastructure (SearchApi — no Firestore needed)
 make infra-phase5-up   # WireMock (8081) + SearchApi (8085)
 
-# 2e. Start Phase 6 infrastructure (ProjectListsApi — installs Chrome, ~15-20 min first build)
-make infra-phase6-up   # Firestore (8080) + WireMock (8081) + ProjectListsApi (8086)
+# 2e. Start Phase 6 infrastructure (ProductsApi + ProjectListsApi — installs Chrome, ~15-20 min first build)
+make infra-phase6-up   # Firestore (8080) + WireMock (8081) + ProductsApi (8084) + ProjectListsApi (8086)
 
 # 3. Run tests
 make test-pipeline          # Layer 1: ETL pipeline (~10-11 min)
@@ -73,7 +73,7 @@ make infra-phase6-down     # Phase 6 (all containers)
 | `make infra-phase5-up` | Build + start SearchApi (no Firestore seeding needed) |
 | `make infra-phase5-down` | Stop all Phase 5 Docker containers |
 | `make wait-search-api` | Wait until SearchApi /health responds |
-| `make infra-phase6-up` | Build + start ProjectListsApi (Firestore + WireMock required) |
+| `make infra-phase6-up` | Seed config + build + start ProductsApi + ProjectListsApi |
 | `make infra-phase6-down` | Stop all Phase 6 Docker containers |
 | `make wait-project-lists-api` | Wait until ProjectListsApi /health responds |
 | `make test-pipeline` | Layer 1: ETL pipeline tests → `reports/pipeline.json` |
@@ -111,7 +111,7 @@ integration/
 ├── docker-compose.yml        Firestore emulator (8080) + WireMock 3.4.2 (8081)
 │                             IndexingApi (8082, profile=phase3 — built from source)
 │                             NavigationApi (8083, profile=phase4 — built from source)
-│                             ProductsApi (8084, profile=phase4 — built from source)
+│                             ProductsApi (8084, profile=phase4,phase6 — built from source)
 │                             SearchApi (8085, profile=phase5 — no Firestore)
 │                             ProjectListsApi (8086, profile=phase6 — Firestore CRUD + PDF)
 ├── Makefile                  All orchestration commands
@@ -124,8 +124,8 @@ integration/
 │       │   ├── ingestion-update.json   PUT stub → {"enqueued":true,"incremental_update_id":"..."}
 │       │   ├── ingestion-delete.json   DELETE stub → {"enqueued":true,"incremental_update_ids":[...]}
 │       │   └── discovery-search.json   POST stub → SearchResults with 1 product (Phase 5)
-│       ├── project-lists/    Phase 6 stubs (idp-token, products-detail, products-variants,
-│       │                     xmcloud-graphql, xmcloud-apikey)
+│       ├── project-lists/    Phase 6 stubs (idp-token, xmcloud-graphql, xmcloud-apikey)
+│       │                     product data served by real ProductsApi — no product stubs needed
 │       ├── hybris/           (empty)
 │       ├── sitecore-edge/    (empty — Phase 5)
 │       └── idp/              (empty — Phase 5)
@@ -281,19 +281,20 @@ missing `lang` → 400, POST /autosuggest/v1/suggest → 200 or 204.
 - WireMock stub returns `{"widgets":[{"rfk_id":"rfkid_7","content":[{"id":"PROD-001","name":"Test Product 001","base_sku":"PROD-001",...}],"total_item":1}]}`
 - Source locale `"de_de"` mapped to source ID `"integration"` (appsettings.Integration.json)
 
-**Phase 6 (ProjectListsApi) — seeded in-memory, WireMock stubs for PDF:**
+**Phase 6 (ProjectListsApi) — seeded in-memory, real ProductsApi for PDF:**
 - `SEEDED_LIST_ID = "integration-test-list-001"` — used for read/update/PDF tests (userId=test-user-id)
 - `SEEDED_DELETE_ID = "integration-test-list-002"` — deleted by test 9 (userId=test-user-id)
 - Collection name: `project-lists`; Firestore field names are PascalCase (`Id`, `UserId`, `ProjectListName`, ...)
 - JWT: unsigned fake JWT with `{"sub":"test-user-id"}` payload, sent as raw value (no "Bearer " prefix)
   (`GetClaimValue` strips "OndusBearer" prefix then calls ReadJwtToken — no RSA verification)
-- WireMock stubs in `fixtures/mocks/project-lists/`:
+- PDF test (test 10) uses SKU `1039960000` with `locale=de-DE` — **requires ETL data in Firestore**
+  (run `make test-pipeline` or load ETL data before running phase 6 tests)
+- WireMock stubs in `fixtures/mocks/project-lists/` (3 stubs, XMCloud only):
   - `idp-token.json` — POST /oauth/token → fake token (for XMCloud OAuth)
-  - `products-detail.json` — GET /neo/product/v1/PROD-001.* → product detail
-  - `products-variants.json` — GET /neo/product/v1/variants.* → finish values
   - `xmcloud-graphql.json` — POST /graphql → empty dictionary results
   - `xmcloud-apikey.json` — POST /apikey/v1 → plain text API key (SitecoreEdgeService calls
     this after OAuth before every GraphQL query to get an XMCloud Edge key)
+- Product data (detail + variants) served by **real ProductsApi** (port 8084) reading from Firestore emulator
 
 ---
 
@@ -541,13 +542,16 @@ This file is added to the `.csproj` with `CopyToOutputDirectory: Always`.
 ## ProjectListsApi Notes (Phase 6)
 
 - Host port: `8086`; container internal port: `8080`
-- Docker profile: `phase6` — started with `docker compose --profile phase6 up -d --build`
+- Docker profile: `phase6` — started with `make infra-phase6-up`
 - Build time: ~15–20 min first time (installs Chrome v142 ~100MB + deps); subsequent builds cached
 - Health endpoint: `GET http://localhost:8086/health` → HTTP 200
 - Firestore collection: `project-lists` (field names PascalCase: `Id`, `UserId`, `ProjectListName`, ...)
 - Config override: `ASPNETCORE_ENVIRONMENT=Integration` loads `appsettings.Integration.json`
   (file: `grohe-neo-services/src/GroheNeo.ProjectListsApi/appsettings.Integration.json`)
-- **No `seed_config.py` needed** — reads Firestore credentials from env vars, not Firestore docs
+- **`seed_config.py` IS required** — ProductsApi (which phase6 now depends on) reads the
+  `configuration` Firestore collection at startup. `make infra-phase6-up` runs it automatically.
+- **ProductsApi dependency:** `ProductApiBaseUrl=http://products-api:8080` — ProjectListsApi
+  calls the real ProductsApi container directly (not WireMock). ProductsApi reads from Firestore.
 
 **Critical — EmulatorDetection:**
 Both `FirestoreDbBuilder` instances in `DependencyInjectionExtensions.cs` must have:
@@ -573,9 +577,13 @@ All required fields must be non-empty at startup. `appsettings.Integration.json`
 **PDF generation (test 10):**
 - SEEDED_LIST_ID doc must exist in Firestore (seeded by fixture, not deleted by test 9)
 - SEEDED_DELETE_ID is seeded separately for test 9 to delete
-- WireMock provides product data (GET /neo/product/v1/PROD-001*) and XMCloud OAuth + API key
-- Empty dictionary from GraphQL is fine — PDF generates with default labels
-- Full stub chain: POST /oauth/token → POST /apikey/v1 → POST /graphql; GET /neo/product/v1/PROD-001.*
+- SKU `1039960000`, locale `de-DE` — ETL data must be loaded into Firestore before running
+  (`make test-pipeline` or the data-loader run populates the necessary PLProductContent docs)
+- WireMock provides XMCloud OAuth + API key + empty GraphQL dictionary
+- Real product detail + variants fetched from ProductsApi (reading from Firestore emulator)
+- Empty dictionary from GraphQL is fine — PDF generates with default label keys
+- Call chain: POST /oauth/token (WireMock) → POST /apikey/v1 (WireMock) → POST /graphql (WireMock);
+  GET products-api:8080/neo/product/v1/1039960000 (real); GET products-api:8080/neo/product/v1/variants (real)
 
 **`UpdateProjectListRequestStorageMapper` fix (already applied):**
 Bug: `UpdatedTimestamp = input.CreatedTimestamp` — used CreatedTimestamp for both fields.

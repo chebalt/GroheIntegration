@@ -15,7 +15,11 @@ JWT notes:
   the "sub" claim successfully.
 
 Infrastructure required:
-  docker compose --profile phase6 up -d --build
+  make infra-phase6-up   (seeds config, builds ProductsApi + ProjectListsApi)
+
+Product data required for PDF test (test 10):
+  ETL data for SKU 1039960000 must be in Firestore — run `make test-pipeline`
+  or `make load-etl-data` before running phase 6 tests.
 """
 
 import base64
@@ -56,9 +60,9 @@ SEEDED_LIST_DOC = {
             "SectionName": "Test Section",
             "Items": [
                 {
-                    "ProductSku": "PROD-001",
-                    "ProductName": "Test Product 001",
-                    "Quantity": 2,
+                    "ProductSku": "1039960000",
+                    "ProductName": "GROHE Eurosmart",
+                    "Quantity": 1,
                     "CustomLabels": [],
                 }
             ],
