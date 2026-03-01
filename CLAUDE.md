@@ -16,13 +16,13 @@ by feature rather than implementation phase.
 **search ✅** SearchApi HTTP tests — **5 passed** (requires `infra-search-up`, no Firestore seeding)
 **project-list ✅** ProjectListsApi CRUD + PDF tests — **10 passed** (requires `infra-project-list-up`)
 
-**Batch B (7 features — test scaffolding exists, services not yet added to docker-compose)**
+**Batch B (7 features — 3 active, 4 pending)**
 
-**shopping-cart 🔜** ShoppingCartApi HTTP tests (tests/shopping-cart/, port 8087)
+**shopping-cart ✅** ShoppingCartApi HTTP tests — **5 passed** (tests/shopping-cart/, port 8087)
+**pricing ✅** PricingApi HTTP tests — **5 passed** (tests/pricing/, port 8089)
+**forms ✅** FormsApi form submission tests — **5 passed** (tests/forms/, port 8092)
 **my-account 🔜** UserApi HTTP tests — addresses + Google Places (tests/my-account/, port 8088)
-**pricing 🔜** PricingApi HTTP tests — Hybris price fetch (tests/pricing/, port 8089)
 **checkout 🔜** OrderApi + Adyen payment tests (tests/checkout/, port 8090)
-**forms 🔜** FormsApi form submission tests — Mulesoft + reCAPTCHA (tests/forms/, port 8092)
 **store-locator 🔜** Store-locator job → `stores-index-updates` Firestore (tests/store-locator/)
 **redirections 🔜** Redirect reverse proxy HTTP tests (tests/redirections/, port 8093)
 
@@ -599,9 +599,12 @@ builder.EmulatorDetection = Google.Api.Gax.EmulatorDetection.EmulatorOrProductio
 
 - Host port: `8087`; Docker profile: `shopping-cart`
 - Health endpoint: `GET http://localhost:8087/health` → HTTP 200
-- Hybris stubs: `fixtures/mocks/hybris/cart-*.json`
-- Tests: anonymous cart creation, add/remove items, cart merge on login
-- IDP stubs: `fixtures/mocks/idp/` (OIDC token for authenticated cart)
+- Hybris stubs: `fixtures/mocks/hybris/cart-*.json` (patterns: `^/[^/]+/users/...` — NO `/rest/v2` prefix!)
+- Routes: `GET /neo/cart/v1/detail`, `POST /neo/cart/v1/addEntry`, `DELETE /neo/cart/v1/delete`
+- Anonymous + no cartId: `GET /detail` → 200 empty cart; `POST /addEntry` → creates cart then adds entry (returns `cartId`); `DELETE /delete` → 400
+- Anonymous + cartId: `DELETE /delete` → calls Hybris delete → 200
+- WireMock token stub (`hybris-token.json`) required: ShoppingCartService calls `ITokenApi.GetToken()` even for anonymous requests
+- `INTEGRATION_TEST_MODE=true` env var required in docker-compose (bypasses GoogleIdTokenHandler GCP metadata call)
 
 ## UserApi Notes (my-account)
 
@@ -615,8 +618,13 @@ builder.EmulatorDetection = Google.Api.Gax.EmulatorDetection.EmulatorOrProductio
 
 - Host port: `8089`; Docker profile: `pricing`
 - Health endpoint: `GET http://localhost:8089/health` → HTTP 200
-- Hybris stubs: `fixtures/mocks/hybris/pricing-get.json`
-- Tests: authenticated + anonymous price fetch; cache behaviour
+- **Route**: `GET /neo/product/v1/price` (NOT `/neo/pricing/v1/price`)
+- Hybris stubs: `fixtures/mocks/hybris/pricing-get.json` (pattern: `^/[^/]+/users/[^/]+/products/prices.*`, NO `/rest/v2` prefix)
+- WireMock stub response shape: `{products: [{code, currencyIso, originalPrice, userPrice, ...}]}`
+- **JWT behavior**: non-JWT Bearer tokens → 401 (service tries `ReadJwtToken()`, fails, userId empty)
+- `useMock=true` query param: bypasses JWT + Hybris, returns from in-memory MockPricingApi dict (SKU "36456000")
+- Tests: health, anonymous price fetch (WireMock, SKU "40806000"), 401 for invalid JWT, useMock=true, cache repeat
+- `INTEGRATION_TEST_MODE=true` env var required in docker-compose
 
 ## OrderApi / CheckoutApi Notes (checkout)
 
