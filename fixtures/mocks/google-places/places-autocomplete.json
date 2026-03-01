@@ -1,0 +1,28 @@
+{
+  "request": {
+    "method": "POST",
+    "url": "/places:autocomplete"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "suggestions": [
+        {
+          "placePrediction": {
+            "placeId": "ChIJN1t_tDeuEmsRUsoyG83frY4",
+            "text": {
+              "text": "Musterstraße 1, 12345 Musterstadt, Germany"
+            },
+            "structuredFormat": {
+              "mainText": { "text": "Musterstraße 1" },
+              "secondaryText": { "text": "12345 Musterstadt, Germany" }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

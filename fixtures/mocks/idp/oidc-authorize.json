@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPattern": "/v1/sso/auth/realms/idm-apigw/protocol/openid-connect/auth.*"
+  },
+  "response": {
+    "status": 302,
+    "headers": {
+      "Location": "{{request.query.redirect_uri}}?code=dev-mock-auth-code&state={{request.query.state}}"
+    },
+    "transformers": ["response-template"]
+  }
+}

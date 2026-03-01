@@ -1,0 +1,19 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPattern": "^/v1/recaptcha.*"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "success": true,
+      "score": 0.9,
+      "action": "submit",
+      "challenge_ts": "2026-03-01T12:00:00Z",
+      "hostname": "localhost"
+    }
+  }
+}

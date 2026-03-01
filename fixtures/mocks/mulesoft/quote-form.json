@@ -1,0 +1,17 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPattern": "^/v1/quotation-requests.*"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "success": true,
+      "quoteId": "QUO-001",
+      "message": "Quote request submitted successfully."
+    }
+  }
+}

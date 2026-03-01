@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": "POST",
+    "url": "/apikey/v1"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "text/plain"
+    },
+    "body": "fake-integration-api-key"
+  }
+}

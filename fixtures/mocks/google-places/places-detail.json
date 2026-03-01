@@ -1,0 +1,23 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPattern": "^/places/[^?]+(\\?.*)?$"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "id": "ChIJN1t_tDeuEmsRUsoyG83frY4",
+      "formattedAddress": "Musterstraße 1, 12345 Musterstadt, Germany",
+      "addressComponents": [
+        { "types": ["street_number"], "longText": "1", "shortText": "1" },
+        { "types": ["route"], "longText": "Musterstraße", "shortText": "Musterstraße" },
+        { "types": ["locality"], "longText": "Musterstadt", "shortText": "Musterstadt" },
+        { "types": ["postal_code"], "longText": "12345", "shortText": "12345" },
+        { "types": ["country"], "longText": "Germany", "shortText": "DE" }
+      ]
+    }
+  }
+}

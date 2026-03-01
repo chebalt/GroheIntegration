@@ -1,0 +1,25 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPattern": "^/[^/]+/users/[^/]+/carts/[^/]+/adyen/checkout-configuration.*"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "paymentMethods": [
+        {
+          "type": "scheme",
+          "name": "Credit Card",
+          "brands": ["visa", "mc"]
+        },
+        {
+          "type": "paypal",
+          "name": "PayPal"
+        }
+      ]
+    }
+  }
+}

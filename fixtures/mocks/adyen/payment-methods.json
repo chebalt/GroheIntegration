@@ -1,0 +1,29 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPattern": "^/v68/paymentMethods.*"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "paymentMethods": [
+        {
+          "name": "Credit Card",
+          "type": "scheme",
+          "brands": ["visa", "mc", "amex"]
+        },
+        {
+          "name": "SEPA Direct Debit",
+          "type": "sepadirectdebit"
+        },
+        {
+          "name": "PayPal",
+          "type": "paypal"
+        }
+      ]
+    }
+  }
+}

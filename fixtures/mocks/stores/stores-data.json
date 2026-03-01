@@ -1,0 +1,40 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPattern": "^/v1/stores.*"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "success": true,
+      "apiName": "stores-api",
+      "version": "1.0",
+      "correlationId": "test-correlation-id",
+      "timestamp": "2024-01-15T10:00:00Z",
+      "data": [
+        {
+          "storeId": "store-gb-001",
+          "storeLocatorStatus": "ACTIVE",
+          "storeType": "retailstore",
+          "latitude": "51.5074",
+          "longitude": "-0.1278",
+          "iso_code": "en-GB",
+          "last_ch_on": "2024-01-15T10:00:00Z",
+          "publicName": "Grohe London Showroom",
+          "mainPhone": "+44 20 1234 5678",
+          "mainEmail": "london@grohe.com",
+          "website": "https://www.grohe.com",
+          "address": {
+            "street": "123 Test Street",
+            "postalCode": "EC1A 1BB",
+            "countryCode": "GB",
+            "city": "London"
+          }
+        }
+      ]
+    }
+  }
+}

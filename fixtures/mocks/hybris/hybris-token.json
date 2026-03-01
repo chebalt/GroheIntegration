@@ -1,0 +1,16 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/token"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "tokenType": "Bearer",
+      "accessToken": "fake-hybris-integration-token"
+    }
+  }
+}

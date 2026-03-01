@@ -1,0 +1,37 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPattern": "^/v1/[^/]+/graphql.*"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "data": {
+        "layout": {
+          "item": {
+            "rendered": {
+              "sitecore": {
+                "context": {
+                  "language": "de",
+                  "pageEditing": false,
+                  "site": {
+                    "name": "grohe-de"
+                  }
+                },
+                "route": {
+                  "name": "home",
+                  "displayName": "Home",
+                  "fields": {},
+                  "placeholders": {}
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

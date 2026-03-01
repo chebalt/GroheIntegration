@@ -1,0 +1,27 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPattern": "^/[^/]+/users/[^/]+/carts.*"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "carts": [
+        {
+          "code": "00000001",
+          "guid": "test-cart-guid-001",
+          "totalItems": 0,
+          "totalPrice": {
+            "currencyIso": "EUR",
+            "value": 0.0,
+            "formattedValue": "0,00 €"
+          },
+          "entries": []
+        }
+      ]
+    }
+  }
+}

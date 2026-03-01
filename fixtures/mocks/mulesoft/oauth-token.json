@@ -1,0 +1,18 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPattern": "^/oauth2/token.*"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "token_type": "Bearer",
+      "expires_in": "3600",
+      "ext_expires_in": "3600",
+      "access_token": "fake-mulesoft-integration-token"
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPattern": "^/[^/]+/users/[^/]+/billing-addresses.*"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "addresses": []
+    }
+  }
+}

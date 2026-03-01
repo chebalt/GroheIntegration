@@ -1,0 +1,32 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPattern": "^/[^/]+/users/[^/]+/orders(\\?.*)?$"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "orders": [
+        {
+          "code": "ORD-0001",
+          "status": "PLACED",
+          "total": {
+            "currencyIso": "EUR",
+            "formattedValue": "149.99 €",
+            "value": 149.99
+          },
+          "placed": "2024-01-15T10:00:00+0000"
+        }
+      ],
+      "pagination": {
+        "count": 1,
+        "page": 0,
+        "totalCount": 1,
+        "totalPages": 1
+      }
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "request": {
+    "method": "DELETE",
+    "urlPattern": "^/[^/]+/users/[^/]+/carts/[^/]+$"
+  },
+  "response": {
+    "status": 200
+  }
+}
