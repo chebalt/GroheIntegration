@@ -196,30 +196,42 @@ services:
       start_period: 60s
 
   # my-account — .NET UserApi (port 8088)
-  # user-api:
-  #   profiles: ["my-account"]
-  #   build:
-  #     context: ../grohe-neo-services
-  #     dockerfile: src/GroheNeo.UserApi/Dockerfile
-  #   ports:
-  #     - "8088:8080"
-  #   environment:
-  #     ASPNETCORE_ENVIRONMENT: Integration
-  #     ASPNETCORE_URLS: http://+:8080
-  #     FIRESTORE_EMULATOR_HOST: firestore-emulator:8080
-  #     GCLOUD_PROJECT: demo-project
-  #     HYBRIS_BASE_URL: http://wiremock:8080
-  #   depends_on:
-  #     firestore-emulator:
-  #       condition: service_healthy
-  #     wiremock:
-  #       condition: service_healthy
-  #   healthcheck:
-  #     test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
-  #     interval: 10s
-  #     timeout: 5s
-  #     retries: 18
-  #     start_period: 60s
+  # Calls Hybris addresses + IDP JWKS (for RSA JWT validation) + Google Places — all via WireMock.
+  # GoogleIdTokenHandler bypassed via INTEGRATION_TEST_MODE=true.
+  # Auth: real RS256 JWT (see tests/my-account/conftest.py) validated against oidc-certs.json stub.
+  # Start with: make infra-my-account-up
+  user-api:
+    profiles: ["my-account"]
+    build:
+      context: ../grohe-neo-services
+      dockerfile: src/GroheNeo.UserApi/Dockerfile
+    ports:
+      - "8088:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Integration
+      ASPNETCORE_URLS: http://+:8080
+      FIRESTORE_EMULATOR_HOST: firestore-emulator:8080
+      GCLOUD_PROJECT: demo-project
+      INTEGRATION_TEST_MODE: "true"
+      HYBRIS_BASE_URL: http://wiremock:8080
+      IDP_ENDPOINT: http://wiremock:8080
+      TOKEN_API_URL: http://wiremock:8080
+      GOOGLE_PLACES_URL: http://wiremock:8080
+      GOOGLE_PLACES_APIKEY: test-api-key
+      NEO_RECAPTCHA_ENDPOINT: http://wiremock:8080
+      USER_INFO_TOKEN_ENDPOINT: http://wiremock:8080
+      USER_INFO_ENDPOINT: http://wiremock:8080
+    depends_on:
+      firestore-emulator:
+        condition: service_healthy
+      wiremock:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 18
+      start_period: 60s
 
   # pricing — .NET PricingApi (port 8089)
   # Calls Hybris pricing API + internal token service + IDP certs — all mocked via WireMock.
@@ -253,9 +265,60 @@ services:
       start_period: 60s
 
   # checkout — .NET OrderApi (port 8090) + PaymentApi (port 8091)
-  # order-api:
-  #   profiles: ["checkout"]
-  #   ... (uncomment and fill in when GroheNeo.OrderApi is implemented)
+  # OrderApi: order history, order detail, order creation (Hybris cart→order flow).
+  # PaymentApi: Adyen payment methods, credit card management.
+  # Both: INTEGRATION_TEST_MODE=true bypasses GoogleIdTokenHandler GCP calls.
+  # Start with: make infra-checkout-up
+  order-api:
+    profiles: ["checkout"]
+    build:
+      context: ../grohe-neo-services
+      dockerfile: src/GroheNeo.OrderApi/Dockerfile
+    ports:
+      - "8090:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Integration
+      ASPNETCORE_URLS: http://+:8080
+      INTEGRATION_TEST_MODE: "true"
+      HYBRIS_BASE_URL: http://wiremock:8080
+      TOKEN_API_URL: http://wiremock:8080
+      FIRESTORE_EMULATOR_HOST: firestore-emulator:8080
+      GCLOUD_PROJECT: demo-project
+    depends_on:
+      firestore-emulator:
+        condition: service_healthy
+      wiremock:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 18
+      start_period: 60s
+
+  payment-api:
+    profiles: ["checkout"]
+    build:
+      context: ../grohe-neo-services
+      dockerfile: src/GroheNeo.PaymentApi/Dockerfile
+    ports:
+      - "8091:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Integration
+      ASPNETCORE_URLS: http://+:8080
+      INTEGRATION_TEST_MODE: "true"
+      HYBRIS_BASE_URL: http://wiremock:8080
+      TOKEN_API_URL: http://wiremock:8080
+      IDP_ENDPOINT: http://wiremock:8080
+    depends_on:
+      wiremock:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 18
+      start_period: 60s
 
   # forms — .NET FormsApi (port 8092)
   # No Firestore dependency. Calls Mulesoft CRM + reCAPTCHA via WireMock.
@@ -279,6 +342,70 @@ services:
       NEO_RECAPTCHA_ENDPOINT: http://wiremock:8080
       BYPASS_CAPTCHA_KEY: integration-test-bypass
     depends_on:
+      wiremock:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 18
+      start_period: 60s
+
+  # store-locator — .NET StoreLocatorJob one-shot console job
+  # Fetches store data from external API (WireMock), writes to stores-index-updates Firestore collection.
+  # Runs once and exits (docker compose run --rm).
+  # Start with: make infra-store-locator-up
+  store-locator-job:
+    profiles: ["store-locator"]
+    build:
+      context: ../grohe-neo-services
+      dockerfile: src/GroheNeo.StoreLocatorJob/Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Integration
+      FIRESTORE_EMULATOR_HOST: firestore-emulator:8080
+      FIRESTORE__SOURCE__PROJECTID: demo-project
+      FIRESTORE__SOURCE__DATABASEID: "(default)"
+      GCLOUD_PROJECT: demo-project
+      USER_INFO_TOKEN_ENDPOINT: http://wiremock:8080
+      USER_INFO_TOKEN_USER_ID: test-user-id
+      USER_INFO_TOKEN_CLIENT_ID: test-client-id
+      USER_INFO_TOKEN_CLIENT_SECRET: test-client-secret
+      STORES_API_ENDPOINT: http://wiremock:8080
+      STORES_INDEX_COLLECTION: stores-index-updates
+      STORAGE_INDEX_DOMAIN_ID: test-domain-id
+      LOCALES_TO_BE_EXECUTED: en-GB
+      DEFAULT_TIME_FROM: "2024-01-01"
+    depends_on:
+      firestore-emulator:
+        condition: service_healthy
+      wiremock:
+        condition: service_healthy
+
+  # redirections — .NET RedirectReverseProxy YARP reverse proxy (port 8093)
+  # Looks up redirect rules from Firestore (redirects collection) and issues 301/302.
+  # Passes through to WireMock (LoadBalancerAddress) for unmatched paths → WireMock returns 404.
+  # NeoXMCloudApiBaseUrl + IntelligenceApiBaseUrl both point to WireMock.
+  # Start with: make infra-redirections-up
+  redirect-reverse-proxy:
+    profiles: ["redirections"]
+    build:
+      context: ../grohe-neo-services
+      dockerfile: src/GroheNeo.RedirectReverseProxy/Dockerfile
+    ports:
+      - "8093:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Integration
+      ASPNETCORE_URLS: http://+:8080
+      FIRESTORE_EMULATOR_HOST: firestore-emulator:8080
+      GCLOUD_PROJECT: demo-project
+      NeoXMCloudApiBaseUrl: http://wiremock:8080
+      IntelligenceApiBaseUrl: http://wiremock:8080
+      IP_INTELLIGENCE_API_KEY: test-key
+      LoadBalancerAddress: http://wiremock:8080
+      AcceptedHosts: "localhost|localhost:8080|localhost:8093"
+    depends_on:
+      firestore-emulator:
+        condition: service_healthy
       wiremock:
         condition: service_healthy
     healthcheck:

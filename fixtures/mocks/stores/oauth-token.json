@@ -1,0 +1,18 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPattern": "^/[^/]+/oauth2/token$"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "access_token": "test-store-access-token",
+      "token_type": "Bearer",
+      "expires_in": 3600,
+      "scope": "read"
+    }
+  }
+}

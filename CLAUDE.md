@@ -16,15 +16,15 @@ by feature rather than implementation phase.
 **search ✅** SearchApi HTTP tests — **5 passed** (requires `infra-search-up`, no Firestore seeding)
 **project-list ✅** ProjectListsApi CRUD + PDF tests — **10 passed** (requires `infra-project-list-up`)
 
-**Batch B (7 features — 3 active, 4 pending)**
+**Batch B (7 features — all active, 34 passed + 1 skip, verified 2026-03-01)**
 
 **shopping-cart ✅** ShoppingCartApi HTTP tests — **5 passed** (tests/shopping-cart/, port 8087)
 **pricing ✅** PricingApi HTTP tests — **5 passed** (tests/pricing/, port 8089)
 **forms ✅** FormsApi form submission tests — **5 passed** (tests/forms/, port 8092)
-**my-account 🔜** UserApi HTTP tests — addresses + Google Places (tests/my-account/, port 8088)
-**checkout 🔜** OrderApi + Adyen payment tests (tests/checkout/, port 8090)
-**store-locator 🔜** Store-locator job → `stores-index-updates` Firestore (tests/store-locator/)
-**redirections 🔜** Redirect reverse proxy HTTP tests (tests/redirections/, port 8093)
+**my-account ✅** UserApi HTTP tests — **5 passed** (tests/my-account/, port 8088)
+**checkout ✅** OrderApi + PaymentApi tests — **5 passed** (tests/checkout/, ports 8090+8091)
+**store-locator ✅** Store-locator job → Firestore — **4 passed + 1 skip** (tests/store-locator/)
+**redirections ✅** Redirect reverse proxy HTTP tests — **5 passed** (tests/redirections/, port 8093)
 
 ---
 
@@ -222,25 +222,25 @@ integration/
 │   ├── project-list/         ProjectListsApi CRUD + PDF (10 tests, ~60s)
 │   │   ├── conftest.py       project_lists_result module fixture
 │   │   └── test_project_lists_api.py
-│   ├── shopping-cart/        🔜 ShoppingCartApi HTTP tests (skips if unavailable)
+│   ├── shopping-cart/        ✅ ShoppingCartApi HTTP tests (skips if unavailable)
 │   │   ├── conftest.py       shopping_cart_result module fixture
 │   │   └── test_shopping_cart_api.py
-│   ├── my-account/           🔜 UserApi HTTP tests (skips if unavailable)
+│   ├── my-account/           ✅ UserApi HTTP tests (skips if unavailable)
 │   │   ├── conftest.py       user_result module fixture
 │   │   └── test_user_api.py
-│   ├── pricing/              🔜 PricingApi HTTP tests (skips if unavailable)
+│   ├── pricing/              ✅ PricingApi HTTP tests (skips if unavailable)
 │   │   ├── conftest.py       pricing_result module fixture
 │   │   └── test_pricing_api.py
-│   ├── checkout/             🔜 OrderApi + Adyen tests (skips if unavailable)
+│   ├── checkout/             ✅ OrderApi + PaymentApi tests (skips if unavailable)
 │   │   ├── conftest.py       checkout_result module fixture
 │   │   └── test_checkout_api.py
-│   ├── forms/                🔜 FormsApi form submission tests (skips if unavailable)
+│   ├── forms/                ✅ FormsApi form submission tests (skips if unavailable)
 │   │   ├── conftest.py       forms_result module fixture
 │   │   └── test_forms_api.py
-│   ├── store-locator/        🔜 Store-locator job Firestore tests (skips if collection empty)
+│   ├── store-locator/        ✅ Store-locator job Firestore tests (skips if collection empty)
 │   │   ├── conftest.py       store_locator_result module fixture
 │   │   └── test_store_locator.py
-│   └── redirections/         🔜 Redirect proxy HTTP tests (skips if unavailable)
+│   └── redirections/         ✅ Redirect proxy HTTP tests (skips if unavailable)
 │       ├── conftest.py       redirections_result module fixture
 │       └── test_redirections.py
 ├── scripts/
@@ -628,11 +628,14 @@ builder.EmulatorDetection = Google.Api.Gax.EmulatorDetection.EmulatorOrProductio
 
 ## OrderApi / CheckoutApi Notes (checkout)
 
-- Host port: `8090`; Docker profile: `checkout`
+- Host port: `8090` (OrderApi); `8091` (PaymentApi); Docker profile: `checkout`
 - Health endpoint: `GET http://localhost:8090/health` → HTTP 200
-- Hybris stubs: `fixtures/mocks/hybris/order-create.json`
-- Adyen stubs: `fixtures/mocks/adyen/payment-sessions.json`, `payment-methods.json`
-- Tests: place order, get order status, payment initiation, 3DS callback
+- Hybris stubs: `fixtures/mocks/hybris/order-history.json`, `order-detail.json`
+- Tests: health, order history (GET /v1/orders), order detail (GET /v1/orders/{id}), PaymentApi health, payment methods
+- **Critical — WireMock stub must include empty arrays**: `GetOrderMapper` calls `.Any()` on
+  `Consignments`, `Invoices`, `AppliedVouchers`, and `Images` — all must be `[]` (not absent) or you get 500
+- **Field rename**: Hybris `code` → NEO `orderId` — test assertions must use `body.get("orderId")`
+- **URL pattern must allow `?fields=FULL`**: use `"urlPattern": "^/[^/]+/users/[^/]+/orders/[^/?]+(\\?.*)?$"`
 
 ## FormsApi Notes (forms)
 
@@ -650,6 +653,10 @@ builder.EmulatorDetection = Google.Api.Gax.EmulatorDetection.EmulatorOrProductio
 - Tests skip if the collection is empty (job hasn't run)
 - Run `make infra-store-locator-up` to execute the job and populate the collection
 - Tests: collection populated, required fields, valid operation type, document size < 900KB
+- **EmulatorDetection required** (now fixed in `DependencyInjectionExtensions.cs`)
+- **Config loading**: DI only loads `appsettings.json` + `appsettings.Development.json` (NOT Integration.json).
+  Firestore config must be passed via `FIRESTORE__SOURCE__PROJECTID` and `FIRESTORE__SOURCE__DATABASEID` env vars
+  (double underscore = .NET config section separator)
 
 ## Redirect Reverse Proxy Notes (redirections)
 
@@ -658,6 +665,12 @@ builder.EmulatorDetection = Google.Api.Gax.EmulatorDetection.EmulatorOrProductio
 - Sitecore Edge stubs: `fixtures/mocks/sitecore-edge/graphql-layout.json`
 - Test paths: `/de-de/old-product-url` (redirect), `/de-de/this-url-does-not-exist` (404/passthrough)
 - Tests run with `allow_redirects=False` to assert the 301/302 response directly
+- **Critical — `AcceptedHosts` must include all client Host headers**:
+  `DomainAndLocaleConsolidationMiddleware` issues 301 if request Host is not in `AcceptedHosts`.
+  Docker healthcheck sends `localhost:8080`; Python tests send `localhost:8093`.
+  docker-compose must have `AcceptedHosts: "localhost|localhost:8080|localhost:8093"`
+- **EmulatorDetection required** (now fixed in `DependencyInjectionExtensions.cs`)
+- **Firestore config** added to `appsettings.Integration.json` (was missing)
 
 ---
 

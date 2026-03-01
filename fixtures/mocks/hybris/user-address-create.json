@@ -1,0 +1,27 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPattern": "^/[^/]+/users/[^/]+/addresses$"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "id": "addr-new-001",
+      "firstName": "Max",
+      "lastName": "Mustermann",
+      "line1": "Musterstraße 1",
+      "postalCode": "12345",
+      "town": "Musterstadt",
+      "country": {
+        "isocode": "DE",
+        "name": "Germany"
+      },
+      "defaultAddress": false,
+      "shippingAddress": true,
+      "visibleInAddressBook": true
+    }
+  }
+}

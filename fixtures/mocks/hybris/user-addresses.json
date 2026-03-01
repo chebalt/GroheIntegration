@@ -1,7 +1,7 @@
 {
   "request": {
     "method": "GET",
-    "urlPattern": "^/rest/v2/[^/]+/users/[^/]+/addresses.*"
+    "urlPattern": "^/[^/]+/users/[^/]+/delivery-addresses.*"
   },
   "response": {
     "status": 200,
@@ -21,7 +21,9 @@
             "isocode": "DE",
             "name": "Germany"
           },
-          "defaultAddress": true
+          "defaultAddress": true,
+          "shippingAddress": true,
+          "visibleInAddressBook": true
         }
       ]
     }

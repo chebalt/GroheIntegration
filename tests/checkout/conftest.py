@@ -5,9 +5,14 @@ Module-scoped fixture: checks if OrderApi is available, then yields sessions.
 
 Infrastructure required: make infra-checkout-up
 
-WireMock stubs: fixtures/mocks/hybris/order-create.json
-               fixtures/mocks/adyen/payment-sessions.json
-               fixtures/mocks/adyen/payment-methods.json
+WireMock stubs:
+  fixtures/mocks/hybris/order-history.json     → GET /{site}/users/{user}/orders
+  fixtures/mocks/hybris/order-detail.json      → GET /{site}/users/{user}/orders/{code}
+  fixtures/mocks/hybris/payment-checkout-config.json → GET /{site}/users/{user}/carts/{cart}/adyen/checkout-configuration
+  fixtures/mocks/hybris/hybris-token.json      → GET /token (anonymous Hybris token)
+
+Auth: plain Bearer token (no JWT validation on GET endpoints).
+INTEGRATION_TEST_MODE=true bypasses GoogleIdTokenHandler GCP calls.
 """
 
 import os
@@ -15,8 +20,8 @@ import os
 import pytest
 import requests
 
-FIRESTORE_EMULATOR_HOST = os.environ.get("FIRESTORE_EMULATOR_HOST", "localhost:8080")
-ORDER_API_HOST          = os.environ.get("ORDER_API_HOST", "localhost:8090")
+ORDER_API_HOST   = os.environ.get("ORDER_API_HOST",   "localhost:8090")
+PAYMENT_API_HOST = os.environ.get("PAYMENT_API_HOST", "localhost:8091")
 
 
 def _is_api_available(host: str, path: str = "/health", timeout: float = 3.0) -> bool:
@@ -30,8 +35,8 @@ def _is_api_available(host: str, path: str = "/health", timeout: float = 3.0) ->
 @pytest.fixture(scope="module")
 def checkout_result():
     """
-    Check OrderApi availability, yield auth_session.
-    Skips if the service is not running.
+    Check OrderApi availability, yield (order_session, payment_session).
+    Skips if OrderApi is not running. PaymentApi tests skip individually if unavailable.
     """
     if not _is_api_available(ORDER_API_HOST):
         pytest.skip(
@@ -39,10 +44,16 @@ def checkout_result():
             "Run 'make infra-checkout-up' to start it."
         )
 
-    auth_session = requests.Session()
-    auth_session.headers.update({
+    order_session = requests.Session()
+    order_session.headers.update({
         "Content-Type": "application/json",
         "Authorization": "Bearer integration-test-token",
     })
 
-    yield auth_session
+    payment_session = requests.Session()
+    payment_session.headers.update({
+        "Content-Type": "application/json",
+        "Authorization": "Bearer integration-test-token",
+    })
+
+    yield order_session, payment_session
