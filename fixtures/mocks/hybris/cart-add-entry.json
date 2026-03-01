@@ -1,0 +1,29 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPattern": "^/rest/v2/[^/]+/users/[^/]+/carts/[^/]+/entries.*"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "quantity": 1,
+      "statusCode": "success",
+      "entry": {
+        "entryNumber": 0,
+        "quantity": 1,
+        "product": {
+          "code": "40806000",
+          "name": "Test Product"
+        },
+        "totalPrice": {
+          "currencyIso": "EUR",
+          "value": 49.99,
+          "formattedValue": "49,99 €"
+        }
+      }
+    }
+  }
+}

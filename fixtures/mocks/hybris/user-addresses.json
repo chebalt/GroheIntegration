@@ -1,0 +1,29 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPattern": "^/rest/v2/[^/]+/users/[^/]+/addresses.*"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "addresses": [
+        {
+          "id": "addr-001",
+          "firstName": "Max",
+          "lastName": "Mustermann",
+          "line1": "Musterstraße 1",
+          "postalCode": "12345",
+          "town": "Musterstadt",
+          "country": {
+            "isocode": "DE",
+            "name": "Germany"
+          },
+          "defaultAddress": true
+        }
+      ]
+    }
+  }
+}

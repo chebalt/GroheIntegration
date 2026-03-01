@@ -3,14 +3,28 @@
 ## Purpose
 
 Cross-project integration tests for the Grohe NEO platform. Spins up a local
-Firestore emulator (and WireMock in Phase 2+) and validates behaviour across repos.
+Firestore emulator and WireMock and validates behaviour across repos, organized
+by feature rather than implementation phase.
 
-**Phase 1 ✅** ETL pipeline → Firestore state assertions — **44 passed**
-**Phase 2 ✅** Sync logic (`sync_product_index.py`) — **7 passed**
-**Phase 3 ✅** IndexingApi → WireMock — **5 passed** (requires `infra-phase3-up`)
-**Phase 4 ✅** .NET ProductsApi + NavigationApi HTTP tests — **10 passed** (requires `infra-phase4-up`)
-**Phase 5 ✅** SearchApi HTTP tests — **5 passed** (requires `infra-phase5-up`, no Firestore seeding)
-**Phase 6 ✅** ProjectListsApi CRUD + PDF tests — **10 passed** (requires `infra-phase6-up`)
+**Batch A (6 features, 81 tests — all verified green)**
+
+**data-loader ✅** ETL pipeline → Firestore state assertions — **44 passed** (tests/data-loader/etl/)
+**data-loader ✅** Sync logic (`sync_product_index.py`) — **7 passed** (tests/data-loader/sync/)
+**product-indexing ✅** IndexingApi → WireMock — **5 passed** (requires `infra-product-indexing-up`)
+**dynamic-navigation ✅** NavigationApi HTTP tests — **5 passed** (requires `infra-dynamic-navigation-up`)
+**pdp ✅** ProductsApi HTTP tests — **5 passed** (requires `infra-pdp-up`)
+**search ✅** SearchApi HTTP tests — **5 passed** (requires `infra-search-up`, no Firestore seeding)
+**project-list ✅** ProjectListsApi CRUD + PDF tests — **10 passed** (requires `infra-project-list-up`)
+
+**Batch B (7 features — test scaffolding exists, services not yet added to docker-compose)**
+
+**shopping-cart 🔜** ShoppingCartApi HTTP tests (tests/shopping-cart/, port 8087)
+**my-account 🔜** UserApi HTTP tests — addresses + Google Places (tests/my-account/, port 8088)
+**pricing 🔜** PricingApi HTTP tests — Hybris price fetch (tests/pricing/, port 8089)
+**checkout 🔜** OrderApi + Adyen payment tests (tests/checkout/, port 8090)
+**forms 🔜** FormsApi form submission tests — Mulesoft + reCAPTCHA (tests/forms/, port 8092)
+**store-locator 🔜** Store-locator job → `stores-index-updates` Firestore (tests/store-locator/)
+**redirections 🔜** Redirect reverse proxy HTTP tests (tests/redirections/, port 8093)
 
 ---
 
@@ -18,38 +32,59 @@ Firestore emulator (and WireMock in Phase 2+) and validates behaviour across rep
 
 ```bash
 # 1. One-time setup (create virtualenv + install pytest deps)
+make bootstrap          # copies .env.example → .env, creates venv, installs deps
+# or just:
 make setup
 
-# 2a. Start Phase 1+2 infrastructure (fast)
-make infra-up          # Firestore emulator (8080) + WireMock (8081)
+# 2a. Start core infrastructure (fast — always needed)
+make infra-up           # Firestore emulator (8080) + WireMock (8081)
 
-# 2b. Start Phase 3 infrastructure (slow — builds .NET IndexingApi from source)
-make infra-phase3-up   # Firestore (8080) + WireMock (8081) + IndexingApi (8082)
+# 2b. Start Batch A feature-specific infrastructure (slow — builds .NET services from source)
+make infra-product-indexing-up     # + IndexingApi (8082)
+make infra-dynamic-navigation-up   # + NavigationApi (8083) — seeds config first
+make infra-pdp-up                  # + ProductsApi (8084) — seeds config first
+make infra-search-up               # + SearchApi (8085) — no Firestore seeding
+make infra-project-list-up         # + ProductsApi (8084) + ProjectListsApi (8086)
 
-# 2c. Start Phase 4 infrastructure (slow — builds NavigationApi + ProductsApi)
-make infra-phase4-up   # Firestore (8080) + WireMock (8081) + NavigationApi (8083) + ProductsApi (8084)
-
-# 2d. Start Phase 5 infrastructure (SearchApi — no Firestore needed)
-make infra-phase5-up   # WireMock (8081) + SearchApi (8085)
-
-# 2e. Start Phase 6 infrastructure (ProductsApi + ProjectListsApi — installs Chrome, ~15-20 min first build)
-make infra-phase6-up   # Firestore (8080) + WireMock (8081) + ProductsApi (8084) + ProjectListsApi (8086)
+# 2c. Start Batch B feature infrastructure (requires service added to docker-compose.yml first)
+make infra-shopping-cart-up        # + ShoppingCartApi (8087)
+make infra-my-account-up           # + UserApi (8088)
+make infra-pricing-up              # + PricingApi (8089)
+make infra-checkout-up             # + OrderApi (8090)
+make infra-forms-up                # + FormsApi (8092)
+make infra-store-locator-up        # runs one-shot job → populates stores-index-updates
+make infra-redirections-up         # + redirect reverse proxy (8093)
 
 # 3. Run tests
-make test-pipeline          # Layer 1: ETL pipeline (~10-11 min)
-make test-sync              # Layer 2: sync logic  (~15 sec)
-make test-indexing          # Layer 4: IndexingApi → WireMock (~30 sec, needs Phase 3 infra)
-make test-services          # Layer 3: NavigationApi + ProductsApi + SearchApi (~60 sec, needs Phase 4+5 infra)
-make test-search            # Phase 5: SearchApi only (~30 sec, needs Phase 5 infra)
-make test-project-lists     # Phase 6: ProjectListsApi CRUD + PDF (~60 sec, needs Phase 6 infra)
-make test-all               # All layers
+make test-data-loader          # ETL pipeline + sync (~10-11 min + 15s)
+make test-product-indexing     # IndexingApi → WireMock (~30s)
+make test-dynamic-navigation   # NavigationApi HTTP (~60s)
+make test-pdp                  # ProductsApi HTTP (~60s)
+make test-search               # SearchApi HTTP (~30s)
+make test-project-list         # ProjectListsApi CRUD + PDF (~60s)
+# Batch B (skip gracefully if service not running):
+make test-shopping-cart        # ShoppingCartApi HTTP
+make test-my-account           # UserApi HTTP
+make test-pricing              # PricingApi HTTP
+make test-checkout             # OrderApi + Adyen
+make test-forms                # FormsApi form submission
+make test-store-locator        # Store-locator → Firestore
+make test-redirections         # Redirect proxy HTTP
+make test-all                  # All features (Batch B skips if unavailable)
 
 # 4. Stop containers when done
-make infra-down            # Phase 1+2
-make infra-phase3-down     # Phase 3 (all containers)
-make infra-phase4-down     # Phase 4 (all containers)
-make infra-phase5-down     # Phase 5 (all containers)
-make infra-phase6-down     # Phase 6 (all containers)
+make infra-down
+make infra-product-indexing-down
+make infra-dynamic-navigation-down
+make infra-pdp-down
+make infra-search-down
+make infra-project-list-down
+make infra-shopping-cart-down
+make infra-my-account-down
+make infra-pricing-down
+make infra-checkout-down
+make infra-forms-down
+make infra-redirections-down
 ```
 
 ---
@@ -58,32 +93,55 @@ make infra-phase6-down     # Phase 6 (all containers)
 
 | Command | What it does |
 |---|---|
+| `make bootstrap` | First-time setup: venv + deps + `.env` from template |
 | `make setup` | Create `.venv` and install test dependencies |
 | `make infra-up` | Start Firestore emulator + WireMock via Docker Compose |
-| `make infra-down` | Stop Phase 1+2 Docker containers |
+| `make infra-down` | Stop core Docker containers |
 | `make wait` | Wait until emulator responds (health check) |
-| `make infra-phase3-up` | Build + start all Phase 3 services (IndexingApi included) |
-| `make infra-phase3-down` | Stop all Phase 3 Docker containers |
+| `make seed-config` | Seed Firestore `configuration` collection (required for navigation + pdp) |
+| `make infra-product-indexing-up` | Build + start IndexingApi (8082) |
+| `make infra-product-indexing-down` | Stop product-indexing containers |
 | `make wait-indexing-api` | Wait until IndexingApi /health responds |
-| `make seed-config` | Seed Firestore `configuration` collection (required for Phase 4) |
-| `make infra-phase4-up` | Seed config + build + start NavigationApi + ProductsApi |
-| `make infra-phase4-down` | Stop all Phase 4 Docker containers |
+| `make infra-dynamic-navigation-up` | Seed config + build + start NavigationApi (8083) |
+| `make infra-dynamic-navigation-down` | Stop dynamic-navigation containers |
 | `make wait-navigation-api` | Wait until NavigationApi /health responds |
+| `make infra-pdp-up` | Seed config + build + start ProductsApi (8084) |
+| `make infra-pdp-down` | Stop pdp containers |
 | `make wait-products-api` | Wait until ProductsApi /health responds |
-| `make infra-phase5-up` | Build + start SearchApi (no Firestore seeding needed) |
-| `make infra-phase5-down` | Stop all Phase 5 Docker containers |
+| `make infra-search-up` | Build + start SearchApi (8085) — no Firestore seeding |
+| `make infra-search-down` | Stop search containers |
 | `make wait-search-api` | Wait until SearchApi /health responds |
-| `make infra-phase6-up` | Seed config + build + start ProductsApi + ProjectListsApi |
-| `make infra-phase6-down` | Stop all Phase 6 Docker containers |
+| `make infra-project-list-up` | Seed config + build + start ProductsApi + ProjectListsApi (8084+8086) |
+| `make infra-project-list-down` | Stop project-list containers |
 | `make wait-project-lists-api` | Wait until ProjectListsApi /health responds |
-| `make test-pipeline` | Layer 1: ETL pipeline tests → `reports/pipeline.json` |
-| `make test-sync` | Layer 2: sync logic tests → `reports/sync.json` |
-| `make test-indexing` | Layer 4: IndexingApi → WireMock → `reports/indexing.json` |
-| `make test-services` | Layer 3: NavigationApi + ProductsApi + SearchApi → `reports/services.json` |
-| `make test-search` | Phase 5: SearchApi only → `reports/search.json` |
-| `make test-project-lists` | Phase 6: ProjectListsApi CRUD + PDF → `reports/project-lists.json` |
-| `make test-all` | All available layers → `reports/results.json` |
-| `make fix-loop` | Run all tests + emit `reports/results.json` (Claude fix loop) |
+| `make infra-shopping-cart-up` | Build + start ShoppingCartApi (8087) |
+| `make infra-shopping-cart-down` | Stop shopping-cart containers |
+| `make infra-my-account-up` | Build + start UserApi (8088) |
+| `make infra-my-account-down` | Stop my-account containers |
+| `make infra-pricing-up` | Build + start PricingApi (8089) |
+| `make infra-pricing-down` | Stop pricing containers |
+| `make infra-checkout-up` | Build + start OrderApi + PaymentApi (8090+8091) |
+| `make infra-checkout-down` | Stop checkout containers |
+| `make infra-forms-up` | Build + start FormsApi (8092) |
+| `make infra-forms-down` | Stop forms containers |
+| `make infra-store-locator-up` | Run store-locator one-shot job → populates stores-index-updates |
+| `make infra-redirections-up` | Build + start redirect reverse proxy (8093) |
+| `make infra-redirections-down` | Stop redirections containers |
+| `make test-data-loader` | data-loader ETL + sync → `reports/data-loader.json` |
+| `make test-product-indexing` | IndexingApi → WireMock → `reports/product-indexing.json` |
+| `make test-dynamic-navigation` | NavigationApi HTTP → `reports/dynamic-navigation.json` |
+| `make test-pdp` | ProductsApi HTTP → `reports/pdp.json` |
+| `make test-search` | SearchApi HTTP → `reports/search.json` |
+| `make test-project-list` | ProjectListsApi CRUD + PDF → `reports/project-list.json` |
+| `make test-shopping-cart` | ShoppingCartApi HTTP → `reports/shopping-cart.json` |
+| `make test-my-account` | UserApi HTTP → `reports/my-account.json` |
+| `make test-pricing` | PricingApi HTTP → `reports/pricing.json` |
+| `make test-checkout` | OrderApi + Adyen → `reports/checkout.json` |
+| `make test-forms` | FormsApi form submission → `reports/forms.json` |
+| `make test-store-locator` | Store-locator → Firestore → `reports/store-locator.json` |
+| `make test-redirections` | Redirect proxy HTTP → `reports/redirections.json` |
+| `make test-all` | All features (Batch B skips gracefully) → `reports/results.json` |
+| `make fix-loop` | Run all tests + emit `reports/results.json` (test agent entry point) |
 | `make report` | Open HTML report in browser |
 | `make clean` | Remove reports and cache |
 
@@ -109,56 +167,86 @@ make infra-phase6-down     # Phase 6 (all containers)
 ```
 integration/
 ├── docker-compose.yml        Firestore emulator (8080) + WireMock 3.4.2 (8081)
-│                             IndexingApi (8082, profile=phase3 — built from source)
-│                             NavigationApi (8083, profile=phase4 — built from source)
-│                             ProductsApi (8084, profile=phase4,phase6 — built from source)
-│                             SearchApi (8085, profile=phase5 — no Firestore)
-│                             ProjectListsApi (8086, profile=phase6 — Firestore CRUD + PDF)
+│                             IndexingApi (8082, profile=product-indexing)
+│                             NavigationApi (8083, profile=dynamic-navigation)
+│                             ProductsApi (8084, profile=pdp,project-list)
+│                             SearchApi (8085, profile=search)
+│                             ProjectListsApi (8086, profile=project-list)
 ├── Makefile                  All orchestration commands
+├── .env.example              Template for .env (committed) — SITECORE_MODE etc.
 ├── requirements.txt          pytest, pytest-json-report, pytest-html, google-cloud-firestore
-├── pytest.ini                Test discovery config + markers (pythonpath = .)
+├── pytest.ini                Test discovery config (pythonpath = .)
+├── agents/                   Multi-agent protocol (dev agent + test agent)
+│   ├── README.md             Two-agent workflow overview
+│   ├── dev-agent.md          Context supplement for the dev agent
+│   └── test-agent.md         Context supplement for the test agent
+├── reports/                  Generated test output + agent handoff files
+│   ├── current-task.md       Human writes this to start a task
+│   ├── dev-complete.md       Dev agent writes this when changes are done
+│   └── test-findings.md      Test agent writes this after fix-loop
 ├── fixtures/
 │   ├── csv/                  Real de/DE CSV batch (17 files from NEO/data_input/)
-│   └── mocks/                WireMock stub definitions
-│       ├── sitecore-search/
-│       │   ├── ingestion-update.json   PUT stub → {"enqueued":true,"incremental_update_id":"..."}
-│       │   ├── ingestion-delete.json   DELETE stub → {"enqueued":true,"incremental_update_ids":[...]}
-│       │   └── discovery-search.json   POST stub → SearchResults with 1 product (Phase 5)
-│       ├── project-lists/    Phase 6 stubs (idp-token, xmcloud-graphql, xmcloud-apikey)
-│       │                     product data served by real ProductsApi — no product stubs needed
-│       ├── hybris/           (empty)
-│       ├── sitecore-edge/    (empty — Phase 5)
-│       └── idp/              (empty — Phase 5)
+│   └── mocks/                WireMock stub definitions (one subdir per external system)
+│       ├── sitecore-search/  Ingestion + Discovery stubs
+│       ├── sitecore-edge/    GraphQL layout + dictionary stubs
+│       ├── project-lists/    XMCloud OAuth + GraphQL stubs (phase 6)
+│       ├── hybris/           Cart, user, pricing, order stubs
+│       ├── adyen/            Payment + 3DS stubs
+│       ├── mulesoft/         CRM form submission stubs
+│       ├── google-places/    Autocomplete stubs
+│       ├── recaptcha/        Verify endpoint stubs
+│       └── idp/              OIDC stubs for local dev + service-to-service auth
 ├── tests/
 │   ├── conftest.py           Session fixtures: firestore_client, pipeline_result, clean_firestore
-│   ├── pipeline/             Layer 1: ETL → Firestore (44 tests)
-│   │   ├── test_pipeline_runs.py
-│   │   ├── test_collections.py
-│   │   └── test_document_structure.py
-│   ├── sync/                 Layer 2: sync_product_index.py → products-index-updates (7 tests)
-│   │   ├── _data.py          Shared constants + compute_hash()
-│   │   ├── conftest.py       sync_result module fixture
-│   │   └── test_sync_logic.py
-│   ├── indexing/             Layer 4: IndexingApi → WireMock (5 tests)
+│   ├── data-loader/          data-loader feature tests
+│   │   ├── etl/              ETL pipeline → Firestore (44 tests, ~10-11 min)
+│   │   │   ├── test_pipeline_runs.py
+│   │   │   ├── test_collections.py
+│   │   │   └── test_document_structure.py
+│   │   └── sync/             sync_product_index.py → products-index-updates (7 tests, ~15s)
+│   │       ├── _data.py      Shared constants + compute_hash()
+│   │       ├── conftest.py   sync_result module fixture
+│   │       └── test_sync_logic.py
+│   ├── product-indexing/     IndexingApi → WireMock (5 tests, ~30s)
 │   │   ├── conftest.py       indexing_result module fixture
 │   │   └── test_indexing_pipeline.py
-│   └── services/             Layer 3: NavigationApi + ProductsApi + SearchApi HTTP tests (15 tests)
-│       ├── navigation/
-│       │   ├── conftest.py   navigation_result module fixture
-│       │   └── test_navigation_api.py
-│       ├── products/
-│       │   ├── conftest.py   products_result module fixture
-│       │   └── test_products_api.py
-│       ├── search/           Phase 5: SearchApi (no Firestore dependency)
-│       │   ├── conftest.py   search_result module fixture (waits for SearchApi only)
-│       │   └── test_search_api.py
-│       └── project-lists/    Phase 6: ProjectListsApi CRUD + PDF (10 tests)
-│           ├── conftest.py   project_lists_result module fixture (waits + seeds 2 docs)
-│           └── test_project_lists_api.py
+│   ├── dynamic-navigation/   NavigationApi HTTP tests (5 tests, ~60s)
+│   │   ├── conftest.py       navigation_result module fixture
+│   │   └── test_navigation_api.py
+│   ├── pdp/                  ProductsApi HTTP tests (5 tests, ~60s)
+│   │   ├── conftest.py       products_result module fixture
+│   │   └── test_products_api.py
+│   ├── search/               SearchApi HTTP tests (5 tests, ~30s)
+│   │   ├── conftest.py       search_result module fixture (no Firestore)
+│   │   └── test_search_api.py
+│   ├── project-list/         ProjectListsApi CRUD + PDF (10 tests, ~60s)
+│   │   ├── conftest.py       project_lists_result module fixture
+│   │   └── test_project_lists_api.py
+│   ├── shopping-cart/        🔜 ShoppingCartApi HTTP tests (skips if unavailable)
+│   │   ├── conftest.py       shopping_cart_result module fixture
+│   │   └── test_shopping_cart_api.py
+│   ├── my-account/           🔜 UserApi HTTP tests (skips if unavailable)
+│   │   ├── conftest.py       user_result module fixture
+│   │   └── test_user_api.py
+│   ├── pricing/              🔜 PricingApi HTTP tests (skips if unavailable)
+│   │   ├── conftest.py       pricing_result module fixture
+│   │   └── test_pricing_api.py
+│   ├── checkout/             🔜 OrderApi + Adyen tests (skips if unavailable)
+│   │   ├── conftest.py       checkout_result module fixture
+│   │   └── test_checkout_api.py
+│   ├── forms/                🔜 FormsApi form submission tests (skips if unavailable)
+│   │   ├── conftest.py       forms_result module fixture
+│   │   └── test_forms_api.py
+│   ├── store-locator/        🔜 Store-locator job Firestore tests (skips if collection empty)
+│   │   ├── conftest.py       store_locator_result module fixture
+│   │   └── test_store_locator.py
+│   └── redirections/         🔜 Redirect proxy HTTP tests (skips if unavailable)
+│       ├── conftest.py       redirections_result module fixture
+│       └── test_redirections.py
 ├── scripts/
-│   ├── wait_for_emulator.py  Generic service health-check poller (--host, --path, --timeout)
-│   └── seed_config.py        Seeds configuration collection before Phase 4 services start
-└── reports/                  Generated test output (gitignored)
+│   ├── wait_for_emulator.py  Generic service health-check poller
+│   └── seed_config.py        Seeds configuration collection (required for navigation+pdp)
+└── reports/                  Generated test output (gitignored except .md templates)
 ```
 
 ---
@@ -168,40 +256,28 @@ integration/
 ### Infrastructure
 
 - Firestore emulator runs at `localhost:8080` (Docker)
-- WireMock runs at `localhost:8081` (Docker, used from Phase 3 onwards)
+- WireMock runs at `localhost:8081` (Docker, used by all service tests)
 - All tests set `FIRESTORE_EMULATOR_HOST=localhost:8080`
 
-### Layer 1 — Pipeline (session-scoped)
+### data-loader/etl — ETL Pipeline (session-scoped)
 
 Fixtures in `tests/conftest.py`:
 - `firestore_client` — connects to the emulator (session-scoped)
 - `pipeline_result` — clears the emulator, runs `main.py` via subprocess (session-scoped, ~10 min)
 - `clean_firestore` — clears all collections after each test (function-scoped)
 
-### Layer 2 — Sync (module-scoped)
+### data-loader/sync — Sync Logic (module-scoped)
 
-Fixtures in `tests/sync/conftest.py`:
+Fixtures in `tests/data-loader/sync/conftest.py`:
 - `sync_result` — module-scoped. Clears `ProductIndexData` and `products-index-updates`,
   seeds 4 controlled documents, runs `sync_product_index.py --use-emulator --sync-database (default)`,
   yields `(CompletedProcess, firestore_client)`.
 
-**Why `--sync-database (default)`:** The gcloud Firestore emulator only supports the
-`(default)` database — named databases are not supported. Using `(default)` for both
-main and sync databases is safe because the two collections (`ProductIndexData` and
-`products-index-updates`) have distinct names.
+### product-indexing (module-scoped)
 
-**Test isolation:** sync tests run alphabetically after pipeline tests (`sync` > `pipeline`),
-so clearing `ProductIndexData` at the start of `sync_result` does not affect pipeline
-tests that have already completed.
+5 tests in `tests/product-indexing/test_indexing_pipeline.py`. Requires `infra-product-indexing-up`.
 
-**Fixture data:** 4 minimal in-memory documents with unrealistic BaseSKUs (10000–40000)
-to avoid clashing with real fixture data. Constants live in `tests/sync/_data.py`.
-
-### Layer 4 — Indexing (Phase 3 ✅)
-
-5 tests in `tests/indexing/test_indexing_pipeline.py`. Requires `infra-phase3-up`.
-
-Fixture in `tests/indexing/conftest.py` (`indexing_result`, module-scoped):
+Fixture in `tests/product-indexing/conftest.py` (`indexing_result`, module-scoped):
 1. Clears `products-index-updates`
 2. Seeds `IDX_0_de_DE` (operation=Update) + `IDX_1_de_DE` (operation=Delete)
 3. Waits for IndexingApi `/health`
@@ -210,11 +286,9 @@ Fixture in `tests/indexing/conftest.py` (`indexing_result`, module-scoped):
 6. Fetches WireMock journal
 7. Yields `(response, wiremock_requests, firestore_client)`
 
-### Layer 3 — Services (Phase 4+5 ✅)
+### dynamic-navigation (module-scoped)
 
-15 tests in `tests/services/`. Requires `infra-phase4-up` (Navigation + Products) and `infra-phase5-up` (SearchApi).
-
-#### NavigationApi (5 tests in `tests/services/navigation/`)
+5 tests in `tests/dynamic-navigation/test_navigation_api.py`. Requires `infra-dynamic-navigation-up`.
 
 Fixture `navigation_result` (module-scoped):
 1. Clears `PLCategory`
@@ -223,10 +297,9 @@ Fixture `navigation_result` (module-scoped):
 3. Waits for NavigationApi `/health` (localhost:8083)
 4. Yields `(session, firestore_client)`
 
-Tests: 200 for valid locale, CategoryMenuItems non-empty, required fields present,
-Language/Market match de/DE, 400 for invalid locale format.
+### pdp (module-scoped)
 
-#### ProductsApi (5 tests in `tests/services/products/`)
+5 tests in `tests/pdp/test_products_api.py`. Requires `infra-pdp-up`.
 
 Fixture `products_result` (module-scoped):
 1. Clears `PLProductContent`, `PLVariant`, `PLCategory`
@@ -235,70 +308,57 @@ Fixture `products_result` (module-scoped):
 3. Waits for ProductsApi `/health` (localhost:8084)
 4. Yields `(session, firestore_client)`
 
-Tests: 200 for known SKU, SKU field in response, 404 for unknown SKU,
-category endpoint 200/204, variants endpoint 200.
+### search (module-scoped)
 
-#### SearchApi (5 tests in `tests/services/search/`)
+5 tests in `tests/search/test_search_api.py`. Requires `infra-search-up`.
 
 Fixture `search_result` (module-scoped):
 1. Waits for SearchApi `/health` (localhost:8085)
 2. Yields `session` (no Firestore — SearchApi has no Firestore dependency)
 
-WireMock stub `fixtures/mocks/sitecore-search/discovery-search.json` intercepts
-`POST /discover/v2/integration` and returns one product item.
+### project-list (module-scoped)
 
-Tests: health 200, POST /product/v1/search → 200 or 204, result items non-empty when 200,
-missing `lang` → 400, POST /autosuggest/v1/suggest → 200 or 204.
+10 tests in `tests/project-list/test_project_lists_api.py`. Requires `infra-project-list-up`.
 
 ---
 
 ## Test data
 
-**Layer 1 — real CSV fixtures:**
+**data-loader/etl — real CSV fixtures:**
 - Known SKUs: `66838000`, `40806000`
 - Known ProductIndexData IDs: `66838_0_de_DE`, `40806_0_de_DE`
 
-**Layer 2 — seeded in-memory:**
+**data-loader/sync — seeded in-memory:**
 - `PRODUCT_NEW_ID = "10000_0_de_DE"` — in ProductIndexData only → creates Update record
 - `PRODUCT_CHANGED_ID = "20000_0_de_DE"` — hash mismatch → rewrites record
 - `PRODUCT_UNCHANGED_ID = "30000_0_de_DE"` — hash matches → skipped
 - `PRODUCT_DELETED_ID = "40000_0_de_DE"` — in sync only → sets operation=Delete
 
-**Layer 4 — seeded in-memory:**
+**product-indexing — seeded in-memory:**
 - `INDEXING_UPDATE_DOC_ID = "IDX_0_de_DE"` — operation=Update → PUT to Sitecore Search
 - `INDEXING_DELETE_DOC_ID = "IDX_1_de_DE"` — operation=Delete → DELETE to Sitecore Search
 
-**Layer 3 (Navigation) — seeded in-memory:**
+**dynamic-navigation — seeded in-memory:**
 - `NAV_PARENT_DOC_ID = "9001_de_DE"` — top-level category, MenuVisibility=True
 - `NAV_CHILD_DOC_ID = "9002_de_DE"` — child of 9001, ParentId=9001
 
-**Layer 3 (Products) — seeded in-memory:**
-- `PRODUCT_DOC_ID = "PROD-001_de_DE"` — PLProductContent, SKU=PROD-001, CategoryIDs=[5001]
-- `VARIANT_DOC_ID = "PROD-001_de_DE"` — PLVariant, one finish (Alpine White, FinishId=1)
-- `CATEGORY_DOC_ID = "5001_de_DE"` — PLCategory, ID=5001, MenuVisibility=True
+**pdp — seeded in-memory:**
+- `PRODUCTS_CONTENT_DOC_ID = "PROD-001_de_DE"` — PLProductContent, SKU=PROD-001
+- `PRODUCTS_VARIANT_DOC_ID = "PROD_0_de_DE"` — PLVariant, one finish (Alpine White)
+- `PRODUCTS_CATEGORY_DOC_ID = "5001_de_DE"` — PLCategory, ID=5001, MenuVisibility=True
 
-**Phase 5 (SearchApi) — no Firestore seeding, WireMock stub only:**
-- WireMock stub returns `{"widgets":[{"rfk_id":"rfkid_7","content":[{"id":"PROD-001","name":"Test Product 001","base_sku":"PROD-001",...}],"total_item":1}]}`
+**search — no Firestore seeding, WireMock stub only:**
+- WireMock stub returns one product item for `POST /discover/v2/integration`
 - Source locale `"de_de"` mapped to source ID `"integration"` (appsettings.Integration.json)
 
-**Phase 6 (ProjectListsApi) — seeded in-memory, real ProductsApi for PDF:**
-- `SEEDED_LIST_ID = "integration-test-list-001"` — used for read/update/PDF tests (userId=test-user-id)
-- `SEEDED_DELETE_ID = "integration-test-list-002"` — deleted by test 9 (userId=test-user-id)
-- Collection name: `project-lists`; Firestore field names are PascalCase (`Id`, `UserId`, `ProjectListName`, ...)
-- JWT: unsigned fake JWT with `{"sub":"test-user-id"}` payload, sent as raw value (no "Bearer " prefix)
-  (`GetClaimValue` strips "OndusBearer" prefix then calls ReadJwtToken — no RSA verification)
-- PDF test (test 10) uses SKU `1039960000` with `locale=de-DE` — **requires ETL data in Firestore**
-  (run `make test-pipeline` or load ETL data before running phase 6 tests)
-- WireMock stubs in `fixtures/mocks/project-lists/` (3 stubs, XMCloud only):
-  - `idp-token.json` — POST /oauth/token → fake token (for XMCloud OAuth)
-  - `xmcloud-graphql.json` — POST /graphql → empty dictionary results
-  - `xmcloud-apikey.json` — POST /apikey/v1 → plain text API key (SitecoreEdgeService calls
-    this after OAuth before every GraphQL query to get an XMCloud Edge key)
-- Product data (detail + variants) served by **real ProductsApi** (port 8084) reading from Firestore emulator
+**project-list — seeded in-memory, real ProductsApi for PDF:**
+- `SEEDED_LIST_ID = "integration-test-list-001"` — used for read/update/PDF tests
+- `SEEDED_DELETE_ID = "integration-test-list-002"` — deleted by test 9
+- PDF test requires ETL data: run `make test-data-loader` before `make test-project-list`
 
 ---
 
-## Reading Test Results (for Claude)
+## Reading Test Results (for the test agent)
 
 After `make fix-loop`, read `reports/results.json`:
 
@@ -306,7 +366,7 @@ After `make fix-loop`, read `reports/results.json`:
 {
   "tests": [
     {
-      "nodeid": "tests/services/navigation/test_navigation_api.py::TestNavigationApi::test_navigation_returns_200_for_valid_locale",
+      "nodeid": "tests/dynamic-navigation/test_navigation_api.py::TestNavigationApi::test_navigation_returns_200_for_valid_locale",
       "outcome": "failed",
       "call": {
         "longrepr": "AssertionError: Expected 200, got 500. Body: ..."
@@ -318,51 +378,65 @@ After `make fix-loop`, read `reports/results.json`:
 
 **Trace from test name to source file:**
 
-| Test file | Covers | Likely root cause |
-|---|---|---|
-| `pipeline/test_pipeline_runs.py` | Pipeline exits + reports | `grohe-neo-data-loader/main.py` |
-| `pipeline/test_collections.py` | Collection presence + IDs | `grohe-neo-data-loader/transformer.py`, `firestore_loader.py` |
-| `pipeline/test_document_structure.py::TestPLProductContentStructure` | PLProductContent fields | `output_models/pl_product_content.py`, `transformer.py` |
-| `pipeline/test_document_structure.py::TestProductIndexDataStructure` | ProductIndexData fields | `output_models/product_index_data.py`, `transformer.py` |
-| `pipeline/test_document_structure.py::TestPLCategoryStructure` | PLCategory fields | `transformer.py` |
-| `pipeline/test_document_structure.py::TestPLVariantStructure` | PLVariant fields | `transformer.py` |
-| `sync/test_sync_logic.py::TestSyncLogic` | sync_product_index.py behaviour | `grohe-neo-data-loader/sync_product_index.py` |
-| `indexing/test_indexing_pipeline.py::TestIndexingPipeline` | IndexingApi → Sitecore Search | `grohe-neo-services/GroheNeo.IndexingApi/` |
-| `services/navigation/test_navigation_api.py::TestNavigationApi` | NavigationApi HTTP | `grohe-neo-services/GroheNeo.ProductsDynamicNavigationApi/` |
-| `services/products/test_products_api.py::TestProductsApi` | ProductsApi HTTP | `grohe-neo-services/GroheNeo.ProductsApi/` |
-| `services/search/test_search_api.py::TestSearchApi` | SearchApi HTTP | `grohe-neo-services/GroheNeo.SearchApi/` |
-| `services/project-lists/test_project_lists_api.py::TestProjectListsApi` | ProjectListsApi HTTP | `grohe-neo-services/GroheNeo.ProjectListsApi/` |
+| Test file | Feature | Covers | Likely root cause in source |
+|---|---|---|---|
+| `data-loader/etl/test_pipeline_runs.py` | data-loader | Pipeline exits + reports | `grohe-neo-data-loader/main.py` |
+| `data-loader/etl/test_collections.py` | data-loader | Collection presence + IDs | `grohe-neo-data-loader/transformer.py`, `firestore_loader.py` |
+| `data-loader/etl/test_document_structure.py::TestPLProductContentStructure` | data-loader | PLProductContent fields | `output_models/pl_product_content.py`, `transformer.py` |
+| `data-loader/etl/test_document_structure.py::TestProductIndexDataStructure` | data-loader | ProductIndexData fields | `output_models/product_index_data.py`, `transformer.py` |
+| `data-loader/etl/test_document_structure.py::TestPLCategoryStructure` | data-loader | PLCategory fields | `transformer.py` |
+| `data-loader/etl/test_document_structure.py::TestPLVariantStructure` | data-loader | PLVariant fields | `transformer.py` |
+| `data-loader/sync/test_sync_logic.py::TestSyncLogic` | data-loader | sync_product_index.py | `grohe-neo-data-loader/sync_product_index.py` |
+| `product-indexing/test_indexing_pipeline.py::TestIndexingPipeline` | product-indexing | IndexingApi → Sitecore | `grohe-neo-services/GroheNeo.IndexingApi/` |
+| `dynamic-navigation/test_navigation_api.py::TestNavigationApi` | dynamic-navigation | NavigationApi HTTP | `grohe-neo-services/GroheNeo.ProductsDynamicNavigationApi/` |
+| `pdp/test_products_api.py::TestProductsApi` | pdp | ProductsApi HTTP | `grohe-neo-services/GroheNeo.ProductsApi/` |
+| `search/test_search_api.py::TestSearchApi` | search | SearchApi HTTP | `grohe-neo-services/GroheNeo.SearchApi/` |
+| `project-list/test_project_lists_api.py::TestProjectListsApi` | project-list | ProjectListsApi HTTP | `grohe-neo-services/GroheNeo.ProjectListsApi/` |
+| `shopping-cart/test_shopping_cart_api.py::TestShoppingCartApi` | shopping-cart | ShoppingCartApi + Hybris cart | `grohe-neo-services/GroheNeo.ShoppingCartApi/` |
+| `my-account/test_user_api.py::TestUserApi` | my-account | UserApi + Hybris user + Google Places | `grohe-neo-services/GroheNeo.UserApi/` |
+| `pricing/test_pricing_api.py::TestPricingApi` | pricing | PricingApi + Hybris pricing | `grohe-neo-services/GroheNeo.PricingApi/` |
+| `checkout/test_checkout_api.py::TestCheckoutApi` | checkout | OrderApi + Adyen payment | `grohe-neo-services/GroheNeo.OrderApi/` |
+| `forms/test_forms_api.py::TestFormsApi` | forms | FormsApi + Mulesoft + reCAPTCHA | `grohe-neo-services/GroheNeo.FormsApi/` |
+| `store-locator/test_store_locator.py::TestStoreLocator` | store-locator | Store-locator job → Firestore | `grohe-neo-services/GroheNeo.StoreLocatorJob/` |
+| `redirections/test_redirections.py::TestRedirections` | redirections | Redirect proxy + Sitecore Edge | `grohe-neo-services/GroheNeo.RedirectReverseProxy/` |
 
 ---
 
-## The Automated Fix Loop
+## The Automated Fix Loop (multi-agent workflow)
 
-When Claude is given a task that touches the data-loader or its Firestore output:
+See `agents/README.md` for the full two-agent workflow. Summary:
 
-1. Claude makes changes across the relevant repos
-2. Claude runs the relevant layer:
-   - `make test-sync` for sync-only changes (~15 sec)
-   - `make fix-loop` for full pipeline + sync verification (~10-11 min)
-3. Claude reads `reports/results.json`
-4. If failures exist: Claude fixes code → re-runs from step 2
-5. When all green: Claude summarises changes
+1. Human writes `reports/current-task.md`
+2. **Dev agent** (grohe-neo-services terminal): reads task + feature doc + test-findings → implements → writes `reports/dev-complete.md`
+3. **Test agent** (integration terminal): reads dev-complete → runs `make fix-loop` → reads results.json → writes `reports/test-findings.md`
+4. If failures: dev agent reads test-findings → fixes → loop
+5. If all green: human reviews PR
 
 ---
 
 ## Timing
 
-| Layer | Runtime | Notes |
+| Feature | Runtime | Notes |
 |---|---|---|
-| Layer 1 (pipeline) | ~10–11 min | ETL transform is CPU-bound (292k records → 17k products); subprocess timeout: 900s |
-| Layer 2 (sync) | ~15 sec | Seeds 4 docs directly, no ETL; subprocess timeout: 120s |
-| Layer 4 (indexing) | ~30 sec | Seeds 2 docs, calls IndexingApi, inspects WireMock journal |
-| Layer 3 (services) | ~90 sec | Seeds minimal docs (Nav+Products), calls NavigationApi + ProductsApi + SearchApi |
-| Phase 6 (project-lists) | ~60 sec | Seeds 2 docs, calls ProjectListsApi CRUD + PDF |
-| IndexingApi Docker build | ~5–10 min (first time) | Subsequent builds are cached |
+| data-loader/etl (pipeline) | ~10–11 min | ETL transform is CPU-bound; subprocess timeout: 900s |
+| data-loader/sync | ~15 sec | Seeds 4 docs directly, no ETL; subprocess timeout: 120s |
+| product-indexing | ~30 sec | Seeds 2 docs, calls IndexingApi, inspects WireMock journal |
+| dynamic-navigation | ~60 sec | Seeds minimal docs, calls NavigationApi |
+| pdp | ~60 sec | Seeds minimal docs, calls ProductsApi |
+| search | ~30 sec | No Firestore; calls SearchApi → WireMock |
+| project-list | ~60 sec | Seeds 2 docs, CRUD + PDF generation |
+| IndexingApi Docker build | ~5–10 min (first time) | Subsequent builds cached |
 | NavigationApi Docker build | ~2–3 min (first time) | No Chrome; subsequent builds cached |
 | ProductsApi Docker build | ~15–20 min (first time) | Installs Chrome ~100MB; subsequent builds cached |
 | SearchApi Docker build | ~2–3 min (first time) | No Chrome, no Firestore; subsequent builds cached |
 | ProjectListsApi Docker build | ~15–20 min (first time) | Installs Chrome ~100MB; subsequent builds cached |
+| shopping-cart | ~30 sec | HTTP tests; Hybris cart stubs via WireMock |
+| my-account | ~30 sec | HTTP tests; Hybris user + Google Places stubs via WireMock |
+| pricing | ~30 sec | HTTP tests; Hybris pricing stubs via WireMock |
+| checkout | ~60 sec | HTTP tests; Hybris order + Adyen stubs via WireMock |
+| forms | ~30 sec | HTTP tests; Mulesoft + reCAPTCHA stubs via WireMock |
+| store-locator | ~30 sec | Firestore assertions; requires job to have run first |
+| redirections | ~30 sec | HTTP tests; Sitecore Edge stubs via WireMock |
 
 ---
 
@@ -379,55 +453,67 @@ failures, check that these are present in the relevant conftest.py.
 
 ---
 
+## SITECORE_MODE
+
+Set `SITECORE_MODE` in `.env` to control where Sitecore calls go:
+
+```env
+SITECORE_MODE=mock      # (default) — all Sitecore calls go to WireMock
+SITECORE_MODE=qa        # real Sitecore QA environment
+SITECORE_MODE=uat       # real Sitecore UAT environment
+SITECORE_MODE=prod      # real Sitecore PROD environment (read-only)
+```
+
+When `SITECORE_MODE=mock`, the services use `http://wiremock:8080` for all Sitecore calls
+and the WireMock stubs in `fixtures/mocks/sitecore-edge/` provide the responses.
+When `SITECORE_MODE=qa`, the services call the real Sitecore Edge with credentials
+from `SITECORE_EDGE_CONTEXT_ID` and `SITECORE_EDGE_API_KEY` (set in `.env`).
+
+---
+
 ## Adding New Tests
 
-### New Firestore field (Layer 1)
+### New Firestore field (data-loader/etl)
 ```python
-# tests/pipeline/test_document_structure.py → appropriate class
+# tests/data-loader/etl/test_document_structure.py → appropriate class
 def test_has_sustainability_label(self):
     assert "SustainabilityLabel" in self._doc
 ```
 
-### New collection (Layer 1)
+### New sync behaviour (data-loader/sync)
 ```python
-# tests/pipeline/test_collections.py
-def test_new_collection_is_populated(self, pipeline_result, firestore_client):
-    ids = collection_doc_ids(firestore_client, "NewCollection")
-    assert len(ids) > 0
-```
-
-### New sync behaviour (Layer 2)
-
-Add constants to `tests/sync/_data.py` if new product docs are needed, then:
-```python
-# tests/sync/test_sync_logic.py → TestSyncLogic
+# tests/data-loader/sync/test_sync_logic.py → TestSyncLogic
 def test_new_behaviour(self, sync_result):
     proc, client = sync_result
     doc = client.collection("products-index-updates").document(PRODUCT_NEW_ID).get()
     assert doc.to_dict()["some_field"] == "expected_value"
 ```
 
-If the new test requires a different seeding scenario, add it to the `sync_result`
-fixture in `tests/sync/conftest.py`.
-
-### New service endpoint test (Layer 3 / Phase 4)
+### New service endpoint (feature tests)
 ```python
-# tests/services/navigation/test_navigation_api.py or products equivalent
+# tests/dynamic-navigation/test_navigation_api.py (or equivalent)
 def test_new_endpoint_behaviour(self, navigation_result):
     session, client = navigation_result
     resp = session.get(f"http://{NAVIGATION_API_HOST}/neo/product/v1/...", params=...)
     assert resp.status_code == 200
 ```
 
+### New Batch B feature
+Follow the pattern in `tests/shopping-cart/`, `tests/my-account/` etc.:
+1. Add service to `docker-compose.yml` with the right profile
+2. Add `fixtures/mocks/<system>/<feature>-*.json` WireMock stubs
+3. Add `tests/<feature>/conftest.py` with module-scoped fixture
+4. Add `tests/<feature>/test_<feature>_api.py` with 5–10 HTTP assertion tests
+5. Add `make infra-<feature>-up/down` and `make test-<feature>` targets to Makefile
+
 ---
 
 ## Updating CSV Fixtures
 
-When a new data batch is available in `NEO/data_input/`:
 ```bash
 cp ../data_input/*.csv fixtures/csv/
 ```
-Then re-run tests to confirm nothing broke.
+Then re-run `make test-data-loader` to confirm nothing broke.
 
 ---
 
@@ -435,191 +521,143 @@ Then re-run tests to confirm nothing broke.
 
 - Project ID: `demo-project` (hardcoded, emulator doesn't validate)
 - Database: `(default)` — the only database supported by the gcloud Firestore emulator
-- `ProductIndexData` and `products-index-updates` both live in `(default)` for sync tests
 - Collections are cleared before each pipeline and sync run (in respective conftest.py)
 - Emulator state is lost when the container stops (`infra-down`)
 - Port `8080` — do not run the real Firebase emulator on the same port
 
-## IndexingApi Notes (Phase 3)
+## IndexingApi Notes (product-indexing)
 
 - Host port: `8082`; container internal port: `8080`
-- Docker profile: `phase3` — only started with `docker compose --profile phase3 up -d`
-- Build context: `../grohe-neo-services` (entire services monorepo — build is slow first time)
+- Docker profile: `product-indexing`
 - Health endpoint: `GET http://localhost:8082/health` → HTTP 200
 - Trigger endpoint: `GET http://localhost:8082/v1/indexing/products/initialize`
-- Config override: `ASPNETCORE_ENVIRONMENT=Integration` loads `appsettings.Integration.json`
-  (file lives in `grohe-neo-services/src/GroheNeo.IndexingApi/appsettings.Integration.json`)
-- Connects to Firestore emulator via `FIRESTORE_EMULATOR_HOST=firestore-emulator:8080`
-- Sends ingestion requests to WireMock at `http://wiremock:8080/ingestion/v1` (internal network)
-- XMCloud Edge calls (for product detail URL) fail gracefully — service falls back to `/{locale}/product/`
+- Config: `ASPNETCORE_ENVIRONMENT=Integration` loads `appsettings.Integration.json`
+  (file: `grohe-neo-services/src/GroheNeo.IndexingApi/appsettings.Integration.json`)
 
 **Critical — `EmulatorDetection` (already fixed):**
 `FirestoreDbBuilder` in `FirestoreDataStorageService.cs` must have:
 ```csharp
 builder.EmulatorDetection = Google.Api.Gax.EmulatorDetection.EmulatorOrProduction;
 ```
-Without this line, the .NET Firestore SDK ignores `FIRESTORE_EMULATOR_HOST` and tries to
-authenticate with real Google ADC — which doesn't exist in the container → HTTP 500 on
-every request. The fix is already in `grohe-neo-services` (`FirestoreDataStorageService.cs:54`).
-If this is ever reverted or a new Firestore service is added, this will break Phase 3 tests.
 
-**Windows / Git Bash — `--path` argument expansion:**
-`make wait-indexing-api` calls `wait_for_emulator.py --path /health`, but Git Bash
-expands `/health` to `C:/Program Files/Git/health` before Python sees it → timeout error.
-This does NOT affect the Python test conftest (it calls `_wait_for_indexing_api()` directly,
-no shell). To check health manually on Windows, use:
-```bash
-MSYS_NO_PATHCONV=1 curl -s http://localhost:8082/health
-```
-
-## NavigationApi Notes (Phase 4)
+## NavigationApi Notes (dynamic-navigation)
 
 - Host port: `8083`; container internal port: `8080`
-- Docker profile: `phase4` — started with `docker compose --profile phase4 up -d`
-- Build context: `../grohe-neo-services`; build time: ~2–3 min (first time, no Chrome)
+- Docker profile: `dynamic-navigation`
 - Health endpoint: `GET http://localhost:8083/health` → HTTP 200
-- Main endpoint: `GET /neo/product/v1/category-navigation?locale=de-DE`
-- Config override: `ASPNETCORE_ENVIRONMENT=Integration` loads `appsettings.Integration.json`
-  (file: `grohe-neo-services/src/GroheNeo.ProductsDynamicNavigationApi/appsettings.Integration.json`)
-- Cache backend: `Memory` (overridden in appsettings.Integration.json — avoids Firestore cache writes)
 - Reads `configuration` collection at startup → needs `make seed-config` first
-- Queries `PLCategory` filtered by Language/Market/MenuVisibility=true
-- XMCloud call (`GetProductAndInspirationGuides`) fails gracefully — categories still returned
 
 **Critical — EmulatorDetection must be present in 3 places:**
-- `FirebaseConfigurationService.cs` (reads `configuration` collection at startup)
-- `FireStoreDbResolver.cs` in NavigationApi (builds per-locale Firestore connections)
-- `FireStoreDbResolver.cs` in ProductsApi (same)
+- `FirebaseConfigurationService.cs`
+- `FireStoreDbResolver.cs` in NavigationApi
+- `FireStoreDbResolver.cs` in ProductsApi
 
-**Configuration seeding:**
-The `configuration` Firestore document must exist BEFORE the services start (they read
-it at startup in `Program.cs`). `make seed-config` or `scripts/seed_config.py` inserts:
-```python
-{ "project_id": "demo-project", "database_de_de": "(default)", "fallback_locale": "de_de" }
-```
-Locale resolution: `locale=de-DE` → key `database_de_de` → `(default)` → all queries go
-to the single emulator database.
-
-## ProductsApi Notes (Phase 4)
+## ProductsApi Notes (pdp)
 
 - Host port: `8084`; container internal port: `8080`
-- Docker profile: `phase4`
-- Build time: ~15–20 min first time (installs Chrome v142 ~100MB + deps); subsequent builds cached
+- Docker profile: `pdp` (also `project-list` for PDF generation)
+- Build time: ~15–20 min first time (installs Chrome v142 ~100MB + deps)
 - Health endpoint: `GET http://localhost:8084/health` → HTTP 200
-- Main endpoint: `GET /neo/product/v1/{sku}?locale=de-DE`
-- Config override: `ASPNETCORE_ENVIRONMENT=Integration` loads `appsettings.Integration.json`
+- Config: `ASPNETCORE_ENVIRONMENT=Integration` loads `appsettings.Integration.json`
   (file: `grohe-neo-services/src/GroheNeo.ProductsApi/appsettings.Integration.json`)
-- Cache backend: `Memory` (appsettings.Integration.json override)
-- XMCloud calls routed to WireMock (`http://wiremock:8080`) — 404 → graceful fallback
 
-## SearchApi Notes (Phase 5)
+## SearchApi Notes (search)
 
 - Host port: `8085`; container internal port: `8080`
-- Docker profile: `phase5` — started with `docker compose --profile phase5 up -d`
-- Build time: ~2–3 min first time (no Chrome); subsequent builds cached
+- Docker profile: `search`
 - Health endpoint: `GET http://localhost:8085/health` → HTTP 200
-- Search endpoint: `POST /product/v1/search` — body: `{"lang":"de-de","q":"...","limit":N,"offset":0}`
-- Autosuggest endpoint: `POST /autosuggest/v1/suggest` — body: `{"lang":"de-de","q":"..."}`
-- Config override: `ASPNETCORE_ENVIRONMENT=Integration` loads `appsettings.Integration.json`
-  (file: `grohe-neo-services/src/GroheNeo.SearchApi/appsettings.Integration.json`)
-- **No Firestore dependency** — SearchApi calls only Sitecore Search Discovery API (WireMock)
-  and XM Cloud (WireMock, returns 404, handled gracefully by Refit `ApiResponse<T>`)
-- WireMock stub: `fixtures/mocks/sitecore-search/discovery-search.json` intercepts
-  all `POST /discover/v2/integration` and returns 1 product item
+- **No Firestore dependency** — calls only Sitecore Search Discovery API (WireMock)
+- Language format: `xx-xx` (5 chars), e.g. `"de-de"` → maps to source `"integration"`
+- JSON request keys: `"lang"` (not `"language"`), `"q"` (not `"query"`)
 
-**Language format:** SearchApi uses XM Cloud format `xx-xx` (5 chars) validated by regex.
-`"de-de"` → maps internally to `"de_de"` → source `"integration"` → WireMock stub.
-JSON request key is `"lang"` (not `"language"`), query key is `"q"` (not `"query"`).
-
-**XM Cloud graceful fallback:** `IXmCloudService.GetVariantOrderingSettings` is a Refit
-`ApiResponse<T>` — WireMock returns 404, `settings.Content` is null, mapper handles null.
-
-**CrossApiServices override:** `CrossApiServicesSettings.Integration.json` (in
-`GroheNeo.Feature.CrossApiServices/`) overrides `ApiServices.XmCloudApi.BaseAddress` to
-`http://wiremock:8080` so Refit calls WireMock instead of GCP during integration tests.
-This file is added to the `.csproj` with `CopyToOutputDirectory: Always`.
-
-## ProjectListsApi Notes (Phase 6)
+## ProjectListsApi Notes (project-list)
 
 - Host port: `8086`; container internal port: `8080`
-- Docker profile: `phase6` — started with `make infra-phase6-up`
-- Build time: ~15–20 min first time (installs Chrome v142 ~100MB + deps); subsequent builds cached
+- Docker profile: `project-list`
+- Build time: ~15–20 min first time (installs Chrome v142 ~100MB + deps)
 - Health endpoint: `GET http://localhost:8086/health` → HTTP 200
-- Firestore collection: `project-lists` (field names PascalCase: `Id`, `UserId`, `ProjectListName`, ...)
-- Config override: `ASPNETCORE_ENVIRONMENT=Integration` loads `appsettings.Integration.json`
-  (file: `grohe-neo-services/src/GroheNeo.ProjectListsApi/appsettings.Integration.json`)
-- **`seed_config.py` IS required** — ProductsApi (which phase6 now depends on) reads the
-  `configuration` Firestore collection at startup. `make infra-phase6-up` runs it automatically.
-- **ProductsApi dependency:** `ProductApiBaseUrl=http://products-api:8080` — ProjectListsApi
-  calls the real ProductsApi container directly (not WireMock). ProductsApi reads from Firestore.
-
-**Critical — EmulatorDetection:**
-Both `FirestoreDbBuilder` instances in `DependencyInjectionExtensions.cs` must have:
-```csharp
-builder.EmulatorDetection = Google.Api.Gax.EmulatorDetection.EmulatorOrProduction;
-```
-Without this, `FIRESTORE_EMULATOR_HOST` is ignored and Firestore calls fail with auth errors.
-
-**JWT auth:**
-`IdpTokenHelper.GetClaimValue()` strips the "OndusBearer" prefix and calls `ReadJwtToken()`
-(payload decode only — no RSA signature verification). Tests send a fake unsigned JWT:
-```python
-header.payload.fakesig  # raw JWT, no "Bearer " prefix in Authorization header
-```
-`AuthorizationService.GetBaseParameters()` is called for write endpoints; since the JWT is
-non-empty, `isAnonymousUser = false` and the anonymous token call (GET /token) is NOT made.
-
-**ConfigurationXmCloud validation (ValidateOnStart):**
-All required fields must be non-empty at startup. `appsettings.Integration.json` provides:
-`EdgeClientId`, `EdgeClientSecret`, `AutomationClientId`, `AutomationClientSecret`,
-`EnvironmentId` — all set to dummy integration values.
-
-**PDF generation (test 10):**
-- SEEDED_LIST_ID doc must exist in Firestore (seeded by fixture, not deleted by test 9)
-- SEEDED_DELETE_ID is seeded separately for test 9 to delete
-- SKU `1039960000`, locale `de-DE` — ETL data must be loaded into Firestore before running
-  (`make test-pipeline` or the data-loader run populates the necessary PLProductContent docs)
-- WireMock provides XMCloud OAuth + API key + empty GraphQL dictionary
-- Real product detail + variants fetched from ProductsApi (reading from Firestore emulator)
-- Empty dictionary from GraphQL is fine — PDF generates with default label keys
-- Call chain: POST /oauth/token (WireMock) → POST /apikey/v1 (WireMock) → POST /graphql (WireMock);
-  GET products-api:8080/neo/product/v1/1039960000 (real); GET products-api:8080/neo/product/v1/variants (real)
-
-**`UpdateProjectListRequestStorageMapper` fix (already applied):**
-Bug: `UpdatedTimestamp = input.CreatedTimestamp` — used CreatedTimestamp for both fields.
-Fix: `UpdatedTimestamp = DateTime.SpecifyKind(input.UpdatedTimestamp, DateTimeKind.Utc)` and
-`CreatedTimestamp = DateTime.SpecifyKind(input.CreatedTimestamp, DateTimeKind.Utc)`.
-Without this, update requests crash Firestore with "DateTime kind must be Utc".
-
-**Services host ports:** ProjectListsApi=8086
+- Firestore collection: `project-lists` (PascalCase field names)
+- `seed_config.py` IS required — ProductsApi reads `configuration` at startup
+- PDF test requires ETL data in Firestore (run `make test-data-loader` first)
+- JWT: unsigned fake JWT, no "Bearer " prefix — service strips "OndusBearer" prefix
 
 ## WireMock Notes
 
 - Host port: `8081`; container internal port: `8080`
 - Mappings directory: `fixtures/mocks/` (mounted to `/home/wiremock/mappings`)
-- Admin API: `http://localhost:8081/__admin/` — use for health check + request journal
-- Request journal: `GET http://localhost:8081/__admin/requests` — inspect what was sent
-- WireMock stub files (`.json`) go in the relevant `fixtures/mocks/{service}/` subdirectory
-- Phase 3 stubs in `fixtures/mocks/sitecore-search/`:
-  - `ingestion-update.json` — matches PUT to ingestion endpoint → 200 success
-  - `ingestion-delete.json` — matches DELETE to ingestion endpoint → 200 success
-- Phase 5 stubs in `fixtures/mocks/sitecore-search/`:
-  - `discovery-search.json` — matches POST to `/discover/v2/integration` → 200 with 1 product
-- Reset journal between test runs: `DELETE http://localhost:8081/__admin/requests`
-
-**Hot-reload:** WireMock does NOT auto-reload stubs from disk while running. If a new stub
-file is added while the container is already up, trigger a reload with:
-```bash
-curl -s -X POST http://localhost:8081/__admin/mappings/reset
-```
-This is not needed in normal workflow because `infra-phase*-up` starts WireMock fresh.
-It is only needed if the stub file was created after the container was already running.
+- Admin API: `http://localhost:8081/__admin/` — health check + request journal
+- Request journal: `GET http://localhost:8081/__admin/requests`
+- Reset journal: `DELETE http://localhost:8081/__admin/requests`
+- Hot-reload: `curl -s -X POST http://localhost:8081/__admin/mappings/reset`
 
 **`urlPattern` requires `.*` suffix for URLs with query params:**
-WireMock matches `urlPattern` against the full URL string using Java `matches()` (not `find()`).
-A pattern like `^/neo/product/v1/PROD-001` only matches the exact path with no query string.
-To match requests with query params (`?locale=de-de&...`), always append `.*`:
 ```json
 "urlPattern": "^/neo/product/v1/PROD-001.*"
 ```
-Patterns ending with `.+` (like the ingestion stubs) already handle this correctly.
+
+## ShoppingCartApi Notes (shopping-cart)
+
+- Host port: `8087`; Docker profile: `shopping-cart`
+- Health endpoint: `GET http://localhost:8087/health` → HTTP 200
+- Hybris stubs: `fixtures/mocks/hybris/cart-*.json`
+- Tests: anonymous cart creation, add/remove items, cart merge on login
+- IDP stubs: `fixtures/mocks/idp/` (OIDC token for authenticated cart)
+
+## UserApi Notes (my-account)
+
+- Host port: `8088`; Docker profile: `my-account`
+- Health endpoint: `GET http://localhost:8088/health` → HTTP 200
+- Hybris stubs: `fixtures/mocks/hybris/user-addresses.json`
+- Google Places stubs: `fixtures/mocks/google-places/autocomplete.json`
+- Tests: get profile, address CRUD, address autocomplete
+
+## PricingApi Notes (pricing)
+
+- Host port: `8089`; Docker profile: `pricing`
+- Health endpoint: `GET http://localhost:8089/health` → HTTP 200
+- Hybris stubs: `fixtures/mocks/hybris/pricing-get.json`
+- Tests: authenticated + anonymous price fetch; cache behaviour
+
+## OrderApi / CheckoutApi Notes (checkout)
+
+- Host port: `8090`; Docker profile: `checkout`
+- Health endpoint: `GET http://localhost:8090/health` → HTTP 200
+- Hybris stubs: `fixtures/mocks/hybris/order-create.json`
+- Adyen stubs: `fixtures/mocks/adyen/payment-sessions.json`, `payment-methods.json`
+- Tests: place order, get order status, payment initiation, 3DS callback
+
+## FormsApi Notes (forms)
+
+- Host port: `8092`; Docker profile: `forms`
+- Health endpoint: `GET http://localhost:8092/health` → HTTP 200
+- Mulesoft stubs: `fixtures/mocks/mulesoft/contact-form.json`, `quote-form.json`
+- reCAPTCHA stubs: `fixtures/mocks/recaptcha/verify-success.json`
+- Base path: `/neo/forms/v1`
+- Tests: contact form, quote form, reCAPTCHA validation, missing field validation
+
+## Store-Locator Notes (store-locator)
+
+- Runs as a **one-shot job** (not a persistent service) — `docker compose --profile store-locator run --rm store-locator-job`
+- Writes to Firestore collection `stores-index-updates`
+- Tests skip if the collection is empty (job hasn't run)
+- Run `make infra-store-locator-up` to execute the job and populate the collection
+- Tests: collection populated, required fields, valid operation type, document size < 900KB
+
+## Redirect Reverse Proxy Notes (redirections)
+
+- Host port: `8093`; Docker profile: `redirections`
+- Health endpoint: `GET http://localhost:8093/health` → HTTP 200
+- Sitecore Edge stubs: `fixtures/mocks/sitecore-edge/graphql-layout.json`
+- Test paths: `/de-de/old-product-url` (redirect), `/de-de/this-url-does-not-exist` (404/passthrough)
+- Tests run with `allow_redirects=False` to assert the 301/302 response directly
+
+---
+
+## Windows / Git Bash — `--path` argument expansion
+
+`make wait-*` targets call `wait_for_emulator.py --path /health`, but Git Bash
+expands `/health` to `C:/Program Files/Git/health`. This does NOT affect conftest
+fixtures (they call `_wait_for_*()` directly). To check health manually on Windows:
+```bash
+MSYS_NO_PATHCONV=1 curl -s http://localhost:8082/health
+```

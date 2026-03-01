@@ -1,0 +1,25 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/.well-known/openid-configuration"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "issuer": "http://wiremock:8080",
+      "authorization_endpoint": "http://wiremock:8080/oauth2/authorize",
+      "token_endpoint": "http://wiremock:8080/oauth/token",
+      "userinfo_endpoint": "http://wiremock:8080/oauth/userinfo",
+      "jwks_uri": "http://wiremock:8080/.well-known/jwks.json",
+      "end_session_endpoint": "http://wiremock:8080/oauth/logout",
+      "revocation_endpoint": "http://wiremock:8080/oauth/revoke",
+      "response_types_supported": ["code"],
+      "grant_types_supported": ["authorization_code", "refresh_token", "client_credentials"],
+      "subject_types_supported": ["public"],
+      "id_token_signing_alg_values_supported": ["RS256"]
+    }
+  }
+}

@@ -1,15 +1,51 @@
 # Grohe NEO — Integration Test Harness
 
+## Getting Started
+
+**Prerequisites:** Docker Desktop, Python 3.11+, GNU Make
+
+```bash
+# 1. Clone all four repos into the same parent directory (NEO/)
+git clone <grohe-neo-data-loader>
+git clone <grohe-neo-services>
+git clone <grohe-neo-websites>
+git clone <integration>   # this repo
+
+# 2. One-command bootstrap (creates venv, installs deps, copies .env template)
+cd integration
+make bootstrap
+
+# 3. Start core infrastructure
+make infra-up
+
+# 4. Run data-loader tests (no extra services needed)
+make test-data-loader
+
+# 5. Run all tests (start all feature infra first — see CLAUDE.md for per-feature commands)
+make test-all
+```
+
+For the Claude Code multi-agent workflow (dev agent + test agent), see [`agents/README.md`](agents/README.md).
+
+---
+
 ## Status
 
-| Phase | Scope | Status |
-|---|---|---|
-| **Phase 1** | ETL pipeline → Firestore state | ✅ **44 passed** — `test-pipeline` green |
-| **Phase 2** | Sync logic + WireMock infrastructure | ✅ **7 passed** — `test-sync` green |
-| **Phase 3** | IndexingApi → WireMock ingestion capture | ✅ **5 passed** — `test-indexing` (requires `infra-phase3-up`) |
-| **Phase 4** | ProductsApi + NavigationApi HTTP tests | ✅ **10 passed** — `test-services` (requires `infra-phase4-up`) |
-| **Phase 5** | SearchApi HTTP tests (Sitecore Search integration) | ✅ **5 passed** — `test-search` (requires `infra-phase5-up`) |
-| **Phase 6** | ProjectListsApi CRUD + PDF generation tests | ✅ **10 passed** — `test-project-lists` (requires `infra-phase6-up`) |
+| Feature | Scope | Tests | Infra command |
+|---|---|---|---|
+| **data-loader** | ETL pipeline → Firestore | ✅ **51 passed** (44 ETL + 7 sync) | `make infra-up` |
+| **product-indexing** | IndexingApi → WireMock | ✅ **5 passed** | `make infra-product-indexing-up` |
+| **dynamic-navigation** | NavigationApi HTTP | ✅ **5 passed** | `make infra-dynamic-navigation-up` |
+| **pdp** | ProductsApi HTTP | ✅ **5 passed** | `make infra-pdp-up` |
+| **search** | SearchApi HTTP (Sitecore Search) | ✅ **5 passed** | `make infra-search-up` |
+| **project-list** | ProjectListsApi CRUD + PDF | ✅ **10 passed** | `make infra-project-list-up` |
+| **shopping-cart** | ShoppingCartApi HTTP | 🔜 planned | `make infra-shopping-cart-up` |
+| **my-account** | UserApi HTTP | 🔜 planned | `make infra-my-account-up` |
+| **pricing** | PricingApi HTTP | 🔜 planned | `make infra-pricing-up` |
+| **checkout** | OrderApi + PaymentApi HTTP | 🔜 planned | `make infra-checkout-up` |
+| **forms** | FormsApi HTTP | 🔜 planned | `make infra-forms-up` |
+| **store-locator** | Store indexing job | 🔜 planned | `make infra-store-locator-up` |
+| **redirections** | Reverse proxy HTTP | 🔜 planned | `make infra-redirections-up` |
 
 ---
 

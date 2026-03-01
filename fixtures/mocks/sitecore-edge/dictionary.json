@@ -1,0 +1,26 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPattern": "^/v1/[^/]+/graphql.*",
+    "bodyPatterns": [
+      {
+        "contains": "DictionaryQuery"
+      }
+    ]
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "data": {
+        "item": {
+          "children": {
+            "results": []
+          }
+        }
+      }
+    }
+  }
+}

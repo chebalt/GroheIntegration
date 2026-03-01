@@ -1,0 +1,21 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/oauth/userinfo"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "sub": "dev-user-001",
+      "email": "dev-user@example.com",
+      "email_verified": true,
+      "name": "Dev User",
+      "given_name": "Dev",
+      "family_name": "User",
+      "locale": "de-DE"
+    }
+  }
+}

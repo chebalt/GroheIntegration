@@ -1,0 +1,9 @@
+{
+  "request": {
+    "method": "POST",
+    "url": "/oauth/revoke"
+  },
+  "response": {
+    "status": 200
+  }
+}
