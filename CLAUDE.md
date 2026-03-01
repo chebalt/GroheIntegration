@@ -176,14 +176,9 @@ integration/
 ├── .env.example              Template for .env (committed) — SITECORE_MODE etc.
 ├── requirements.txt          pytest, pytest-json-report, pytest-html, google-cloud-firestore
 ├── pytest.ini                Test discovery config (pythonpath = .)
-├── agents/                   Multi-agent protocol (dev agent + test agent)
-│   ├── README.md             Two-agent workflow overview
-│   ├── dev-agent.md          Context supplement for the dev agent
-│   └── test-agent.md         Context supplement for the test agent
-├── reports/                  Generated test output + agent handoff files
-│   ├── current-task.md       Human writes this to start a task
-│   ├── dev-complete.md       Dev agent writes this when changes are done
-│   └── test-findings.md      Test agent writes this after fix-loop
+├── reports/                  Generated test output (gitignored except .gitkeep)
+│   ├── results.json          pytest-json-report output (gitignored — generated)
+│   └── *.json                per-feature test reports (gitignored — generated)
 ├── fixtures/
 │   ├── csv/                  Real de/DE CSV batch (17 files from NEO/data_input/)
 │   └── mocks/                WireMock stub definitions (one subdir per external system)
@@ -404,13 +399,17 @@ After `make fix-loop`, read `reports/results.json`:
 
 ## The Automated Fix Loop (multi-agent workflow)
 
-See `agents/README.md` for the full two-agent workflow. Summary:
+See `../agents/README.md` for the full two-agent workflow. Handoff files live in `../reports/`.
 
-1. Human writes `reports/current-task.md`
-2. **Dev agent** (grohe-neo-services terminal): reads task + feature doc + test-findings → implements → writes `reports/dev-complete.md`
-3. **Test agent** (integration terminal): reads dev-complete → runs `make fix-loop` → reads results.json → writes `reports/test-findings.md`
+1. Human writes `../reports/current-task.md`
+2. **Dev agent** (grohe-neo-services/ or grohe-neo-data-loader/): reads task + feature doc + test-findings → implements → writes `../reports/dev-complete.md`
+3. **Test agent** (integration/): reads `../reports/dev-complete.md` → runs `make fix-loop` → reads `reports/results.json` → writes `../reports/test-findings.md`
 4. If failures: dev agent reads test-findings → fixes → loop
 5. If all green: human reviews PR
+
+**Agent startup** (from each agent's working directory):
+- Dev: `/read ../agents/dev-agent.md` then `/read ../reports/current-task.md`
+- Test: `/read ../agents/test-agent.md` then `/read ../reports/dev-complete.md`
 
 ---
 
