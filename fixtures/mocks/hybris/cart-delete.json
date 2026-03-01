@@ -1,7 +1,7 @@
 {
   "request": {
     "method": "DELETE",
-    "urlPattern": "^/rest/v2/[^/]+/users/[^/]+/carts/[^/]+.*"
+    "urlPattern": "^/[^/]+/users/[^/]+/carts/[^/]+$"
   },
   "response": {
     "status": 200

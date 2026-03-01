@@ -1,7 +1,7 @@
 {
   "request": {
     "method": "POST",
-    "urlPattern": "^/recaptcha/api/siteverify.*"
+    "urlPattern": "^/v1/recaptcha.*"
   },
   "response": {
     "status": 200,

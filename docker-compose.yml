@@ -167,30 +167,33 @@ services:
   # Each has its own named profile matching the feature directory in tests/.
 
   # shopping-cart — .NET ShoppingCartApi (port 8087)
-  # shopping-cart-api:
-  #   profiles: ["shopping-cart"]
-  #   build:
-  #     context: ../grohe-neo-services
-  #     dockerfile: src/GroheNeo.ShoppingCartApi/Dockerfile
-  #   ports:
-  #     - "8087:8080"
-  #   environment:
-  #     ASPNETCORE_ENVIRONMENT: Integration
-  #     ASPNETCORE_URLS: http://+:8080
-  #     FIRESTORE_EMULATOR_HOST: firestore-emulator:8080
-  #     GCLOUD_PROJECT: demo-project
-  #     HYBRIS_BASE_URL: http://wiremock:8080
-  #   depends_on:
-  #     firestore-emulator:
-  #       condition: service_healthy
-  #     wiremock:
-  #       condition: service_healthy
-  #   healthcheck:
-  #     test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
-  #     interval: 10s
-  #     timeout: 5s
-  #     retries: 18
-  #     start_period: 60s
+  # Calls Hybris cart API + internal token service — both mocked via WireMock.
+  # GoogleIdTokenHandler bypassed via INTEGRATION_TEST_MODE=true.
+  # Start with: make infra-shopping-cart-up
+  shopping-cart-api:
+    profiles: ["shopping-cart"]
+    build:
+      context: ../grohe-neo-services
+      dockerfile: src/GroheNeo.ShoppingCartApi/Dockerfile
+    ports:
+      - "8087:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Integration
+      ASPNETCORE_URLS: http://+:8080
+      INTEGRATION_TEST_MODE: "true"
+      # IShoppingCart (Hybris REST v2) base URL
+      HttpConfiguration__BaseUrl: http://wiremock:8080
+      # ITokenApi (internal Cloud Run token service) base URL — also WireMock
+      HttpConfiguration__audience: http://wiremock:8080
+    depends_on:
+      wiremock:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 18
+      start_period: 60s
 
   # my-account — .NET UserApi (port 8088)
   # user-api:
@@ -219,28 +222,35 @@ services:
   #     start_period: 60s
 
   # pricing — .NET PricingApi (port 8089)
-  # pricing-api:
-  #   profiles: ["pricing"]
-  #   build:
-  #     context: ../grohe-neo-services
-  #     dockerfile: src/GroheNeo.PricingApi/Dockerfile
-  #   ports:
-  #     - "8089:8080"
-  #   environment:
-  #     ASPNETCORE_ENVIRONMENT: Integration
-  #     ASPNETCORE_URLS: http://+:8080
-  #     FIRESTORE_EMULATOR_HOST: firestore-emulator:8080
-  #     GCLOUD_PROJECT: demo-project
-  #     HYBRIS_BASE_URL: http://wiremock:8080
-  #   depends_on:
-  #     wiremock:
-  #       condition: service_healthy
-  #   healthcheck:
-  #     test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
-  #     interval: 10s
-  #     timeout: 5s
-  #     retries: 18
-  #     start_period: 60s
+  # Calls Hybris pricing API + internal token service + IDP certs — all mocked via WireMock.
+  # GoogleIdTokenHandler bypassed via INTEGRATION_TEST_MODE=true.
+  # Start with: make infra-pricing-up
+  pricing-api:
+    profiles: ["pricing"]
+    build:
+      context: ../grohe-neo-services
+      dockerfile: src/GroheNeo.PricingApi/Dockerfile
+    ports:
+      - "8089:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Integration
+      ASPNETCORE_URLS: http://+:8080
+      INTEGRATION_TEST_MODE: "true"
+      # IIdpTokenApi (IDP OIDC certs endpoint) — WireMock stub exists at /v1/sso/...
+      IdpEndpoint: http://wiremock:8080
+      # IProductDetail (ProductsApi for product data enrichment) — WireMock as placeholder
+      HttpConfiguration__BaseUrl: http://wiremock:8080
+      # ITokenApi (internal Cloud Run token service) base URL
+      HttpConfiguration__audience: http://wiremock:8080
+    depends_on:
+      wiremock:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 18
+      start_period: 60s
 
   # checkout — .NET OrderApi (port 8090) + PaymentApi (port 8091)
   # order-api:
@@ -248,6 +258,32 @@ services:
   #   ... (uncomment and fill in when GroheNeo.OrderApi is implemented)
 
   # forms — .NET FormsApi (port 8092)
-  # forms-api:
-  #   profiles: ["forms"]
-  #   ... (uncomment and fill in when GroheNeo.FormsApi is implemented)
+  # No Firestore dependency. Calls Mulesoft CRM + reCAPTCHA via WireMock.
+  # BYPASS_CAPTCHA_KEY + X-Bypass-Captcha header skip reCAPTCHA validation.
+  # Start with: make infra-forms-up
+  forms-api:
+    profiles: ["forms"]
+    build:
+      context: ../grohe-neo-services
+      dockerfile: src/GroheNeo.FormsApi/Dockerfile
+    ports:
+      - "8092:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Integration
+      ASPNETCORE_URLS: http://+:8080
+      MULESOFT_BASE_URL: http://wiremock:8080
+      MULESOFT_TOKEN_BASE_URL: http://wiremock:8080
+      MULESOFT_TOKEN_CLIENT_ID: integration-test-client-id
+      MULESOFT_TOKEN_CLIENT_SECRET: integration-test-client-secret
+      MULESOFT_TOKEN_COOKIE: integration-test-cookie
+      NEO_RECAPTCHA_ENDPOINT: http://wiremock:8080
+      BYPASS_CAPTCHA_KEY: integration-test-bypass
+    depends_on:
+      wiremock:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 18
+      start_period: 60s

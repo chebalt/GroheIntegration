@@ -1,7 +1,7 @@
 {
   "request": {
     "method": "GET",
-    "urlPattern": "^/rest/v2/[^/]+/users/[^/]+/products/[^/]+/price.*"
+    "urlPattern": "^/[^/]+/users/[^/]+/products/prices.*"
   },
   "response": {
     "status": 200,
@@ -9,18 +9,24 @@
       "Content-Type": "application/json"
     },
     "jsonBody": {
-      "price": {
-        "currencyIso": "EUR",
-        "value": 149.99,
-        "formattedValue": "149,99 €",
-        "priceType": "BUY"
-      },
-      "basePrice": {
-        "currencyIso": "EUR",
-        "value": 149.99,
-        "formattedValue": "149,99 €",
-        "priceType": "BUY"
-      }
+      "products": [
+        {
+          "code": "40806000",
+          "currencyIso": "EUR",
+          "originalPrice": 49.99,
+          "userPrice": 45.00,
+          "userPriceNet": 37.82,
+          "discountedPrice": 0.0,
+          "discountedPriceNet": 0.0,
+          "userPriceTax": 7.18,
+          "originalPriceNet": 42.01,
+          "originalPriceTax": 7.98,
+          "transactibility": true,
+          "vatPercentage": 19.0,
+          "orderUnit": 1,
+          "potentialPromotions": []
+        }
+      ]
     }
   }
 }

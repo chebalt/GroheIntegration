@@ -1,7 +1,7 @@
 {
   "request": {
     "method": "POST",
-    "urlPattern": "^/api/v1/forms/contact.*"
+    "urlPattern": "^/v1/forms/contact.*"
   },
   "response": {
     "status": 200,

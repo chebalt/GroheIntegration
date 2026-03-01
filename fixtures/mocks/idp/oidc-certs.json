@@ -1,0 +1,24 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/v1/sso/auth/realms/idm-apigw/protocol/openid-connect/certs"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "keys": [
+        {
+          "kty": "RSA",
+          "use": "sig",
+          "alg": "RS256",
+          "kid": "dev-test-key-1",
+          "n": "4VQiRal2Epp8uVVrcf8kKmUcQ50JjmEOQSEyLKcMDAtfsmkdPEVkNpU1Bl8BSNvFbbapNCBGBdhHwb44hyOUatqMo0cioJ1DTSp22Qi_cCHRmunLtqoXVzxnmaLSrlYLVZmA5q8Vw83z-vmMabnAIXm9VSwYGBHj9TLE4HBui4W5lLLQCjoKN6zeTCiTNP4nDmFmD1hmkRgg-LWQ5ICArtbPb2NkGgG3oKLfD-aQq7obkRVv5ngM4TzG_D2N0XW_3v3pAbE1Wbz5QPjJAEmAmZArX0QViTsYYYLYuuygO6rkUI5mdBnqQzRWrGlF8g2Zew0KJc95mi9_W9BcjFOjGw",
+          "e": "AQAB"
+        }
+      ]
+    }
+  }
+}

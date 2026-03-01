@@ -1,7 +1,7 @@
 {
   "request": {
     "method": "POST",
-    "urlPattern": "^/rest/v2/[^/]+/users/[^/]+/carts/[^/]+/entries.*"
+    "urlPattern": "^/[^/]+/users/[^/]+/carts/[^/]+/entries.*"
   },
   "response": {
     "status": 200,
