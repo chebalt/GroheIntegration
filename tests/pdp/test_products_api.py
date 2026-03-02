@@ -72,10 +72,13 @@ class TestProductsApi:
         )
         if resp.status_code == 200:
             body = resp.json()
-            # Response wraps items in "categories" key
-            categories = body.get("categories") or body.get("Categories") or body
+            # The category endpoint may return a raw list or a dict wrapper
+            if isinstance(body, list):
+                categories = body
+            else:
+                categories = body.get("categories") or body.get("Categories") or body
             assert categories is not None, (
-                f"Category response has unexpected shape: {list(body.keys())}"
+                f"Category response has unexpected shape: {type(body)}"
             )
 
     def test_variants_endpoint_returns_variants_for_known_sku(self, products_result):
